@@ -12,7 +12,13 @@ import { main as generateHostBridgeClient } from "./generate-host-bridge-client.
 import { main as generateProtoBusSetup } from "./generate-protobus-setup.mjs"
 
 const require = createRequire(import.meta.url)
-const PROTOC = path.join(require.resolve("grpc-tools"), "../bin/protoc")
+
+// On Windows, invoking `...\bin\protoc` can accidentally execute `protoc.js` via PATHEXT/WSH,
+// resulting in a "successful" run that generates no output. Use the npm shim instead.
+const PROTOC =
+	process.platform === "win32"
+		? path.resolve("node_modules/.bin/grpc_tools_node_protoc.cmd")
+		: path.join(require.resolve("grpc-tools"), "../bin/protoc")
 
 const PROTO_DIR = path.resolve("proto")
 const TS_OUT_DIR = path.resolve("src/shared/proto")

@@ -15,7 +15,10 @@
 		"name": "Vector"
 	},
 	"license": "Apache-2.0",
-	"repository": { "type": "git", "url": "https://github.com/cline/cline" },
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cline/cline"
+	},
 	"publisher": "saoudrizwan",
 	"categories": [
 		"AI",
@@ -369,7 +372,7 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run package",
+		"vscode:prepublish": "npm run prepublish:vsix",
 		"compile": "npm run check-types && npm run lint && node esbuild.mjs",
 		"compile-standalone": "npm run check-types && npm run lint && node esbuild.mjs --standalone",
 		"compile-standalone-npm": "npm run protos && npm run check-types && npm run lint && node esbuild.mjs --standalone",
