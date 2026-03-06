@@ -23,6 +23,7 @@ import { syncWorker } from "./shared/services/worker/sync"
 import { getBlobStoreSettingsFromEnv } from "./shared/services/worker/worker"
 import { getLatestAnnouncementId } from "./utils/announcements"
 import { arePathsEqual } from "./utils/path"
+import { brandText } from "@/shared/brand"
 
 /**
  * Performs intialization for Cline that is common to all platforms.
@@ -98,8 +99,8 @@ async function showVersionUpdateAnnouncement(stateManager: StateManager) {
 			if (lastShownAnnouncementId !== latestAnnouncementId) {
 				// Show notification when there's a new announcement (major/minor updates or fresh installs)
 				const message = previousVersion
-					? `Cline has been updated to v${currentVersion}`
-					: `Welcome to Cline v${currentVersion}`
+					? brandText.updatedVersion(currentVersion)
+					: brandText.welcomeVersion(currentVersion)
 				HostProvider.window.showMessage({
 					type: ShowMessageType.INFORMATION,
 					message,

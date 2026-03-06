@@ -12,6 +12,7 @@ import {
 } from "@shared/storage/state-keys"
 import { Box, Text, useApp, useInput } from "ink"
 import React, { useMemo, useState } from "react"
+import { BRAND_NAME } from "@shared/brand"
 import { useStdinContext } from "../context/StdinContext"
 import { fuzzyFilter } from "../utils/fuzzy-search"
 import {
@@ -484,9 +485,7 @@ export const ConfigView: React.FC<ConfigViewProps> = ({
 				if (ruleEntries.length === 0) {
 					return (
 						<Box>
-							<Text color="gray">
-								No rules configured. Add .clinerules files to your workspace or global config.
-							</Text>
+							<Text color="gray">No rules configured. Add rule files to your workspace or global config.</Text>
 						</Box>
 					)
 				}
@@ -624,7 +623,7 @@ export const ConfigView: React.FC<ConfigViewProps> = ({
 	return (
 		<Box flexDirection="column">
 			<Text bold color="white">
-				⚙️ Cline Configuration
+				⚙️ {BRAND_NAME} Configuration
 			</Text>
 			<Text color="gray">{SEPARATOR}</Text>
 

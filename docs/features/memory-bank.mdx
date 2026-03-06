@@ -1,20 +1,20 @@
 ---
 title: "Memory Bank"
 sidebarTitle: "Memory Bank"
-description: "A structured documentation system that helps Cline maintain context across sessions."
+description: "A structured documentation system that helps Vector maintain context across sessions."
 ---
 
-Memory Bank is a documentation methodology that transforms Cline from a stateless assistant into a persistent development partner. Through structured markdown files, Cline can "remember" your project details across sessions.
+Memory Bank is a documentation methodology that transforms Vector from a stateless assistant into a persistent development partner. Through structured markdown files, Vector can "remember" your project details across sessions.
 
 ## Quick Setup
 
 1. Copy the [custom instructions below](#memory-bank-custom-instructions)
 2. Add to custom instructions or a [`.clinerules` file](/customization/cline-rules)
-3. Ask Cline to "initialize memory bank"
+3. Ask Vector to "initialize memory bank"
 
 ## How It Works
 
-Memory Bank files are regular markdown files in your project that both you and Cline can access. They're organized hierarchically to build a complete picture of your project:
+Memory Bank files are regular markdown files in your project that both you and Vector can access. They're organized hierarchically to build a complete picture of your project:
 
 ```text
 memory-bank/
@@ -43,20 +43,20 @@ memory-bank/
 
 ## Key Commands
 
-- **"follow your custom instructions"** - Tells Cline to read Memory Bank and continue where you left off
+- **"follow your custom instructions"** - Tells Vector to read Memory Bank and continue where you left off
 - **"initialize memory bank"** - Creates the initial structure for a new project
 - **"update memory bank"** - Triggers a full documentation review and update
 
-These work alongside Cline's built-in [slash commands](/core-workflows/using-commands). In particular, [`/newtask`](/core-workflows/using-commands#newtask) and [`/smol`](/core-workflows/using-commands#smol) help you manage context windows without losing progress.
+These work alongside Vector's built-in [slash commands](/core-workflows/using-commands). In particular, [`/newtask`](/core-workflows/using-commands#newtask) and [`/smol`](/core-workflows/using-commands#smol) help you manage context windows without losing progress.
 
 ## Working with Plan & Act Modes
 
 Memory Bank pairs naturally with [Plan & Act mode](/core-workflows/plan-and-act):
 
-- **Plan mode**: Start here when resuming a project. Ask Cline to read the Memory Bank, review the current state, and discuss strategy before making changes.
-- **Act mode**: Switch to Act mode once you have a plan. Cline retains everything from the planning session and can implement changes.
+- **Plan mode**: Start here when resuming a project. Ask Vector to read the Memory Bank, review the current state, and discuss strategy before making changes.
+- **Act mode**: Switch to Act mode once you have a plan. Vector retains everything from the planning session and can implement changes.
 
-For complex features, use [`/deep-planning`](/core-workflows/using-commands#deep-planning) to have Cline investigate your codebase and create a detailed implementation plan. The Memory Bank gives Cline the project context it needs to plan effectively.
+For complex features, use [`/deep-planning`](/core-workflows/using-commands#deep-planning) to have Vector investigate your codebase and create a detailed implementation plan. The Memory Bank gives Vector the project context it needs to plan effectively.
 
 ## Managing Context Windows
 
@@ -66,22 +66,22 @@ Every AI model has a [context window](/core-workflows/task-management#context-wi
 
 When your context window fills up:
 
-1. Ask Cline to "update memory bank" to document the current state
+1. Ask Vector to "update memory bank" to document the current state
 2. Start a new conversation
-3. Ask Cline to "follow your custom instructions"
+3. Ask Vector to "follow your custom instructions"
 
 This preserves important context in your Memory Bank files before the window clears, letting you continue seamlessly in a fresh conversation.
 
 ### Using slash commands
 
-Cline's built-in commands offer more targeted options:
+Vector's built-in commands offer more targeted options:
 
 - **[`/smol`](/core-workflows/using-commands#smol)** compresses your conversation history while keeping you in the same task. Use this when you want to free up space without starting over.
 - **[`/newtask`](/core-workflows/using-commands#newtask)** distills key decisions, file changes, and progress into a fresh task with a clean context window. This is like a developer handoff that preserves what matters.
 
 ### Automatic context management
 
-Enable [Auto-Compact](/features/auto-compact) to let Cline automatically compress context as you work. This reduces how often you need to manually manage the context window, though you should still update the Memory Bank after significant milestones.
+Enable [Auto-Compact](/features/auto-compact) to let Vector automatically compress context as you work. This reduces how often you need to manually manage the context window, though you should still update the Memory Bank after significant milestones.
 
 <Frame>
 	<img src="https://storage.googleapis.com/cline_public_images/docs/assets/image%20(18).png" alt="Context window progress bar showing usage approaching the limit" />
@@ -98,22 +98,22 @@ Together, they let you experiment freely. Checkpoints protect your code, and Mem
 
 ## Reducing Your Context Footprint
 
-Memory Bank works best when your starting context is lean. If Cline loads your entire project into context, including dependencies, build artifacts, and generated files, you burn through tokens before the real work starts.
+Memory Bank works best when your starting context is lean. If Vector loads your entire project into context, including dependencies, build artifacts, and generated files, you burn through tokens before the real work starts.
 
-**Add a [`.clineignore`](/customization/clineignore) file.** This is the single biggest improvement most users can make. It tells Cline which files to skip when scanning your project. Adding one can drop your starting context from 200k+ tokens to under 50k, which means faster responses, lower costs, and the ability to use smaller models effectively.
+**Add a [`.clineignore`](/customization/clineignore) file.** This is the single biggest improvement most users can make. It tells Vector which files to skip when scanning your project. Adding one can drop your starting context from 200k+ tokens to under 50k, which means faster responses, lower costs, and the ability to use smaller models effectively.
 
-**Keep Memory Bank files concise.** Each file adds to your context when Cline reads it at the start of a session. Keep `projectbrief.md` to one page, `activeContext.md` to current state only (not a running log), and `progress.md` to a summary rather than a detailed changelog. If a file grows beyond a page or two, split the detail into a separate doc and link to it. Cline can read linked files on demand.
+**Keep Memory Bank files concise.** Each file adds to your context when Vector reads it at the start of a session. Keep `projectbrief.md` to one page, `activeContext.md` to current state only (not a running log), and `progress.md` to a summary rather than a detailed changelog. If a file grows beyond a page or two, split the detail into a separate doc and link to it. Vector can read linked files on demand.
 
-**Use [Cline Rules](/customization/cline-rules) strategically.** Rules load into every request. Use [conditional rules](/customization/cline-rules#conditional-rules) to activate rules only when working with matching files, so frontend rules don't load when you're editing backend code.
+**Use [Vector Rules](/customization/cline-rules) strategically.** Rules load into every request. Use [conditional rules](/customization/cline-rules#conditional-rules) to activate rules only when working with matching files, so frontend rules don't load when you're editing backend code.
 
 ## Best Practices
 
 - Start with a basic project brief and let structure evolve
-- Let Cline help create the initial structure
+- Let Vector help create the initial structure
 - `activeContext.md` changes most frequently; update it after each session
 - `progress.md` tracks milestones; review it when resuming work
 - Update after significant milestones or direction changes
-- Use [Cline Rules](/customization/cline-rules) to store the Memory Bank instructions per-project
+- Use [Vector Rules](/customization/cline-rules) to store the Memory Bank instructions per-project
 - Add a [`.clineignore`](/customization/clineignore) early to keep your starting context small
 
 ---
@@ -123,9 +123,9 @@ Memory Bank works best when your starting context is lean. If Cline loads your e
 Copy this into custom instructions or a `.clinerules` file:
 
 ```markdown
-# Cline's Memory Bank
+# Vector's Memory Bank
 
-I am Cline, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
+I am Vector, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
 
 ## Memory Bank Structure
 
@@ -204,7 +204,7 @@ After significant milestones or direction changes. For active development, every
 [Checkpoints](/core-workflows/checkpoints) save your code state (file snapshots). Memory Bank saves your project knowledge (context, decisions, progress). They complement each other: checkpoints let you roll back code, Memory Bank lets you pick up where you left off intellectually.
 
 **How does Memory Bank relate to context window limitations?**
-Memory Bank stores important information in structured files that Cline can load efficiently at the start of each session. This prevents context bloat while keeping critical information available. For more on how context windows work, see [Task Management](/core-workflows/task-management#context-window).
+Memory Bank stores important information in structured files that Vector can load efficiently at the start of each session. This prevents context bloat while keeping critical information available. For more on how context windows work, see [Task Management](/core-workflows/task-management#context-window).
 
 **Does this work with other AI tools?**
 Yes. Memory Bank is a documentation methodology that works with any AI that can read docs. Commands may differ but the approach works across tools.
@@ -218,5 +218,5 @@ For more information, see the [Memory Bank blog post](https://cline.bot/blog/mem
 
 - [Plan & Act Mode](/core-workflows/plan-and-act) - Separate thinking from doing with structured planning sessions
 - [Checkpoints](/core-workflows/checkpoints) - Roll back code changes while keeping your conversation context
-- [Cline Rules](/customization/cline-rules) - Define persistent instructions including Memory Bank setup
+- [Vector Rules](/customization/cline-rules) - Define persistent instructions including Memory Bank setup
 - [Task Management](/core-workflows/task-management) - Understand tasks, context windows, and when to start fresh

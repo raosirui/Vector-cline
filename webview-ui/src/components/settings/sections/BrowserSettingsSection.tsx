@@ -2,6 +2,7 @@ import { EmptyRequest, StringRequest } from "@shared/proto/cline/common"
 import { VSCodeButton, VSCodeCheckbox, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
 import React, { useCallback, useEffect, useState } from "react"
 import styled from "styled-components"
+import { BRAND_NAME } from "@shared/brand"
 import { BROWSER_VIEWPORT_PRESETS } from "../../../../../src/shared/BrowserSettings"
 import { useExtensionState } from "../../../context/ExtensionStateContext"
 import { BrowserServiceClient } from "../../../services/grpc-client"
@@ -175,7 +176,7 @@ export const BrowserSettingsSection: React.FC<BrowserSettingsSectionProps> = ({ 
 								color: "var(--vscode-descriptionForeground)",
 								margin: "4px 0 0 0px",
 							}}>
-							Prevent Cline from using browser actions (e.g. launch, click, type).
+							Prevent {BRAND_NAME} from using browser actions (e.g. launch, click, type).
 						</p>
 					</div>
 
@@ -246,7 +247,7 @@ export const BrowserSettingsSection: React.FC<BrowserSettingsSectionProps> = ({ 
 									color: "var(--vscode-descriptionForeground)",
 									margin: "0 0 6px 0px",
 								}}>
-								Enable Cline to use your Chrome
+								Enable {BRAND_NAME} to use your Chrome
 								{isBundled
 									? "(not detected on your machine)"
 									: detectedChromePath

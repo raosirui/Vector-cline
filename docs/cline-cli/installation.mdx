@@ -1,13 +1,13 @@
 ---
 title: "Installation & Setup"
-description: "Install Cline CLI on macOS, Linux, or Windows and configure your AI provider"
+description: "Install Vector CLI on macOS, Linux, or Windows and configure your AI provider"
 ---
 
-Cline CLI brings the full power of Cline to your terminal. In just a few minutes, you can install the CLI, authenticate with your preferred AI provider, and start running tasks from any directory on your machine.
+Vector CLI brings the full power of Vector to your terminal. In just a few minutes, you can install the CLI, authenticate with your preferred AI provider, and start running tasks from any directory on your machine.
 
 ## Prerequisites
 
-Cline CLI requires **Node.js version 20 or higher**. We recommend Node.js 22 for the best experience.
+Vector CLI requires **Node.js version 20 or higher**. We recommend Node.js 22 for the best experience.
 
 Check your Node.js version:
 
@@ -17,7 +17,7 @@ node --version
 
 If you need to install or update Node.js, visit [nodejs.org](https://nodejs.org) or use a version manager like [nvm](https://github.com/nvm-sh/nvm).
 
-## Install Cline CLI
+## Install Vector CLI
 
 Install globally via npm:
 
@@ -45,9 +45,9 @@ cline auth
 
 This launches an interactive wizard with multiple options. Choose the method that works best for your workflow.
 
-### Option 1: Sign in with Cline (Recommended)
+### Option 1: Sign in with Vector (Recommended)
 
-Select **"Sign in with Cline"** to authenticate with your Cline account via OAuth. Your browser opens automatically to complete sign-in.
+Select **"Sign in with Vector"** to authenticate with your Vector account via OAuth. Your browser opens automatically to complete sign-in.
 
 ### Option 2: Sign in with ChatGPT Subscription
 
@@ -55,7 +55,7 @@ If you have a ChatGPT Plus or Pro subscription, select **"Sign in with ChatGPT S
 
 ### Option 3: Import from Existing Tools
 
-Already using another AI coding CLI? Cline can import your existing configuration:
+Already using another AI coding CLI? Vector can import your existing configuration:
 
 - **Import from Codex CLI** - Imports credentials from `~/.codex/auth.json`
 - **Import from OpenCode** - Imports configuration from `~/.local/share/opencode/auth.json`
@@ -120,7 +120,7 @@ Confirm everything is working with a simple test:
 cline "What is 2 + 2?"
 ```
 
-If Cline responds with an answer, your installation and authentication are complete.
+If Vector responds with an answer, your installation and authentication are complete.
 
 Check your current configuration:
 
@@ -130,7 +130,7 @@ cline config
 
 ## Quick Start
 
-Now you're ready to use Cline. Choose how you want to work:
+Now you're ready to use Vector. Choose how you want to work:
 
 ### Interactive Mode
 
@@ -140,7 +140,7 @@ Launch the interactive CLI for development:
 cline
 ```
 
-You'll see the Cline welcome screen. Type your task and press Enter. Use:
+You'll see the Vector welcome screen. Type your task and press Enter. Use:
 - `Tab` to toggle between Plan and Act modes
 - `Shift+Tab` to enable auto-approve
 - `/help` for available commands
@@ -245,7 +245,7 @@ If your API key is rejected:
 
 ## Uninstallation
 
-To remove Cline CLI:
+To remove Vector CLI:
 
 ```bash
 npm uninstall -g cline
@@ -265,7 +265,7 @@ rm -rf ~/.cline
   </Card>
   
   <Card title="Headless Mode" icon="robot" href="/cline-cli/three-core-flows">
-    Run Cline autonomously in scripts, CI/CD pipelines, and automated workflows.
+    Run Vector autonomously in scripts, CI/CD pipelines, and automated workflows.
   </Card>
   
   <Card title="Configuration" icon="gear" href="/cline-cli/configuration">

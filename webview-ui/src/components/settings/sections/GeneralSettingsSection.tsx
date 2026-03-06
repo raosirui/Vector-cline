@@ -1,4 +1,5 @@
 import { VSCodeCheckbox, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { BRAND_LINKS, BRAND_NAME, isBrandLinkConfigured } from "@shared/brand"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import PreferredLanguageSetting from "../PreferredLanguageSetting"
@@ -42,22 +43,28 @@ const GeneralSettingsSection = ({ renderSectionHeader }: GeneralSettingsSectionP
 					</Tooltip>
 
 					<p className="text-sm mt-[5px] text-description">
-						Help improve Cline by sending usage data and error reports. No code, prompts, or personal information are
-						ever sent. See our{" "}
-						<VSCodeLink
-							className="text-inherit"
-							href="https://docs.cline.bot/more-info/telemetry"
-							style={{ fontSize: "inherit", textDecoration: "underline" }}>
-							telemetry overview
-						</VSCodeLink>{" "}
-						and{" "}
-						<VSCodeLink
-							className="text-inherit"
-							href="https://cline.bot/privacy"
-							style={{ fontSize: "inherit", textDecoration: "underline" }}>
-							privacy policy
-						</VSCodeLink>{" "}
-						for more details.
+						Help improve {BRAND_NAME} by sending usage data and error reports. No code, prompts, or personal information are
+						ever sent.
+						{(isBrandLinkConfigured(BRAND_LINKS.documentation) || isBrandLinkConfigured(BRAND_LINKS.privacy)) && " See our "}
+						{isBrandLinkConfigured(BRAND_LINKS.documentation) && (
+							<VSCodeLink
+								className="text-inherit"
+								href={`${BRAND_LINKS.documentation}/more-info/telemetry`}
+								style={{ fontSize: "inherit", textDecoration: "underline" }}>
+								telemetry overview
+							</VSCodeLink>
+						)}
+						{isBrandLinkConfigured(BRAND_LINKS.documentation) && isBrandLinkConfigured(BRAND_LINKS.privacy) && " and "}
+						{isBrandLinkConfigured(BRAND_LINKS.privacy) && (
+							<VSCodeLink
+								className="text-inherit"
+								href={BRAND_LINKS.privacy}
+								style={{ fontSize: "inherit", textDecoration: "underline" }}>
+								privacy policy
+							</VSCodeLink>
+						)}
+						{(isBrandLinkConfigured(BRAND_LINKS.documentation) || isBrandLinkConfigured(BRAND_LINKS.privacy)) &&
+							" for more details."}
 					</p>
 				</div>
 			</Section>

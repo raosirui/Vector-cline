@@ -6,6 +6,7 @@
 import { Box, Text, useApp, useInput } from "ink"
 import Spinner from "ink-spinner"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { BRAND_NAME, brandText } from "@shared/brand"
 import { refreshOcaModels } from "@/core/controller/models/refreshOcaModels"
 import { StateManager } from "@/core/storage/StateManager"
 import { openAiCodexOAuthManager } from "@/integrations/openai-codex/oauth"
@@ -206,7 +207,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ controller, onComplete, onEr
 
 	// Main menu items - conditionally include import options
 	const mainMenuItems: SelectItem[] = useMemo(() => {
-		const items: SelectItem[] = [{ label: "Sign in with Cline", value: "cline_auth" }]
+		const items: SelectItem[] = [{ label: brandText.signInWithBrand, value: "cline_auth" }]
 
 		// Add OpenAI Codex option for ChatGPT subscribers
 		items.push({ label: "Sign in with ChatGPT Subscription", value: "openai_codex_auth" })
@@ -901,7 +902,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ controller, onComplete, onEr
 			{/* Welcome text - centered */}
 			<Box justifyContent="center" marginTop={1}>
 				<Text bold color="white">
-					Welcome to Cline
+					Welcome to {BRAND_NAME}
 				</Text>
 			</Box>
 

@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@shared/brand"
 import { ClineMessage, ClineSayTool } from "@shared/ExtensionMessage"
 import { StringRequest } from "@shared/proto/cline/common"
 import { memo, useCallback, useMemo, useState } from "react"
@@ -361,5 +362,5 @@ function getToolGroupSummary(messages: ClineMessage[]): string {
 		parts.push(`performed ${counts.search} search${counts.search > 1 ? "es" : ""}`)
 	}
 
-	return parts.length === 0 ? "Context" : "Cline" + action + parts.join(", ")
+	return parts.length === 0 ? "Context" : BRAND_NAME + action + parts.join(", ")
 }

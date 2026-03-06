@@ -1,3 +1,4 @@
+import { BRAND_LINKS, BRAND_NAME, isBrandLinkConfigured } from "@shared/brand"
 import { BannerAction, BannerCardData } from "@shared/cline/banner"
 import React, { useCallback } from "react"
 import { useMount } from "react-use"
@@ -134,14 +135,19 @@ export const WhatsNewModal: React.FC<WhatsNewModalProps> = ({ open, onClose, ver
 
 						{/* GitHub Star CTA */}
 						<p className="text-sm text-center" style={{ color: "var(--vscode-descriptionForeground)" }}>
-							Please support Cline by{" "}
-							<a
-								href="https://github.com/cline/cline"
-								rel="noopener noreferrer"
-								style={{ color: "var(--vscode-textLink-foreground)" }}
-								target="_blank">
-								starring us on GitHub
-							</a>
+							Please support {BRAND_NAME}
+							{isBrandLinkConfigured(BRAND_LINKS.github) && (
+								<>
+									{" by "}
+									<a
+										href={BRAND_LINKS.github}
+										rel="noopener noreferrer"
+										style={{ color: "var(--vscode-textLink-foreground)" }}
+										target="_blank">
+										starring us on GitHub
+									</a>
+								</>
+							)}
 							.
 						</p>
 					</div>

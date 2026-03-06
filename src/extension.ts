@@ -56,6 +56,7 @@ import { telemetryService } from "./services/telemetry"
 import { SharedUriHandler, TASK_URI_PATH } from "./services/uri/SharedUriHandler"
 import { ShowMessageType } from "./shared/proto/host/window"
 import { fileExistsAtPath } from "./utils/fs"
+import { BRAND_NAME } from "@/shared/brand"
 
 // This method is called when the VS Code extension is activated.
 // NOTE: This is VS Code specific - services that should be registered
@@ -285,39 +286,45 @@ export async function activate(context: vscode.ExtensionContext) {
 					}
 
 					// Add to Cline (Always available)
-					const addAction = new vscode.CodeAction("Add to Cline", vscode.CodeActionKind.QuickFix)
+					const addAction = new vscode.CodeAction(`Add to ${BRAND_NAME}`, vscode.CodeActionKind.QuickFix)
 					addAction.command = {
 						command: commands.AddToChat,
-						title: "Add to Cline",
+						title: `Add to ${BRAND_NAME}`,
 						arguments: [expandedRange, context.diagnostics],
 					}
 					actions.push(addAction)
 
 					// Explain with Cline (Always available)
-					const explainAction = new vscode.CodeAction("Explain with Cline", vscode.CodeActionKind.RefactorExtract) // Using a refactor kind
+					const explainAction = new vscode.CodeAction(
+						`Explain with ${BRAND_NAME}`,
+						vscode.CodeActionKind.RefactorExtract,
+					) // Using a refactor kind
 					explainAction.command = {
 						command: commands.ExplainCode,
-						title: "Explain with Cline",
+						title: `Explain with ${BRAND_NAME}`,
 						arguments: [expandedRange],
 					}
 					actions.push(explainAction)
 
 					// Improve with Cline (Always available)
-					const improveAction = new vscode.CodeAction("Improve with Cline", vscode.CodeActionKind.RefactorRewrite) // Using a refactor kind
+					const improveAction = new vscode.CodeAction(
+						`Improve with ${BRAND_NAME}`,
+						vscode.CodeActionKind.RefactorRewrite,
+					) // Using a refactor kind
 					improveAction.command = {
 						command: commands.ImproveCode,
-						title: "Improve with Cline",
+						title: `Improve with ${BRAND_NAME}`,
 						arguments: [expandedRange],
 					}
 					actions.push(improveAction)
 
 					// Fix with Cline (Only if diagnostics exist)
 					if (context.diagnostics.length > 0) {
-						const fixAction = new vscode.CodeAction("Fix with Cline", vscode.CodeActionKind.QuickFix)
+						const fixAction = new vscode.CodeAction(`Fix with ${BRAND_NAME}`, vscode.CodeActionKind.QuickFix)
 						fixAction.isPreferred = true
 						fixAction.command = {
 							command: commands.FixWithCline,
-							title: "Fix with Cline",
+							title: `Fix with ${BRAND_NAME}`,
 							arguments: [expandedRange, context.diagnostics],
 						}
 						actions.push(fixAction)
@@ -595,7 +602,7 @@ async function showJupyterPromptInput(title: string, placeholder: string): Promi
 
 function setupHostProvider(context: ExtensionContext) {
 	const outputChannel = registerClineOutputChannel(context)
-	outputChannel.appendLine("[Cline] Setting up VS Code host...")
+	outputChannel.appendLine(`[${BRAND_NAME}] Setting up VS Code host...`)
 
 	const createWebview = () => new VscodeWebviewProvider(context)
 	const createDiffView = () => new VscodeDiffViewProvider()

@@ -1,23 +1,23 @@
 ---
 title: "Networking and Proxies"
 sidebarTitle: "Networking & Proxies"
-description: "Configure Cline to work behind firewalls and proxies"
+description: "Configure Vector to work behind firewalls and proxies"
 ---
 
 If you're working behind a corporate proxy or firewall, you'll need to configure
-proxy settings for Cline to connect to AI providers. The configuration varies
-depending on which version of Cline you're using.
+proxy settings for Vector to connect to AI providers. The configuration varies
+depending on which version of Vector you're using.
 
 ## VSCode Extension
 
 The VSCode extension automatically uses VSCode's built-in proxy settings. See
 [Network Connections in Visual Studio Code, Proxy server support](https://code.visualstudio.com/docs/setup/network#_proxy-server-support)
 for instructions on how to set up proxies in VSCode. No additional configuration
-is needed for Cline itself.
+is needed for Vector itself.
 
 ## CLI
 
-The Cline CLI uses standard HTTP proxy environment variables. Configure these before running `cline` commands.
+The Vector CLI uses standard HTTP proxy environment variables. Configure these before running `cline` commands.
 
 ### Basic Configuration
 
@@ -105,7 +105,7 @@ export NODE_EXTRA_CA_CERTS=/path/to/ca-certificate.pem
 
 ### Known Limitations
 
-Cline CLI only supports HTTP proxies. It does not support SOCKS proxies,
+Vector CLI only supports HTTP proxies. It does not support SOCKS proxies,
 proxy autoconfiguration (PAC) scripts, or HTTP proxies which require
 authentication beyond a basic username and password.
 
@@ -142,9 +142,9 @@ The JetBrains plugin uses the IDE's HTTP proxy settings.
 
 ### Test Connection
 
-After configuring the proxy, test that Cline can connect to your AI provider:
+After configuring the proxy, test that Vector can connect to your AI provider:
 
-1. Open the Cline panel
+1. Open the Vector panel
 2. Try sending a simple message
 3. If connection fails, check the IDE's Event Log for error messages
 
@@ -159,12 +159,12 @@ If your proxy uses a custom CA:
 
 ### Known Limitations
 
-Cline in JetBrains only supports HTTP proxies. It does not support SOCKS
+Vector in JetBrains only supports HTTP proxies. It does not support SOCKS
 proxies, proxy autoconfiguration (PAC) scripts, or HTTP proxies which require
 authentication beyond a basic username and password.
 
-Cline does not pick up changed proxy settings dynamically. After changing proxy
-settings, restart the IDE for Cline to use the new settings.
+Vector does not pick up changed proxy settings dynamically. After changing proxy
+settings, restart the IDE for Vector to use the new settings.
 
 ## Troubleshooting
 
@@ -187,7 +187,7 @@ If you see certificate-related errors:
 
 ### Testing Proxy Configuration
 
-If you encounter problems with Cline networking, first verify your proxy
+If you encounter problems with Vector networking, first verify your proxy
 configuration works using curl:
 
 ```bash

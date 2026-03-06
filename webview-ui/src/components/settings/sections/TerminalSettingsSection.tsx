@@ -1,6 +1,7 @@
 import { UpdateTerminalConnectionTimeoutResponse } from "@shared/proto/index.cline"
 import { VSCodeCheckbox, VSCodeDropdown, VSCodeOption, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import React, { useState } from "react"
+import { BRAND_LINKS, BRAND_NAME, isBrandLinkConfigured } from "@shared/brand"
 import { PlatformType } from "@/config/platform.config"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { usePlatform } from "@/context/PlatformContext"
@@ -107,7 +108,7 @@ export const TerminalSettingsSection: React.FC<TerminalSettingsSectionProps> = (
 							))}
 						</VSCodeDropdown>
 						<p className="text-xs text-(--vscode-descriptionForeground) mt-1">
-							Select the default terminal Cline will use. 'Default' uses your VSCode global setting.
+							Select the default terminal {BRAND_NAME} will use. 'Default' uses your VSCode global setting.
 						</p>
 					</div>
 
@@ -126,7 +127,7 @@ export const TerminalSettingsSection: React.FC<TerminalSettingsSectionProps> = (
 							{inputError && <div className="text-(--vscode-errorForeground) text-xs mt-1">{inputError}</div>}
 						</div>
 						<p className="text-xs text-(--vscode-descriptionForeground)">
-							Set how long Cline waits for shell integration to activate before executing commands. Increase this
+							Set how long {BRAND_NAME} waits for shell integration to activate before executing commands. Increase this
 							value if you experience terminal connection timeouts.
 						</p>
 					</div>
@@ -140,7 +141,7 @@ export const TerminalSettingsSection: React.FC<TerminalSettingsSectionProps> = (
 							</VSCodeCheckbox>
 						</div>
 						<p className="text-xs text-(--vscode-descriptionForeground)">
-							When enabled, Cline will reuse existing terminal windows that aren't in the current working directory.
+							When enabled, {BRAND_NAME} will reuse existing terminal windows that aren't in the current working directory.
 							Disable this if you experience issues with task lockout after a terminal command.
 						</p>
 					</div>
@@ -158,17 +159,18 @@ export const TerminalSettingsSection: React.FC<TerminalSettingsSectionProps> = (
 								<VSCodeOption value="backgroundExec">Background Exec</VSCodeOption>
 							</VSCodeDropdown>
 							<p className="text-xs text-[var(--vscode-descriptionForeground)] mt-1">
-								Choose whether Cline runs commands in the VS Code terminal or a background process.
+								Choose whether {BRAND_NAME} runs commands in the VS Code terminal or a background process.
 							</p>
 						</div>
 					)}
 					<TerminalOutputLineLimitSlider />
-					<div className="mt-5 p-3 bg-(--vscode-textBlockQuote-background) rounded border border-(--vscode-textBlockQuote-border)">
+					{isBrandLinkConfigured(BRAND_LINKS.documentation) && (
+						<div className="mt-5 p-3 bg-(--vscode-textBlockQuote-background) rounded border border-(--vscode-textBlockQuote-border)">
 						<p className="text-[13px] m-0">
 							<strong>Having terminal issues?</strong> Check our{" "}
 							<a
 								className="text-(--vscode-textLink-foreground) underline hover:no-underline"
-								href="https://docs.cline.bot/troubleshooting/terminal-quick-fixes"
+								href={`${BRAND_LINKS.documentation}/troubleshooting/terminal-quick-fixes`}
 								rel="noopener noreferrer"
 								target="_blank">
 								Terminal Quick Fixes
@@ -176,14 +178,15 @@ export const TerminalSettingsSection: React.FC<TerminalSettingsSectionProps> = (
 							or the{" "}
 							<a
 								className="text-(--vscode-textLink-foreground) underline hover:no-underline"
-								href="https://docs.cline.bot/troubleshooting/terminal-integration-guide"
+								href={`${BRAND_LINKS.documentation}/troubleshooting/terminal-integration-guide`}
 								rel="noopener noreferrer"
 								target="_blank">
 								Complete Troubleshooting Guide
 							</a>
 							.
 						</p>
-					</div>
+						</div>
+					)}
 				</div>
 			</Section>
 		</div>

@@ -11,6 +11,7 @@ tmp
 .husky/_/
 
 pnpm-lock.yaml
+package-lock.json
 
 .clineignore
 .venv
@@ -19,6 +20,8 @@ CLAUDE.local.md
 
 webview-ui/src/**/*.js
 webview-ui/src/**/*.js.map
+cli/src/**/*.js
+cli/src/**/*.js.map
 
 # Ignore coverage directories and files
 coverage

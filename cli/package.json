@@ -1,11 +1,11 @@
 {
-	"name": "cline",
+	"name": "vector-cli",
 	"version": "2.6.0",
 	"description": "Autonomous coding agent CLI - capable of creating/editing files, running commands, using the browser, and more",
 	"main": "dist/lib.mjs",
 	"types": "dist/lib.d.ts",
 	"bin": {
-		"cline": "./dist/cli.mjs"
+		"vector": "./dist/cli.mjs"
 	},
 	"exports": {
 		".": {
@@ -43,32 +43,16 @@
 		"test:run": "vitest run"
 	},
 	"keywords": [
-		"cline",
-		"claude",
-		"dev",
-		"mcp",
-		"openrouter",
+		"vector",
 		"coding",
 		"agent",
-		"autonomous",
-		"chatgpt",
-		"sonnet",
 		"ai",
-		"llama",
 		"cli"
 	],
 	"author": {
-		"name": "Cline Bot Inc."
+		"name": "Vector"
 	},
 	"license": "Apache-2.0",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/cline/cline"
-	},
-	"homepage": "https://cline.bot",
-	"bugs": {
-		"url": "https://github.com/cline/cline/issues"
-	},
 	"devDependencies": {
 		"@types/marked": "^5.0.2",
 		"@types/node": "20.x",

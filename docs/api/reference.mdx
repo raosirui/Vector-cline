@@ -1,10 +1,10 @@
 ---
-title: "Cline API Reference"
+title: "Vector API Reference"
 sidebarTitle: "API Reference"
-description: "Reference for the Cline Chat Completions API, an OpenAI-compatible endpoint for programmatic access."
+description: "Reference for the Vector Chat Completions API, an OpenAI-compatible endpoint for programmatic access."
 ---
 
-The Cline API provides an OpenAI-compatible Chat Completions endpoint. You can use it from the Cline extension, the CLI, or any HTTP client that speaks the OpenAI format.
+The Vector API provides an OpenAI-compatible Chat Completions endpoint. You can use it from the Vector extension, the CLI, or any HTTP client that speaks the OpenAI format.
 
 ## Base URL
 
@@ -17,7 +17,7 @@ https://api.cline.bot/api/v1
 All requests require a Bearer token in the `Authorization` header. You can use either:
 
 - **API key** created at [app.cline.bot](https://app.cline.bot) (Settings > API Keys)
-- **Account auth token** (used automatically by the Cline extension and CLI when you sign in)
+- **Account auth token** (used automatically by the Vector extension and CLI when you sign in)
 
 ```bash
 Authorization: Bearer YOUR_API_KEY
@@ -183,15 +183,15 @@ Common error codes:
 | `500` | Server error |
 | `error` (finish_reason) | Mid-stream error from the upstream model provider |
 
-## Using with Cline
+## Using with Vector
 
-The easiest way to use the Cline API is through the Cline extension or CLI, which handle authentication and streaming for you.
+The easiest way to use the Vector API is through the Vector extension or CLI, which handle authentication and streaming for you.
 
 ### VS Code / JetBrains
 
-Select **Cline** as your provider in the model picker dropdown. Sign in with your Cline account and your API key is managed automatically.
+Select **Vector** as your provider in the model picker dropdown. Sign in with your Vector account and your API key is managed automatically.
 
-### Cline CLI
+### Vector CLI
 
 Configure the CLI with your API key in one command:
 
@@ -209,7 +209,7 @@ See the [CLI Reference](/cline-cli/cli-reference) for all available commands and
 
 ## Using with Other Tools
 
-Because the Cline API is OpenAI-compatible, you can use it with any library or tool that supports custom OpenAI endpoints.
+Because the Vector API is OpenAI-compatible, you can use it with any library or tool that supports custom OpenAI endpoints.
 
 ### Python (OpenAI SDK)
 
@@ -249,7 +249,7 @@ console.log(response.choices[0].message.content)
 
 <CardGroup cols={2}>
   <Card title="CLI Reference" icon="terminal" href="/cline-cli/cli-reference">
-    Full command reference for the Cline CLI, including auth setup.
+    Full command reference for the Vector CLI, including auth setup.
   </Card>
   <Card title="Enterprise API" icon="building" href="/enterprise-solutions/api-reference">
     Admin endpoints for user management, organizations, billing, and API keys.

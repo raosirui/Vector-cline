@@ -1,0 +1,36 @@
+{
+  "productName": "Vector",
+  "assistantName": "Vector",
+  "companyName": "Vector",
+  "tagline": "AI-powered coding agent for complex work",
+  "extension": {
+    "packageName": "vector",
+    "displayName": "Vector",
+    "description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way."
+  },
+  "cli": {
+    "packageName": "vector",
+    "commandName": "vector",
+    "displayName": "Vector CLI",
+    "description": "Autonomous coding agent CLI - capable of creating/editing files, running commands, using the browser, and more"
+  },
+  "links": {
+    "website": "",
+    "documentation": "",
+    "privacy": "",
+    "github": "",
+    "issues": "",
+    "featureRequests": "",
+    "x": "",
+    "discord": "",
+    "reddit": "",
+    "learn": ""
+  },
+  "copy": {
+    "aboutDescription": "An AI assistant that can use your CLI and editor. Vector can handle complex software development tasks step-by-step with tools that let it create and edit files, explore large projects, use the browser, and execute terminal commands after you grant permission.",
+    "welcomeTitle": "Hi, I'm Vector",
+    "quickWinsTitle": "Quick [Wins] with Vector",
+    "telemetryTitle": "Help Improve Vector",
+    "telemetryDescription": "Vector collects error and usage data to help improve the product. No code, prompts, or personal information are ever sent."
+  }
+}

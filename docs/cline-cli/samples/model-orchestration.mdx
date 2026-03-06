@@ -3,7 +3,7 @@ title: "Model Orchestration"
 description: "Use multiple AI models strategically: optimize costs, reduce bias, and leverage model-specific strengths in your workflows"
 ---
 
-Cline CLI's `--config` and `--thinking` flags enable sophisticated multi-model workflows. Instead of using a single model for all tasks, you can route different work to different models based on cost, capability, and specialization.
+Vector CLI's `--config` and `--thinking` flags enable sophisticated multi-model workflows. Instead of using a single model for all tasks, you can route different work to different models based on cost, capability, and specialization.
 
 ## Why Orchestrate Multiple Models?
 
@@ -21,7 +21,7 @@ Certain models excel in specific domains: Codex and DeepSeek are strong at code 
 
 ## Pattern 1: CI/CD Code Review
 
-See our production GitHub Actions workflow that uses Cline CLI for automated PR reviews: [cline-pr-review.yml](https://github.com/cline/cline/blob/main/.github/workflows/cline-pr-review.yml)
+See our production GitHub Actions workflow that uses Vector CLI for automated PR reviews: [cline-pr-review.yml](https://github.com/cline/cline/blob/main/.github/workflows/cline-pr-review.yml)
 
 **Key capabilities demonstrated:**
 - **Automated inline suggestions**: Creates GitHub suggestion blocks that authors can commit with one click
@@ -142,12 +142,12 @@ cat *-review.md | cline -y "create consensus review"
 ```
 
 <Note>
-Parallel execution requires managing multiple Cline instances. See [Multi-instance workflows](/cline-cli/three-core-flows#3-multi-instance-run-parallel-agents) for details.
+Parallel execution requires managing multiple Vector instances. See [Multi-instance workflows](/cline-cli/three-core-flows#3-multi-instance-run-parallel-agents) for details.
 </Note>
 
 ## Extended Thinking for Complex Tasks
 
-Use the `--thinking` flag when Cline needs to analyze multiple approaches:
+Use the `--thinking` flag when Vector needs to analyze multiple approaches:
 
 ```bash
 # Without thinking: Fast but may miss nuances
@@ -158,7 +158,7 @@ cline -y --thinking \
     "refactor this codebase - consider: performance, maintainability, backward compatibility"
 ```
 
-The `--thinking` flag allocates 1024 tokens for internal reasoning before Cline responds. Best for:
+The `--thinking` flag allocates 1024 tokens for internal reasoning before Vector responds. Best for:
 - Architectural decisions
 - Security analysis
 - Complex refactoring
@@ -209,7 +209,7 @@ cat *-sec.md | cline -y "find security issues all 3 reviews mentioned"
   </Card>
   
   <Card title="Headless Mode" icon="robot" href="/cline-cli/three-core-flows">
-    Run Cline autonomously in scripts, CI/CD pipelines, and automated workflows.
+    Run Vector autonomously in scripts, CI/CD pipelines, and automated workflows.
   </Card>
   
   <Card title="Model Selection Guide" icon="brain" href="/core-features/model-selection-guide">
@@ -217,6 +217,6 @@ cat *-sec.md | cline -y "find security issues all 3 reviews mentioned"
   </Card>
   
   <Card title="CI/CD Integration" icon="github" href="/cline-cli/samples/github-integration">
-    Automate GitHub workflows with Cline CLI
+    Automate GitHub workflows with Vector CLI
   </Card>
 </Columns>

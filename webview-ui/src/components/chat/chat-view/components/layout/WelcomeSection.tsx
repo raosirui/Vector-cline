@@ -4,6 +4,7 @@ import type { Worktree } from "@shared/proto/cline/worktree"
 import { TrackWorktreeViewOpenedRequest } from "@shared/proto/cline/worktree"
 import { GitBranch } from "lucide-react"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { BRAND_NAME } from "@shared/brand"
 import BannerCarousel from "@/components/common/BannerCarousel"
 import WhatsNewModal from "@/components/common/WhatsNewModal"
 import HistoryPreview from "@/components/history/HistoryPreview"
@@ -306,7 +307,7 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
 									</TooltipTrigger>
 									<TooltipContent side="top">
 										Create a new git worktree and open it in a separate window. Great for running parallel
-										Cline tasks.
+										{` ${BRAND_NAME} tasks.`}
 									</TooltipContent>
 								</Tooltip>
 								*/}
@@ -330,7 +331,7 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
 											</button>
 										</TooltipTrigger>
 										<TooltipContent side="bottom">
-											View and manage git worktrees. Great for running parallel Cline tasks.
+											View and manage git worktrees. Great for running parallel {BRAND_NAME} tasks.
 										</TooltipContent>
 									</Tooltip>
 								)}

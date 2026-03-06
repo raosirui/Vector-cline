@@ -1,4 +1,5 @@
 import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { BRAND_LINKS, brandText, isBrandLinkConfigured } from "@shared/brand"
 import { useClineSignIn } from "@/context/ClineAuthContext"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import ClineLogoVariable from "../../assets/ClineLogoVariable"
@@ -20,7 +21,7 @@ export const AccountWelcomeView = () => {
 			</p>
 
 			<VSCodeButton className="w-full mb-4" disabled={isLoginLoading} onClick={handleSignIn}>
-				Sign up with Cline
+				{brandText.signInWithBrand}
 				{isLoginLoading && (
 					<span className="ml-1 animate-spin">
 						<span className="codicon codicon-refresh"></span>
@@ -29,8 +30,18 @@ export const AccountWelcomeView = () => {
 			</VSCodeButton>
 
 			<p className="text-(--vscode-descriptionForeground) text-xs text-center m-0">
-				By continuing, you agree to the <VSCodeLink href="https://cline.bot/tos">Terms of Service</VSCodeLink> and{" "}
-				<VSCodeLink href="https://cline.bot/privacy">Privacy Policy.</VSCodeLink>
+				By continuing, you agree to the{" "}
+				{isBrandLinkConfigured(BRAND_LINKS.website) ? (
+					<VSCodeLink href={`${BRAND_LINKS.website}/tos`}>Terms of Service</VSCodeLink>
+				) : (
+					"Terms of Service"
+				)}{" "}
+				and{" "}
+				{isBrandLinkConfigured(BRAND_LINKS.privacy) ? (
+					<VSCodeLink href={BRAND_LINKS.privacy}>Privacy Policy.</VSCodeLink>
+				) : (
+					"Privacy Policy."
+				)}
 			</p>
 		</div>
 	)

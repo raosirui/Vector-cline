@@ -1,5 +1,6 @@
 import { VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
 import React from "react"
+import { BRAND_NAME } from "@shared/brand"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { updateSetting } from "./utils/settingsHandlers"
 
@@ -41,7 +42,7 @@ const PreferredLanguageSetting: React.FC = () => {
 				<VSCodeOption value="Traditional Chinese - 繁體中文">Traditional Chinese - 繁體中文</VSCodeOption>
 				<VSCodeOption value="Turkish - Türkçe">Turkish - Türkçe</VSCodeOption>
 			</VSCodeDropdown>
-			<p className="text-sm text-description mt-1">The language that Cline should use for communication.</p>
+			<p className="text-sm text-description mt-1">The language that {BRAND_NAME} should use for communication.</p>
 		</div>
 	)
 }

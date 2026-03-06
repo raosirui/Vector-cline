@@ -30,7 +30,7 @@ interface WelcomeViewProps {
 }
 
 // ASCII art Cline logo
-const CLINE_LOGO = [
+const VECTOR_LOGO = [
 	"            :::::::            ",
 	"           :::::::::           ",
 	"       :::::::::::::::::       ",
@@ -247,7 +247,7 @@ export const WelcomeView: React.FC<WelcomeViewProps> = ({ onSubmit, onExit, cont
 
 			{/* Cline logo - centered */}
 			<Box alignItems="center" flexDirection="column">
-				{CLINE_LOGO.map((line, idx) => (
+				{VECTOR_LOGO.map((line, idx) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: static array that never changes
 					<Text color="white" key={idx}>
 						{line}

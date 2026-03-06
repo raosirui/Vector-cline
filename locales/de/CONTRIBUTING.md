@@ -1,10 +1,10 @@
-# Beitrag zu Cline
+# Beitrag zu Vector
 
-Wir freuen uns, dass du daran interessiert bist, zu Cline beizutragen. Ob du einen Fehler behebst, eine Funktion hinzufügst oder unsere Dokumentation verbesserst – jeder Beitrag macht Cline intelligenter! Um unsere Community lebendig und einladend zu halten, müssen alle Mitglieder unseren [Verhaltenskodex](CODE_OF_CONDUCT.md) einhalten.
+Wir freuen uns, dass du daran interessiert bist, zu Vector beizutragen. Ob du einen Fehler behebst, eine Funktion hinzufügst oder unsere Dokumentation verbesserst – jeder Beitrag macht Vector intelligenter! Um unsere Community lebendig und einladend zu halten, müssen alle Mitglieder unseren [Verhaltenskodex](CODE_OF_CONDUCT.md) einhalten.
 
 ## Fehler oder Probleme melden
 
-Fehlermeldungen helfen, Cline für alle zu verbessern! Bevor du ein neues Problem erstellst, überprüfe bitte die [bestehenden Probleme](https://github.com/cline/cline/issues), um Duplikate zu vermeiden. Wenn du bereit bist, einen Fehler zu melden, gehe zu unserer [Issues-Seite](https://github.com/cline/cline/issues/new/choose), wo du eine Vorlage findest, die dir hilft, die relevanten Informationen auszufüllen.
+Fehlermeldungen helfen, Vector für alle zu verbessern! Bevor du ein neues Problem erstellst, überprüfe bitte die [bestehenden Probleme](https://github.com/cline/cline/issues), um Duplikate zu vermeiden. Wenn du bereit bist, einen Fehler zu melden, gehe zu unserer [Issues-Seite](https://github.com/cline/cline/issues/new/choose), wo du eine Vorlage findest, die dir hilft, die relevanten Informationen auszufüllen.
 
 <blockquote class='warning-note'>
     🔐 <b>Wichtig:</b> Wenn du eine Sicherheitslücke entdeckst, verwende das <a href="https://github.com/cline/cline/security/advisories/new">GitHub-Sicherheitstool, um sie privat zu melden</a>.
@@ -14,9 +14,9 @@ Fehlermeldungen helfen, Cline für alle zu verbessern! Bevor du ein neues Proble
 
 Suchst du nach einem guten ersten Beitrag? Schau dir die mit ["good first issue"](https://github.com/cline/cline/labels/good%20first%20issue) oder ["help wanted"](https://github.com/cline/cline/labels/help%20wanted) gekennzeichneten Issues an. Diese sind speziell für neue Mitwirkende ausgewählt und Bereiche, in denen wir gerne Hilfe erhalten würden!
 
-Wir begrüßen auch Beiträge zu unserer [Dokumentation](https://github.com/cline/cline/tree/main/docs). Ob du Tippfehler korrigierst, bestehende Anleitungen verbesserst oder neue Bildungsinhalte erstellst – wir möchten ein von der Community verwaltetes Ressourcen-Repository aufbauen, das allen hilft, das Beste aus Cline herauszuholen. Du kannst beginnen, indem du `/docs` erkundest und nach Bereichen suchst, die verbessert werden müssen.
+Wir begrüßen auch Beiträge zu unserer [Dokumentation](https://github.com/cline/cline/tree/main/docs). Ob du Tippfehler korrigierst, bestehende Anleitungen verbesserst oder neue Bildungsinhalte erstellst – wir möchten ein von der Community verwaltetes Ressourcen-Repository aufbauen, das allen hilft, das Beste aus Vector herauszuholen. Du kannst beginnen, indem du `/docs` erkundest und nach Bereichen suchst, die verbessert werden müssen.
 
-Wenn du planst, an einer größeren Funktion zu arbeiten, erstelle bitte zuerst eine [Funktionsanfrage](https://github.com/cline/cline/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop), damit wir besprechen können, ob sie mit der Vision von Cline übereinstimmt.
+Wenn du planst, an einer größeren Funktion zu arbeiten, erstelle bitte zuerst eine [Funktionsanfrage](https://github.com/cline/cline/discussions/categories/feature-requests?discussions_q=is%3Aopen+category%3A%22Feature+Requests%22+sort%3Atop), damit wir besprechen können, ob sie mit der Vision von Vector übereinstimmt.
 
 ## Entwicklungsumgebung einrichten
 
@@ -33,7 +33,7 @@ Wenn du planst, an einer größeren Funktion zu arbeiten, erstelle bitte zuerst 
 
 ## Code schreiben und einreichen
 
-Jeder kann Code zu Cline beitragen, aber wir bitten dich, diese Richtlinien zu befolgen, um sicherzustellen, dass deine Beiträge reibungslos integriert werden:
+Jeder kann Code zu Vector beitragen, aber wir bitten dich, diese Richtlinien zu befolgen, um sicherzustellen, dass deine Beiträge reibungslos integriert werden:
 
 1. **Pull Requests fokussiert halten**
 
@@ -79,4 +79,4 @@ Jeder kann Code zu Cline beitragen, aber wir bitten dich, diese Richtlinien zu b
 
 Durch das Einreichen eines Pull Requests erklärst du dich damit einverstanden, dass deine Beiträge unter derselben Lizenz wie das Projekt ([Apache 2.0](LICENSE)) lizenziert werden.
 
-Denke daran: Zu Cline beizutragen bedeutet nicht nur, Code zu schreiben, sondern Teil einer Community zu sein, die die Zukunft der KI-gestützten Entwicklung gestaltet. Lass uns gemeinsam etwas Großartiges schaffen! 🚀
+Denke daran: Zu Vector beizutragen bedeutet nicht nur, Code zu schreiben, sondern Teil einer Community zu sein, die die Zukunft der KI-gestützten Entwicklung gestaltet. Lass uns gemeinsam etwas Großartiges schaffen! 🚀

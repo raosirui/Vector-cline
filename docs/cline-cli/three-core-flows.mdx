@@ -1,19 +1,19 @@
 ---
 title: "Headless Mode"
-description: "Run Cline autonomously in scripts, CI/CD pipelines, and automated workflows"
+description: "Run Vector autonomously in scripts, CI/CD pipelines, and automated workflows"
 ---
 
-Headless mode runs Cline without an interactive interface — perfect for automation, scripting, and CI/CD pipelines where human interaction isn't possible or desired. Cline executes tasks, produces clean text or JSON output, and exits when complete.
+Headless mode runs Vector without an interactive interface — perfect for automation, scripting, and CI/CD pipelines where human interaction isn't possible or desired. Vector executes tasks, produces clean text or JSON output, and exits when complete.
 
 For collaborative, conversational development, see [Interactive Mode](/cline-cli/interactive-mode) instead.
 
 <Note>
-**Migrating from an older CLI version?** Instance commands (`cline instance new/list/kill`) have been removed in Cline CLI 2.0. The new architecture is simpler — just use `cline -y "task"` for headless execution.
+**Migrating from an older CLI version?** Instance commands (`cline instance new/list/kill`) have been removed in Vector CLI 2.0. The new architecture is simpler — just use `cline -y "task"` for headless execution.
 </Note>
 
 ## When Headless Mode Activates
 
-Cline automatically enters headless mode when any of these conditions are met:
+Vector automatically enters headless mode when any of these conditions are met:
 
 | Invocation | Reason |
 |------------|--------|
@@ -22,11 +22,11 @@ Cline automatically enters headless mode when any of these conditions are met:
 | `cat file \| cline "task"` | stdin is piped |
 | `cline "task" > output.txt` | stdout is redirected |
 
-If none of these apply (e.g., running `cline` or `cline "task"` in a terminal), Cline launches in [interactive mode](/cline-cli/interactive-mode).
+If none of these apply (e.g., running `cline` or `cline "task"` in a terminal), Vector launches in [interactive mode](/cline-cli/interactive-mode).
 
 ## YOLO Mode (Fully Autonomous)
 
-The `-y` or `--yolo` flag enables fully autonomous operation — Cline approves all actions and runs without prompts:
+The `-y` or `--yolo` flag enables fully autonomous operation — Vector approves all actions and runs without prompts:
 
 ```bash
 cline -y "Run the test suite and fix any failures"
@@ -39,12 +39,12 @@ In YOLO mode:
 - Perfect for CI/CD and scripts
 
 <Warning>
-YOLO mode gives Cline full autonomy. Run on a clean git branch so you can easily revert changes if needed.
+YOLO mode gives Vector full autonomy. Run on a clean git branch so you can easily revert changes if needed.
 </Warning>
 
 ### Mode Selection
 
-Control whether Cline plans first or acts immediately:
+Control whether Vector plans first or acts immediately:
 
 ```bash
 # Start in Plan mode (analyze before acting)
@@ -56,7 +56,7 @@ cline -y -a "Fix the typo in README.md"
 
 ## Piping Context
 
-Pipe file contents or command output into Cline to provide context:
+Pipe file contents or command output into Vector to provide context:
 
 ```bash
 # Explain a file
@@ -72,11 +72,11 @@ npm test 2>&1 | cline "Analyze these test failures and fix them"
 gh pr diff 123 | cline -y "Review this PR"
 ```
 
-When stdin is piped, Cline automatically enters headless mode — the piped content becomes part of the task context.
+When stdin is piped, Vector automatically enters headless mode — the piped content becomes part of the task context.
 
 ## Chaining Commands
 
-Pipe Cline's output into another Cline instance for multi-step workflows:
+Pipe Vector's output into another Vector instance for multi-step workflows:
 
 ```bash
 # Explain changes, then write a commit message
@@ -130,7 +130,7 @@ cline -y --timeout 600 "Run full test suite"
 
 ## Environment Variables
 
-Control Cline behavior via environment variables — useful for CI/CD where you can't use interactive configuration.
+Control Vector behavior via environment variables — useful for CI/CD where you can't use interactive configuration.
 
 **CLINE_DIR** — Custom configuration directory:
 ```bash
@@ -150,7 +150,7 @@ See [Configuration](/cline-cli/configuration#environment-variables) for full doc
 
 ### GitHub Actions Example
 
-Automate PR reviews with Cline:
+Automate PR reviews with Vector:
 
 ```yaml
 name: AI Code Review
@@ -171,10 +171,10 @@ jobs:
         with:
           node-version: '22'
       
-      - name: Install Cline
+      - name: Install Vector
         run: npm install -g cline
       
-      - name: Configure Cline
+      - name: Configure Vector
         run: cline auth -p anthropic -k ${{ secrets.ANTHROPIC_API_KEY }}
       
       - name: Review PR
@@ -206,7 +206,7 @@ if [ -z "$DIFF" ]; then
   exit 0
 fi
 
-# Run Cline review
+# Run Vector review
 echo "$DIFF" | cline -y --json "Review this code diff for issues" | jq -r '.text'
 ```
 

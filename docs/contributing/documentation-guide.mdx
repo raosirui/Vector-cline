@@ -1,14 +1,14 @@
 ---
 title: "Documentation Guide"
 sidebarTitle: "Documentation Guide"
-description: "How to write and contribute to Cline documentation"
+description: "How to write and contribute to Vector documentation"
 ---
 
-Cline's documentation lives in the `docs/` directory and uses [Mintlify](https://mintlify.com) for rendering. This guide covers how to write docs that match Cline's established style.
+Vector's documentation lives in the `docs/` directory and uses [Mintlify](https://mintlify.com) for rendering. This guide covers how to write docs that match Vector's established style.
 
 ## Using the Documentation Workflow
 
-The fastest way to create documentation is using the `/write-docs` workflow. Type `/write-docs` in Cline and describe what you want to document. Cline guides you through a 4-step process:
+The fastest way to create documentation is using the `/write-docs` workflow. Type `/write-docs` in Vector and describe what you want to document. Vector guides you through a 4-step process:
 
 1. **Research**: Examine existing docs structure and patterns
 2. **Scope**: Clarify audience, doc type, and key use cases
@@ -25,11 +25,11 @@ Your audience is developers who value their time. Get to the point. Every senten
 
 ```markdown
 # Good
-Switch to bash in Cline Settings → Terminal → Default Terminal Profile.
+Switch to bash in Vector Settings → Terminal → Default Terminal Profile.
 
 # Bad
 Users who are experiencing issues may find it helpful to navigate to the 
-Cline settings menu where they can locate the terminal configuration 
+Vector settings menu where they can locate the terminal configuration 
 options and subsequently modify the default terminal profile setting.
 ```
 
@@ -40,7 +40,7 @@ Abstract descriptions don't help anyone. Show actual code, real file paths, and 
 ```markdown
 # Good
 I use `/deep-planning` whenever I'm building features that touch multiple 
-parts of the codebase. For example, when adding authentication, Cline 
+parts of the codebase. For example, when adding authentication, Vector 
 mapped every endpoint and created a migration plan that avoided breaking changes.
 
 # Bad
@@ -50,26 +50,26 @@ that may require careful consideration and planning.
 
 ### Use Active Voice
 
-Cline does things. Files don't get created by Cline, Cline creates files.
+Vector does things. Files don't get created by Vector, Vector creates files.
 
 ```markdown
 # Good
-Cline reads your project files and builds context automatically.
+Vector reads your project files and builds context automatically.
 
 # Bad
 Project files are read and context is built automatically.
 ```
 
-### Use Neutral Pronouns for Cline
+### Use Neutral Pronouns for Vector
 
-Refer to Cline as "it" not "he". Cline is software, not a person.
+Refer to Vector as "it" not "he". Vector is software, not a person.
 
 ```markdown
 # Good
-When Cline encounters an error, it suggests fixes.
+When Vector encounters an error, it suggests fixes.
 
 # Bad
-When Cline encounters an error, he suggests fixes.
+When Vector encounters an error, he suggests fixes.
 ```
 
 ## File Format
@@ -132,7 +132,7 @@ For sequential procedures:
 ```jsx
 <Steps>
   <Step title="Install the Extension">
-    Search for "Cline" in the VS Code marketplace.
+    Search for "Vector" in the VS Code marketplace.
   </Step>
   <Step title="Configure Your Model">
     Open settings and add your API key.
@@ -147,10 +147,10 @@ For navigation and feature overviews:
 ```jsx
 <CardGroup cols={2}>
   <Card title="Getting Started" icon="rocket" href="/getting-started/installing-cline">
-    Install Cline and set up your first project.
+    Install Vector and set up your first project.
   </Card>
   <Card title="Features" icon="wand-magic-sparkles" href="/core-workflows/plan-and-act">
-    Explore what Cline can do.
+    Explore what Vector can do.
   </Card>
 </CardGroup>
 ```
@@ -195,6 +195,6 @@ Open `http://localhost:3000` to see your changes in real time.
     Templates for different documentation types.
   </Card>
   <Card title="Workflows" icon="diagram-project" href="/customization/workflows">
-    Learn about Cline's workflow system.
+    Learn about Vector's workflow system.
   </Card>
 </CardGroup>

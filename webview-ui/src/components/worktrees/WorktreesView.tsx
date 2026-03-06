@@ -10,6 +10,7 @@ import {
 import { VSCodeButton, VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react"
 import { AlertCircle, Check, ExternalLink, FolderOpen, GitBranch, GitMerge, Loader2, Plus, Trash2, X } from "lucide-react"
 import { memo, useCallback, useEffect, useState } from "react"
+import { BRAND_LINKS, BRAND_NAME, isBrandLinkConfigured } from "@shared/brand"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { FileServiceClient, TaskServiceClient, WorktreeServiceClient } from "@/services/grpc-client"
@@ -232,7 +233,7 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 			// Close worktrees view to show the chat with the new task
 			onDone()
 		} catch (err) {
-			setMergeError(err instanceof Error ? err.message : "Failed to create task for Cline")
+			setMergeError(err instanceof Error ? err.message : `Failed to create task for ${BRAND_NAME}`)
 		}
 	}, [mergeResult, mergeWorktree, closeMergeModal, onDone])
 
@@ -251,15 +252,17 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 				{/* Description */}
 				<p className="text-sm text-[var(--vscode-descriptionForeground)] m-0 mb-4">
 					Git worktrees let you work on multiple branches at the same time, each in its own folder. Open worktrees in
-					their own windows so Cline can work on multiple tasks in parallel.{" "}
-					<a
-						className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
-						href="https://docs.cline.bot/features/worktrees"
-						rel="noopener noreferrer"
-						style={{ fontSize: "inherit" }}
-						target="_blank">
-						Learn more
-					</a>
+					their own windows so {BRAND_NAME} can work on multiple tasks in parallel.{" "}
+					{isBrandLinkConfigured(BRAND_LINKS.documentation) && (
+						<a
+							className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
+							href={`${BRAND_LINKS.documentation}/features/worktrees`}
+							rel="noopener noreferrer"
+							style={{ fontSize: "inherit" }}
+							target="_blank">
+							Learn more
+						</a>
+					)}
 				</p>
 
 				{/* .worktreeinclude status */}
@@ -274,14 +277,16 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 							<p className="text-sm text-[var(--vscode-testing-iconPassed)] m-0">
 								<Check className="w-4 h-4 inline-block align-text-bottom mr-1" />
 								.worktreeinclude detected.{" "}
-								<a
-									className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
-									href="https://docs.cline.bot/features/worktrees#worktreeinclude"
-									rel="noopener noreferrer"
-									style={{ fontSize: "inherit" }}
-									target="_blank">
-									Learn more
-								</a>
+								{isBrandLinkConfigured(BRAND_LINKS.documentation) && (
+									<a
+										className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
+										href={`${BRAND_LINKS.documentation}/features/worktrees#worktreeinclude`}
+										rel="noopener noreferrer"
+										style={{ fontSize: "inherit" }}
+										target="_blank">
+										Learn more
+									</a>
+								)}
 							</p>
 						) : (
 							<div className="flex flex-col gap-2">
@@ -295,14 +300,16 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 										node_modules/
 									</code>{" "}
 									to new worktrees, so you don't have to reinstall dependencies.{" "}
-									<a
-										className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
-										href="https://docs.cline.bot/features/worktrees#worktreeinclude"
-										rel="noopener noreferrer"
-										style={{ fontSize: "inherit" }}
-										target="_blank">
-										Learn more
-									</a>
+									{isBrandLinkConfigured(BRAND_LINKS.documentation) && (
+										<a
+											className="text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]"
+											href={`${BRAND_LINKS.documentation}/features/worktrees#worktreeinclude`}
+											rel="noopener noreferrer"
+											style={{ fontSize: "inherit" }}
+											target="_blank">
+											Learn more
+										</a>
+									)}
 								</p>
 								{hasGitignore && (
 									<VSCodeButton
@@ -574,7 +581,7 @@ Please help me resolve these merge conflicts, then complete the merge, and delet
 
 								<div className="flex flex-col gap-2">
 									<VSCodeButton onClick={handleAskClineToResolve} style={{ width: "100%" }}>
-										Ask Cline to Resolve
+										Ask {BRAND_NAME} to Resolve
 									</VSCodeButton>
 									<VSCodeButton appearance="secondary" onClick={closeMergeModal} style={{ width: "100%" }}>
 										I'll Resolve Manually

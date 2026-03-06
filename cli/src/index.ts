@@ -7,6 +7,7 @@ import type { ApiProvider } from "@shared/api"
 import { Command } from "commander"
 import { render } from "ink"
 import React from "react"
+import { BRAND_CLI, BRAND_NAME } from "@shared/brand"
 import { ClineEndpoint } from "@/config"
 import type { Controller } from "@/core/controller"
 import { StateManager } from "@/core/storage/StateManager"
@@ -253,7 +254,7 @@ async function runTaskInPlainTextMode(
 	// In plain text mode we can't show the interactive auth flow
 	const hasAuth = await isAuthConfigured()
 	if (!hasAuth) {
-		printWarning("Not authenticated. Please run 'cline auth' first to configure your API credentials.")
+		printWarning(`Not authenticated. Please run '${BRAND_CLI.commandName} auth' first to configure your API credentials.`)
 		await disposeCliContext(ctx)
 		exit(1)
 	}
@@ -409,7 +410,7 @@ async function initializeCli(options: InitOptions): Promise<CliContext> {
 	})
 
 	// Set up output channel and Logger early so ClineEndpoint.initialize logs are captured
-	const outputChannel = window.createOutputChannel("Cline CLI")
+	const outputChannel = window.createOutputChannel(BRAND_CLI.displayName)
 	const logToChannel = (message: string) => outputChannel.appendLine(message)
 
 	// Configure the shared Logging class early to capture all initialization logs
@@ -428,7 +429,7 @@ async function initializeCli(options: InitOptions): Promise<CliContext> {
 	}
 
 	outputChannel.appendLine(
-		`Cline CLI initialized. Data dir: ${DATA_DIR}, Extension dir: ${EXTENSION_DIR}, Log dir: ${CLINE_CLI_DIR.log}`,
+		`${BRAND_CLI.displayName} initialized. Data dir: ${DATA_DIR}, Extension dir: ${EXTENSION_DIR}, Log dir: ${CLINE_CLI_DIR.log}`,
 	)
 
 	HostProvider.initialize(
@@ -715,7 +716,7 @@ async function runAuth(options: {
 // Setup CLI commands
 const program = new Command()
 
-program.name("cline").description("Cline CLI - AI coding assistant in your terminal").version(CLI_VERSION)
+program.name(BRAND_CLI.commandName).description(`${BRAND_CLI.displayName} - AI coding assistant in your terminal`).version(CLI_VERSION)
 
 // Enable positional options to avoid conflicts between root and subcommand options with the same name
 program.enablePositionalOptions()
@@ -732,7 +733,7 @@ program
 	.option("-m, --model <model>", "Model to use for the task")
 	.option("-v, --verbose", "Show verbose output")
 	.option("-c, --cwd <path>", "Working directory for the task")
-	.option("--config <path>", "Path to Cline configuration directory")
+	.option("--config <path>", `Path to ${BRAND_NAME} configuration directory`)
 	.option("--thinking [tokens]", "Enable extended thinking (default: 1024 tokens)")
 	.option("--reasoning-effort <effort>", "Reasoning effort: none|low|medium|high|xhigh")
 	.option("--max-consecutive-mistakes <count>", "Maximum consecutive mistakes before halting in yolo mode")
@@ -752,13 +753,13 @@ program
 	.description("List task history")
 	.option("-n, --limit <number>", "Number of tasks to show", "10")
 	.option("-p, --page <number>", "Page number (1-based)", "1")
-	.option("--config <path>", "Path to Cline configuration directory")
+	.option("--config <path>", `Path to ${BRAND_NAME} configuration directory`)
 	.action(listHistory)
 
 program
 	.command("config")
 	.description("Show current configuration")
-	.option("--config <path>", "Path to Cline configuration directory")
+	.option("--config <path>", `Path to ${BRAND_NAME} configuration directory`)
 	.action(showConfig)
 
 program
@@ -770,13 +771,13 @@ program
 	.option("-b, --baseurl <url>", "Base URL (optional, only for openai provider)")
 	.option("-v, --verbose", "Show verbose output")
 	.option("-c, --cwd <path>", "Working directory for the task")
-	.option("--config <path>", "Path to Cline configuration directory")
+	.option("--config <path>", `Path to ${BRAND_NAME} configuration directory`)
 	.action(runAuth)
 
 program
 	.command("version")
-	.description("Show Cline CLI version number")
-	.action(() => printInfo(`Cline CLI version: ${CLI_VERSION}`))
+	.description(`Show ${BRAND_CLI.displayName} version number`)
+	.action(() => printInfo(`${BRAND_CLI.displayName} version: ${CLI_VERSION}`))
 
 program
 	.command("update")
@@ -815,7 +816,7 @@ async function resumeTask(taskId: string, options: TaskOptions & { initialPrompt
 	const historyItem = findTaskInHistory(taskId)
 	if (!historyItem) {
 		printWarning(`Task not found: ${taskId}`)
-		printInfo("Use 'cline history' to see available tasks.")
+		printInfo(`Use '${BRAND_CLI.commandName} history' to see available tasks.`)
 		await disposeCliContext(ctx)
 		exit(1)
 	}

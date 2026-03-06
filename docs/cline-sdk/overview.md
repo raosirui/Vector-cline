@@ -1,11 +1,11 @@
 ---
-title: "Cline SDK"
-description: "Embed Cline as a programmable coding agent in your Node.js applications using an ACP-compatible TypeScript API."
+title: "Vector SDK"
+description: "Embed Vector as a programmable coding agent in your Node.js applications using an ACP-compatible TypeScript API."
 ---
 
-# Cline SDK
+# Vector SDK
 
-The Cline SDK lets you embed Cline as a programmable coding agent in your Node.js applications. It exposes the same capabilities as the Cline CLI and VS Code extension — file editing, command execution, browser use, MCP servers — through a TypeScript API that conforms to the [Agent Client Protocol (ACP)](https://agentclientprotocol.com/protocol/schema).
+The Vector SDK lets you embed Vector as a programmable coding agent in your Node.js applications. It exposes the same capabilities as the Vector CLI and VS Code extension — file editing, command execution, browser use, MCP servers — through a TypeScript API that conforms to the [Agent Client Protocol (ACP)](https://agentclientprotocol.com/protocol/schema).
 
 ## Installation
 
@@ -24,10 +24,10 @@ Requires Node.js 20+.
 ## Quick Start
 
 ```typescript
-import { ClineAgent } from "cline";
+import { VectorAgent } from "cline";
 
 const CLINE_DIR = "/Users/username/.cline";
-const agent = new ClineAgent({ clineDir: CLINE_DIR });
+const agent = new VectorAgent({ clineDir: CLINE_DIR });
 
 // 1. Initialize — negotiates capabilities
 const initializeResponse = await agent.initialize({
@@ -45,7 +45,7 @@ console.log("Agent info:", agentInfo); // contains things like agent name and ve
 console.log("Auth methods:", authMethods); // contains a list of supported authentication methods. More auth methods coming soon
 
 // 2. Authenticate if needed
-// If you skip this step, ClineAgent will look in CLINE_DIR for any existing credentials and authenticate with those
+// If you skip this step, VectorAgent will look in CLINE_DIR for any existing credentials and authenticate with those
 await agent.authenticate({ methodId: "cline-oauth" });
 
 // 3. Create a session.
@@ -105,7 +105,7 @@ initialize() → authenticate() → newSession() → prompt() ⇄ events → shu
 | Step | Method | Purpose |
 |------|--------|---------|
 | Init | `initialize()` | Exchange protocol version and capabilities |
-| Auth | `authenticate()` | OAuth flow for Cline or OpenAI Codex accounts. Optional step if cline config directory already has credentials |
+| Auth | `authenticate()` | OAuth flow for Vector or OpenAI Codex accounts. Optional step if cline config directory already has credentials |
 | Session | `newSession()` | Create an isolated conversation context |
 | Prompt | `prompt()` | Send user messages; blocks until the turn ends |
 | Cancel | `cancel()` | Abort an in-progress prompt turn |
@@ -189,7 +189,7 @@ await agent.prompt({
 
 ### Streaming Events
 
-Subscribe to real-time output via `ClineSessionEmitter`. Each session has its own emitter.
+Subscribe to real-time output via `VectorSessionEmitter`. Each session has its own emitter.
 
 ```typescript
 const emitter = agent.emitterForSession(sessionId)
@@ -275,7 +275,7 @@ Each permission request includes an array of `PermissionOption` objects:
 
 ### Modes
 
-Cline supports two modes:
+Vector supports two modes:
 
 - **`plan`** — The agent gathers information and creates a plan without executing actions
 - **`act`** — The agent executes actions (file edits, commands, etc.)
@@ -310,14 +310,14 @@ This sets the model for both plan and act modes. Available providers include `an
 The SDK supports two OAuth flows:
 
 ```typescript
-// Cline account (uses browser OAuth)
+// Vector account (uses browser OAuth)
 await agent.authenticate({ methodId: "cline-oauth" })
 
 // OpenAI Codex / ChatGPT subscription
 await agent.authenticate({ methodId: "openai-codex-oauth" })
 ```
 
-Both methods open a browser window for the OAuth flow and block until authentication completes (5-minute timeout for Cline OAuth).
+Both methods open a browser window for the OAuth flow and block until authentication completes (5-minute timeout for Vector OAuth).
 
 For BYO (bring-your-own) API key providers, configure the key through the cline config directory before creating a session. The `authenticate()` call is not needed for BYO providers. We plan to support more auth providers in the near future.
 
@@ -334,14 +334,14 @@ await agent.cancel({ sessionId })
 ### Constructor
 
 ```typescript
-new ClineAgent(options: ClineAgentOptions)
+new VectorAgent(options: VectorAgentOptions)
 ```
 
 ```typescript
-interface ClineAgentOptions {
+interface VectorAgentOptions {
   /** Enable debug logging (default: false) */
   debug?: boolean
-  /** Custom Cline config directory (default: ~/.cline) */
+  /** Custom Vector config directory (default: ~/.cline) */
   clineDir?: string
 }
 ```
@@ -349,7 +349,7 @@ interface ClineAgentOptions {
 The `clineDir` option lets you isolate configuration and task history per-application:
 
 ```typescript
-const agent = new ClineAgent({
+const agent = new VectorAgent({
   clineDir: "/tmp/my-app-cline",
 })
 ```
@@ -376,7 +376,7 @@ const response = await agent.initialize({
   },
   agentInfo: { name: "cline", version: "2.2.3" },
   authMethods: [
-    { id: "cline-oauth", name: "Sign in with Cline", description: "..." },
+    { id: "cline-oauth", name: "Sign in with Vector", description: "..." },
     { id: "openai-codex-oauth", name: "Sign in with ChatGPT", description: "..." }
   ]
 }
@@ -421,7 +421,7 @@ const session = await agent.newSession({
 
 #### `prompt(params): Promise<PromptResponse>`
 
-Send a user prompt to the agent. This is the main method for interacting with Cline. Blocks until the agent finishes its turn.
+Send a user prompt to the agent. This is the main method for interacting with Vector. Blocks until the agent finishes its turn.
 
 ```typescript
 const response = await agent.prompt({
@@ -495,7 +495,7 @@ agent.setPermissionHandler((request, resolve) => {
 })
 ```
 
-#### `emitterForSession(sessionId): ClineSessionEmitter`
+#### `emitterForSession(sessionId): VectorSessionEmitter`
 
 Get the typed event emitter for a session.
 
@@ -516,10 +516,10 @@ for (const [sessionId, session] of agent.sessions) {
 ## Full Example: Auto-Approve Agent
 
 ```typescript
-import { ClineAgent } from "cline";
+import { VectorAgent } from "cline";
 
 async function runTask(taskPrompt: string, cwd: string) {
-    const agent = new ClineAgent({ clineDir: "/Users/maxpaulus/.cline" });
+    const agent = new VectorAgent({ clineDir: "/Users/maxpaulus/.cline" });
 
     await agent.initialize({
         protocolVersion: 1,
@@ -568,7 +568,7 @@ runTask("Create a README.md for this project", process.cwd());
 ## Full Example: Interactive Permission Flow
 
 ```typescript
-import { ClineAgent, type PermissionHandler } from "cline";
+import { VectorAgent, type PermissionHandler } from "cline";
 import * as readline from "readline";
 
 const rl = readline.createInterface({
@@ -598,7 +598,7 @@ const interactivePermissions: PermissionHandler = async (request) => {
 };
 
 async function main() {
-    const agent = new ClineAgent({});
+    const agent = new VectorAgent({});
     await agent.initialize({ protocolVersion: 1, clientCapabilities: {} });
 
     const { sessionId } = await agent.newSession({
@@ -640,11 +640,11 @@ All types are re-exported from the `cline` package. Key types:
 
 | Type | Description |
 |------|-------------|
-| `ClineAgent` | Main agent class |
-| `ClineSessionEmitter` | Typed event emitter for session events |
-| `ClineAgentOptions` | Constructor options |
-| `ClineAcpSession` | Session metadata (read-only) |
-| `ClineSessionEvents` | Event name → handler signature map |
+| `VectorAgent` | Main agent class |
+| `VectorSessionEmitter` | Typed event emitter for session events |
+| `VectorAgentOptions` | Constructor options |
+| `VectorAcpSession` | Session metadata (read-only) |
+| `VectorSessionEvents` | Event name → handler signature map |
 | `PermissionHandler` | `(request, resolve) => void` callback |
 | `PermissionResolver` | `(response) => void` callback |
 | `SessionUpdate` | Union of all session update types |
@@ -664,12 +664,12 @@ See the [ACP Schema](https://agentclientprotocol.com/protocol/schema) for the fu
 
 ## Relationship to ACP
 
-The Cline SDK implements the [Agent Client Protocol](https://agentclientprotocol.com) `Agent` interface. The key difference from a standard ACP stdio agent is that the SDK uses an **event emitter pattern** instead of a transport connection:
+The Vector SDK implements the [Agent Client Protocol](https://agentclientprotocol.com) `Agent` interface. The key difference from a standard ACP stdio agent is that the SDK uses an **event emitter pattern** instead of a transport connection:
 
-| ACP Stdio (via `AcpAgent`) | SDK (via `ClineAgent`) |
+| ACP Stdio (via `AcpAgent`) | SDK (via `VectorAgent`) |
 |-----------------------------|------------------------|
-| Session updates sent over JSON-RPC stdio | Session updates emitted via `ClineSessionEmitter` |
+| Session updates sent over JSON-RPC stdio | Session updates emitted via `VectorSessionEmitter` |
 | Permissions requested via `connection.requestPermission()` | Permissions requested via `setPermissionHandler()` callback |
 | Single process, single connection | Embeddable, multiple concurrent sessions |
 
-If you need stdio-based ACP communication (e.g., for IDE integration), use the `cline` CLI binary directly. The SDK is for embedding Cline in your own Node.js processes.
+If you need stdio-based ACP communication (e.g., for IDE integration), use the `cline` CLI binary directly. The SDK is for embedding Vector in your own Node.js processes.

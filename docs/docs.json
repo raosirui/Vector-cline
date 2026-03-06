@@ -1,7 +1,7 @@
 {
 	"$schema": "https://mintlify.com/docs.json",
 	"theme": "mint",
-	"name": "Cline",
+	"name": "Vector",
 	"description": "AI-powered coding agent for complex work",
 	"colors": {
 		"primary": "#9D4EDD",
@@ -35,22 +35,10 @@
 		"family": "Geist Sans"
 	},
 	"navbar": {
-		"links": [
-			{
-				"label": "GitHub",
-				"icon": "github",
-				"href": "https://github.com/cline/cline"
-			},
-			{
-				"label": "Discord",
-				"icon": "discord",
-				"href": "https://discord.gg/cline"
-			}
-		],
+		"links": [],
 		"primary": {
 			"type": "button",
-			"label": "Install Cline",
-			"href": "https://cline.bot/install?utm_source=website&utm_medium=header"
+			"label": "Install Vector"
 		}
 	},
 	"navigation": {
@@ -97,7 +85,7 @@
 						]
 					},
 					{
-						"group": "Cline CLI",
+						"group": "Vector CLI",
 						"pages": [
 							"cline-cli/overview",
 							"cline-cli/installation",
@@ -212,7 +200,7 @@
 						]
 					},
 					{
-						"group": "MCP (Extending Cline)",
+						"group": "MCP (Extending Vector)",
 						"pages": [
 							"mcp/mcp-overview",
 							"mcp/mcp-marketplace",
@@ -285,7 +273,7 @@
 								]
 							},
 							{
-								"group": "Control Other Cline Features",
+								"group": "Control Other Vector Features",
 								"pages": [
 									"enterprise-solutions/configuration/infrastructure-configuration/control-other-cline-features/yolo-mode",
 									"enterprise-solutions/configuration/infrastructure-configuration/control-other-cline-features/mcp-marketplace"
@@ -309,7 +297,7 @@
 				"icon": "code",
 				"groups": [
 					{
-						"group": "Cline API",
+						"group": "Vector API",
 						"pages": [
 							"api/overview",
 							"api/getting-started",
@@ -340,11 +328,7 @@
 		]
 	},
 	"footer": {
-		"socials": {
-			"x": "https://x.com/cline",
-			"github": "https://github.com/cline/cline",
-			"discord": "https://discord.gg/cline"
-		}
+		"socials": {}
 	},
 	"anchors": [
 		{
@@ -644,6 +628,6 @@
 		}
 	],
 	"search": {
-		"prompt": "Search Cline documentation..."
+		"prompt": "Search Vector documentation..."
 	}
 }

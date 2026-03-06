@@ -1,6 +1,7 @@
 import { EmptyRequest } from "@shared/proto/cline/common"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { useState } from "react"
+import { brandText } from "@shared/brand"
 import { useClineAuth } from "@/context/ClineAuthContext"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { AccountServiceClient } from "@/services/grpc-client"
@@ -34,7 +35,7 @@ export const ClineAccountInfoCard = () => {
 			) : (
 				<div>
 					<VSCodeButton className="mt-0" disabled={isLoading} onClick={handleLogin}>
-						Sign Up with Cline
+						{brandText.signInWithBrand}
 						{isLoading && (
 							<span className="ml-1 animate-spin">
 								<span className="codicon codicon-refresh"></span>

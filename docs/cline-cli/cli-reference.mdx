@@ -1,9 +1,9 @@
 ---
 title: "CLI Reference"
-description: "Complete command reference for Cline CLI including all commands, flags, and configuration options"
+description: "Complete command reference for Vector CLI including all commands, flags, and configuration options"
 ---
 
-This page documents all available commands, flags, and configuration options for Cline CLI. For quick help in your terminal, use:
+This page documents all available commands, flags, and configuration options for Vector CLI. For quick help in your terminal, use:
 
 ```bash
 cline --help          # Show all commands
@@ -32,7 +32,7 @@ These options work with any command:
 
 ## Modes of Operation
 
-Cline CLI automatically detects the best output mode based on how you invoke it:
+Vector CLI automatically detects the best output mode based on how you invoke it:
 
 | Mode | When Activated | Description |
 |------|----------------|-------------|
@@ -42,12 +42,12 @@ Cline CLI automatically detects the best output mode based on how you invoke it:
 
 ## Agent Behavior
 
-Cline operates in two primary modes that control how it approaches tasks:
+Vector operates in two primary modes that control how it approaches tasks:
 
 | Mode | Description |
 |------|-------------|
-| **Act Mode** (default) | Cline actively uses tools to accomplish tasks. It can read files, write code, execute commands, use a headless browser, and more. |
-| **Plan Mode** | Cline gathers information and creates a detailed plan before implementation. It explores the codebase, asks clarifying questions, and presents a strategy for your approval before switching to Act Mode. |
+| **Act Mode** (default) | Vector actively uses tools to accomplish tasks. It can read files, write code, execute commands, use a headless browser, and more. |
+| **Plan Mode** | Vector gathers information and creates a detailed plan before implementation. It explores the codebase, asks clarifying questions, and presents a strategy for your approval before switching to Act Mode. |
 
 Use `-a, --act` or `-p, --plan` flags to explicitly set the mode.
 
@@ -55,7 +55,7 @@ Use `-a, --act` or `-p, --plan` flags to explicitly set the mode.
 
 ### cline (default)
 
-Run Cline without a subcommand to start a task or enter interactive mode.
+Run Vector without a subcommand to start a task or enter interactive mode.
 
 ```bash
 # Interactive mode (no arguments)
@@ -69,8 +69,8 @@ cline "your prompt here"
 
 | Option | Description |
 |--------|-------------|
-| `-a, --act` | Start in Act mode (default). Cline executes actions directly. |
-| `-p, --plan` | Start in Plan mode. Cline analyzes and creates a strategy before acting. |
+| `-a, --act` | Start in Act mode (default). Vector executes actions directly. |
+| `-p, --plan` | Start in Plan mode. Vector analyzes and creates a strategy before acting. |
 | `-y, --yolo` | YOLO mode: auto-approve all actions, use plain text output, exit when complete. Ideal for CI/CD. |
 | `-m, --model <id>` | Use a specific model (e.g., `claude-sonnet-4-5-20250929`, `gpt-4o`). |
 | `-i, --images <paths...>` | Include image files with the prompt. |
@@ -225,16 +225,16 @@ export CLINE_DIR=/path/to/custom/config
 cline "your task"
 ```
 
-When set, all Cline data (settings, secrets, task history) is stored in this directory instead of `~/.cline/data/`.
+When set, all Vector data (settings, secrets, task history) is stored in this directory instead of `~/.cline/data/`.
 
 **Use cases:**
-- Running isolated Cline instances with different settings
+- Running isolated Vector instances with different settings
 - CI/CD environments with custom state directories
 - Testing configuration changes without affecting your main setup
 
 ### CLINE_COMMAND_PERMISSIONS
 
-Restrict which shell commands Cline can execute:
+Restrict which shell commands Vector can execute:
 
 ```bash
 export CLINE_COMMAND_PERMISSIONS='{"allow": ["npm *", "git *"], "deny": ["rm -rf *"]}'
@@ -312,7 +312,7 @@ When using `--json`, each message is output as a JSON object (one per line):
 
 ## Configuration Files
 
-Cline stores all data in `~/.cline/` by default:
+Vector stores all data in `~/.cline/` by default:
 
 ```text
 ~/.cline/
@@ -407,7 +407,7 @@ cline auth -p openai -k your-key -b https://api.example.com/v1
 
 <Columns cols={2}>
   <Card title="Installation & Setup" icon="download" href="/cline-cli/installation">
-    Install Cline CLI and configure authentication.
+    Install Vector CLI and configure authentication.
   </Card>
   
   <Card title="Interactive Mode" icon="terminal" href="/cline-cli/interactive-mode">
@@ -415,7 +415,7 @@ cline auth -p openai -k your-key -b https://api.example.com/v1
   </Card>
   
   <Card title="Headless Mode" icon="robot" href="/cline-cli/three-core-flows">
-    Run Cline autonomously in scripts, CI/CD pipelines, and automated workflows.
+    Run Vector autonomously in scripts, CI/CD pipelines, and automated workflows.
   </Card>
   
   <Card title="Configuration" icon="gear" href="/cline-cli/configuration">

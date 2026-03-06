@@ -119,6 +119,7 @@
 	},
 	"files": {
 		"ignoreUnknown": true,
+		"maxSize": 12000000,
 		"includes": [
 			"**",
 			// explicitly force files to be ignored by the scanner with !!

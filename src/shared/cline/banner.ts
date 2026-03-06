@@ -1,3 +1,5 @@
+import { BRAND_LINKS, BRAND_NAME, BRAND_CLI } from "../brand"
+
 /**
  * Action types that can be triggered from banner buttons/links
  * Frontend maps these to actual handlers
@@ -125,9 +127,9 @@ export const BANNER_DATA: BannerCardData[] = [
 	{
 		id: "chatgpt-integration-v1",
 		icon: "megaphone",
-		title: "Use ChatGPT with Cline",
+		title: `Use ChatGPT with ${BRAND_NAME}`,
 		description:
-			"Bring your ChatGPT subscription to Cline! Use your existing plan directly with no per token costs or API keys to manage.",
+			`Bring your ChatGPT subscription to ${BRAND_NAME}! Use your existing plan directly with no per token costs or API keys to manage.`,
 		actions: [
 			{
 				title: "Connect",
@@ -142,26 +144,29 @@ export const BANNER_DATA: BannerCardData[] = [
 		id: "jupyter-notebooks-v1",
 		icon: "book-open",
 		title: "Jupyter Notebooks",
-		description:
-			"Comprehensive AI-assisted editing of `.ipynb` files with full cell-level context awareness. [Learn More →](https://docs.cline.bot/features/jupyter-notebooks)",
+		description: BRAND_LINKS.documentation
+			? `Comprehensive AI-assisted editing of \`.ipynb\` files with full cell-level context awareness. [Learn More →](${BRAND_LINKS.documentation}/features/jupyter-notebooks)`
+			: "Comprehensive AI-assisted editing of `.ipynb` files with full cell-level context awareness.",
 	},
 
 	// Platform-specific banner (Windows)
 	{
 		id: "cli-info-windows-v1",
 		icon: "terminal",
-		title: "Cline CLI Info",
+		title: `${BRAND_CLI.displayName} Info`,
 		platforms: ["windows"] satisfies BannerCardData["platforms"],
-		description:
-			"Available for macOS and Linux. Coming soon to other platforms. [Learn more](https://docs.cline.bot/cline-cli/overview)",
+		description: BRAND_LINKS.documentation
+			? `Available for macOS and Linux. Coming soon to other platforms. [Learn more](${BRAND_LINKS.documentation}/cline-cli/overview)`
+			: "Available for macOS and Linux. Coming soon to other platforms.",
 	},
 
 	// Info banner with inline link
 	{
 		id: "info-banner-v1",
 		icon: "lightbulb",
-		title: "Use Cline in Right Sidebar",
-		description:
-			"For the best experience, drag the Cline icon to your right sidebar. This keeps your file explorer and editor visible while you chat with Cline, making it easier to navigate your codebase and see changes in real-time. [See how →](https://docs.cline.bot/features/customization/opening-cline-in-sidebar)",
+		title: `Use ${BRAND_NAME} in Right Sidebar`,
+		description: BRAND_LINKS.documentation
+			? `For the best experience, drag the ${BRAND_NAME} icon to your right sidebar. This keeps your file explorer and editor visible while you chat with ${BRAND_NAME}, making it easier to navigate your codebase and see changes in real-time. [See how →](${BRAND_LINKS.documentation}/features/customization/opening-cline-in-sidebar)`
+			: `For the best experience, drag the ${BRAND_NAME} icon to your right sidebar. This keeps your file explorer and editor visible while you chat with ${BRAND_NAME}, making it easier to navigate your codebase and see changes in real-time.`,
 	},
 ]

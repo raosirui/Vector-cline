@@ -1,9 +1,9 @@
 ---
 title: "Worktree Workflows"
-description: "Use Git worktrees with Cline CLI to run parallel tasks, test different approaches, and pipe context between isolated environments"
+description: "Use Git worktrees with Vector CLI to run parallel tasks, test different approaches, and pipe context between isolated environments"
 ---
 
-Git worktrees let you have multiple branches checked out simultaneously in different folders. Combined with Cline CLI's `--cwd` flag, this enables powerful parallel development workflows and isolated experimentation.
+Git worktrees let you have multiple branches checked out simultaneously in different folders. Combined with Vector CLI's `--cwd` flag, this enables powerful parallel development workflows and isolated experimentation.
 
 <Tip>
 New to Git worktrees? See our comprehensive [Worktrees guide](/features/worktrees) for the full concept explanation, VS Code integration, and best practices.
@@ -31,17 +31,17 @@ Each worktree is a separate folder with its own branch checked out. They all sha
 
 ## The `--cwd` Flag
 
-The `-c, --cwd <path>` flag tells Cline to run in a specific directory without changing your current location:
+The `-c, --cwd <path>` flag tells Vector to run in a specific directory without changing your current location:
 
 ```bash
-# Run Cline in a different directory
+# Run Vector in a different directory
 cline --cwd ~/worktree-a -y "refactor the authentication code"
 
 # Short form
 cline -c ~/worktree-b -y "add unit tests"
 ```
 
-This is the key to worktree workflows—you can run multiple Cline instances in different worktrees simultaneously from a single terminal.
+This is the key to worktree workflows—you can run multiple Vector instances in different worktrees simultaneously from a single terminal.
 
 ## Pattern 1: Parallel Task Execution
 
@@ -93,9 +93,9 @@ cline --cwd ~/worktree-a -y \
 ```
 
 **How it works:**
-1. First Cline instance runs in `worktree-a`, attempts a change, tests it
+1. First Vector instance runs in `worktree-a`, attempts a change, tests it
 2. If it fails, outputs just the failure summary
-3. That summary is piped to a second Cline instance in `worktree-b`
+3. That summary is piped to a second Vector instance in `worktree-b`
 4. Second instance sees the failure and tries a different approach
 
 ### When to Use Context Piping
@@ -233,7 +233,7 @@ git worktree remove ~/cline-worktrees/feature-auth
   <Accordion title="Tasks not running in parallel">
     Make sure you're using:
     - `&` at the end of each command to background it
-    - `-y` flag so Cline doesn't wait for approval
+    - `-y` flag so Vector doesn't wait for approval
     - Different worktrees (not the same path)
   </Accordion>
 
@@ -268,6 +268,6 @@ git worktree remove ~/cline-worktrees/feature-auth
   </Card>
   
   <Card title="Headless Mode" icon="robot" href="/cline-cli/three-core-flows">
-    Run Cline autonomously in scripts, CI/CD pipelines, and automated workflows.
+    Run Vector autonomously in scripts, CI/CD pipelines, and automated workflows.
   </Card>
 </Columns>

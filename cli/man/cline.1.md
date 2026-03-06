@@ -2,7 +2,7 @@
 title: CLINE
 section: 1
 header: User Commands
-footer: Cline CLI 2.0
+footer: Vector CLI 2.0
 date: January 2026
 ---
 
@@ -18,15 +18,15 @@ cline - AI coding assistant in your terminal
 
 # DESCRIPTION
 
-**cline** is a command-line interface for the Cline AI coding assistant. It provides the same powerful AI capabilities as the VS Code extension, directly in your terminal.
+**cline** is a command-line interface for the Vector AI coding assistant. It provides the same powerful AI capabilities as the VS Code extension, directly in your terminal.
 
-Cline is an autonomous AI agent that can read, write, and execute code across your projects. He can create and edit files, run terminal commands, use a headless browser, and more—all while asking for your approval before taking actions.
+Vector is an autonomous AI agent that can read, write, and execute code across your projects. He can create and edit files, run terminal commands, use a headless browser, and more—all while asking for your approval before taking actions.
 
 The CLI supports both interactive mode (with a rich terminal UI) and plain text mode (for piped input and scripted workflows).
 
 # MODES OF OPERATION
 
-**Interactive Mode** :   When you run **cline** without arguments, it launches an interactive welcome prompt with a rich terminal UI. You can type your task, view conversation history, and interact with Cline in real-time.
+**Interactive Mode** :   When you run **cline** without arguments, it launches an interactive welcome prompt with a rich terminal UI. You can type your task, view conversation history, and interact with Vector in real-time.
 
 **Task Mode** :   Run **cline "prompt"** or **cline task "prompt"** to immediately start a task. If stdin is a TTY, you'll see the interactive UI. If stdin is piped or output is redirected, the CLI automatically switches to plain text mode.
 
@@ -34,11 +34,11 @@ The CLI supports both interactive mode (with a rich terminal UI) and plain text 
 
 # AGENT BEHAVIOR
 
-Cline operates in two primary modes:
+Vector operates in two primary modes:
 
-**ACT MODE** :   Cline actively uses tools to accomplish tasks. He can read files, write code, execute commands, use a headless browser, and more. This is the default mode for task execution.
+**ACT MODE** :   Vector actively uses tools to accomplish tasks. He can read files, write code, execute commands, use a headless browser, and more. This is the default mode for task execution.
 
-**PLAN MODE** :   Cline gathers information and creates a detailed plan before implementation. He explores the codebase, asks clarifying questions, and presents a strategy for user approval before switching to ACT MODE.
+**PLAN MODE** :   Vector gathers information and creates a detailed plan before implementation. He explores the codebase, asks clarifying questions, and presents a strategy for user approval before switching to ACT MODE.
 
 # COMMANDS
 
@@ -66,7 +66,7 @@ Run a new task with a prompt.
 
 **-c**, **\--cwd** *path* :   Working directory for the task
 
-**\--config** *path* :   Path to Cline configuration directory
+**\--config** *path* :   Path to Vector configuration directory
 
 **\--thinking** :   Enable extended thinking (1024 token budget)
 
@@ -86,7 +86,7 @@ List task history with pagination.
 
 **-p**, **\--page** *number* :   Page number, 1-based (default: 1)
 
-**\--config** *path* :   Path to Cline configuration directory
+**\--config** *path* :   Path to Vector configuration directory
 
 ## config
 
@@ -94,7 +94,7 @@ Show current configuration.
 
 **cline config** [*options*] :   Display global and workspace state. Options:
 
-**\--config** *path* :   Path to Cline configuration directory
+**\--config** *path* :   Path to Vector configuration directory
 
 ## auth
 
@@ -114,7 +114,7 @@ Authenticate a provider and configure the model.
 
 **-c**, **\--cwd** *path* :   Working directory
 
-**\--config** *path* :   Path to Cline configuration directory
+**\--config** *path* :   Path to Vector configuration directory
 
 ## update
 
@@ -229,7 +229,7 @@ cline "Fix the layout shown in @./screenshot.png"
 ## Piped Input
 
 ```bash
-# Pipe file contents to Cline
+# Pipe file contents to Vector
 cat README.md | cline "Summarize this document"
 
 # Pipe with additional prompt
@@ -293,9 +293,9 @@ cline auth -p openai -k your-api-key -b https://api.example.com/v1
 
 # ENVIRONMENT
 
-**CLINE_DIR** :   Override the default configuration directory. When set, Cline stores all data in this directory instead of `~/.cline/data/`.
+**CLINE_DIR** :   Override the default configuration directory. When set, Vector stores all data in this directory instead of `~/.cline/data/`.
 
-**CLINE_COMMAND_PERMISSIONS** :   JSON configuration for restricting which shell commands Cline can execute. When set, commands are validated against allow/deny patternks before execution. When not set, all commands are allowed.
+**CLINE_COMMAND_PERMISSIONS** :   JSON configuration for restricting which shell commands Vector can execute. When set, commands are validated against allow/deny patternks before execution. When not set, all commands are allowed.
 
 Format: `{"allow": ["pattern1", "pattern2"], "deny": ["pattern3"], "allowRedirects": true}`
 
@@ -357,8 +357,8 @@ VS Code extension: <https://marketplace.visualstudio.com/items?itemName=saoudriz
 
 # AUTHORS
 
-Cline is developed by Cline Bot Inc. and the open source community.
+Vector is developed by Vector Bot Inc. and the open source community.
 
 # COPYRIGHT
 
-Copyright © 2025 Cline Bot Inc. Licensed under the Apache License 2.0.
+Copyright © 2025 Vector Bot Inc. Licensed under the Apache License 2.0.

@@ -1,12 +1,12 @@
 ---
 title: "Authorization & Model Selection"
-description: "Authenticate with Cline and choose your first AI model"
+description: "Authenticate with Vector and choose your first AI model"
 ---
 
-Cline connects to AI models through a **provider**. You have two paths:
+Vector connects to AI models through a **provider**. You have two paths:
 
 <CardGroup cols={2}>
-  <Card title="Cline Provider" icon="bolt">
+  <Card title="Vector Provider" icon="bolt">
     Sign in with Google, GitHub, or email. No API keys to manage — access multiple models with built-in billing, free options, and early access to new releases.
 
     **Best for:** Most users, fastest setup
@@ -26,26 +26,26 @@ Cline connects to AI models through a **provider**. You have two paths:
 
 <Steps>
   <Step title="Open Settings">
-    Click the settings icon in the top-right of the Cline panel.
+    Click the settings icon in the top-right of the Vector panel.
   </Step>
 
   <Step title="Select a Provider">
     Choose from the **API Provider** dropdown:
-    - **Cline** — simplest setup, no API key needed
+    - **Vector** — simplest setup, no API key needed
     - **OpenRouter** — many models, one API key
     - **Anthropic** — direct Claude access
     - **Ollama / LM Studio** — run models locally
   </Step>
 
   <Step title="Authenticate">
-    **Cline Provider:** Click **Sign In** and authenticate via Google, GitHub, or email. See [OAuth details](#how-oauth-works) below.
+    **Vector Provider:** Click **Sign In** and authenticate via Google, GitHub, or email. See [OAuth details](#how-oauth-works) below.
 
     **BYOK:** Paste your API key from your provider's dashboard.
 
     **Local:** No key needed — just ensure your local server is running.
 
     <Note>
-    API keys are stored in your system's credential manager and sent only to your selected provider. They are never logged or transmitted to Cline's servers.
+    API keys are stored in your system's credential manager and sent only to your selected provider. They are never logged or transmitted to Vector's servers.
     </Note>
   </Step>
 
@@ -57,13 +57,13 @@ Cline connects to AI models through a **provider**. You have two paths:
   </Step>
 
   <Step title="Verify">
-    Send any message. If Cline responds, you're ready.
+    Send any message. If Vector responds, you're ready.
   </Step>
 </Steps>
 
-## Cline Provider
+## Vector Provider
 
-The Cline Provider gives you one account, one billing relationship, and access to models from Anthropic, OpenAI, Google, and more.
+The Vector Provider gives you one account, one billing relationship, and access to models from Anthropic, OpenAI, Google, and more.
 
 - **No API key juggling** — one sign-in, multiple models
 - **Built-in billing** — add credits once, use across all models
@@ -73,13 +73,13 @@ The Cline Provider gives you one account, one billing relationship, and access t
 
 ### Adding Credits
 
-Click **Add Credits** in Cline settings or visit your [account dashboard](https://app.cline.bot/dashboard). Credits work across all available models.
+Click **Add Credits** in Vector settings or visit your [account dashboard](https://app.cline.bot/dashboard). Credits work across all available models.
 
 ### How OAuth Works
 
 <Steps>
   <Step title="Sign In">
-    Click **Sign In** in Cline settings. Your browser opens to `app.cline.bot`.
+    Click **Sign In** in Vector settings. Your browser opens to `app.cline.bot`.
   </Step>
   <Step title="Authenticate">
     Choose Google, GitHub, or email.
@@ -147,20 +147,20 @@ Opens a browser for OAuth, same as the IDE extension. Your session persists unti
 
 ## Account Management
 
-- **Balance & usage:** Open Cline settings — your credit balance is at the top. Click **View Usage** for transaction history.
-- **Switch organization:** Go to Cline settings → **Switch Organization** to change which billing account is charged.
+- **Balance & usage:** Open Vector settings — your credit balance is at the top. Click **View Usage** for transaction history.
+- **Switch organization:** Go to Vector settings → **Switch Organization** to change which billing account is charged.
 
 ## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
 | "Unauthorized: Please sign in" | Session expired. Click **Sign In** to re-authenticate. |
-| Browser doesn't open | Check default browser settings. Copy the URL from the Cline output panel manually. |
+| Browser doesn't open | Check default browser settings. Copy the URL from the Vector output panel manually. |
 | Frequent re-authentication | Check org security policies. Ensure you're not clearing IDE secrets. Try a full sign-out/sign-in. |
 | Can't access organization | Verify membership at [app.cline.bot](https://app.cline.bot). Ask your admin about permissions. Sign out and back in. |
 
 ## Next Steps
 
-- [Your First Project](/getting-started/your-first-project) — build something with Cline
+- [Your First Project](/getting-started/your-first-project) — build something with Vector
 - [Core Workflows](/core-workflows/task-management) — patterns you'll use daily
-- [Customization](/customization/overview) — tailor Cline to your workflow
+- [Customization](/customization/overview) — tailor Vector to your workflow

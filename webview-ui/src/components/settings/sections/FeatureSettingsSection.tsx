@@ -1,5 +1,6 @@
 import { UpdateSettingsRequest } from "@shared/proto/cline/state"
 import { memo, type ReactNode, useCallback } from "react"
+import { BRAND_NAME } from "@shared/brand"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
@@ -36,7 +37,7 @@ const agentFeatures: FeatureToggle[] = [
 	{
 		id: "subagents",
 		label: "Subagents",
-		description: "Let Cline run focused subagents in parallel to explore the codebase for you.",
+		description: `Let ${BRAND_NAME} run focused subagents in parallel to explore the codebase for you.`,
 		stateKey: "subagentsEnabled",
 		settingKey: "subagentsEnabled",
 	},
@@ -95,7 +96,7 @@ const editorFeatures: FeatureToggle[] = [
 	},
 	{
 		id: "cline-web-tools",
-		label: "Cline Web Tools",
+		label: `${BRAND_NAME} Web Tools`,
 		description: "Access web browsing and search capabilities",
 		stateKey: "clineWebToolsEnabled",
 		settingKey: "clineWebToolsEnabled",
@@ -103,7 +104,7 @@ const editorFeatures: FeatureToggle[] = [
 	{
 		id: "worktrees",
 		label: "Worktrees",
-		description: "Enables git worktree management for running parallel Cline tasks.",
+		description: `Enables git worktree management for running parallel ${BRAND_NAME} tasks.`,
 		stateKey: "worktreesEnabled",
 		settingKey: "worktreesEnabled",
 	},

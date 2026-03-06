@@ -1,6 +1,7 @@
 import { VSCodeCheckbox } from "@vscode/webview-ui-toolkit/react"
 import React, { useEffect, useRef, useState } from "react"
 import { useClickAway } from "react-use"
+import { BRAND_LINKS, BRAND_NAME, isBrandLinkConfigured } from "@shared/brand"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { useAutoApproveActions } from "@/hooks/useAutoApproveActions"
 import { getAsVar, VSC_DESCRIPTION_FOREGROUND, VSC_TITLEBAR_INACTIVE_FOREGROUND } from "@/utils/vscStyles"
@@ -72,15 +73,17 @@ const AutoApproveModal: React.FC<AutoApproveModalProps> = ({ isVisible, setIsVis
 					maxHeight: "60vh",
 				}}>
 				<div className="mb-2.5 text-muted-foreground text-xs cursor-pointer" onClick={() => setIsVisible(false)}>
-					Let Cline take these actions without asking for approval.{" "}
-					<a
-						className="text-link hover:text-link-hover"
-						href="https://docs.cline.bot/features/auto-approve#auto-approve"
-						rel="noopener"
-						style={{ fontSize: "inherit" }}
-						target="_blank">
-						Docs
-					</a>
+					Let {BRAND_NAME} take these actions without asking for approval.{" "}
+					{isBrandLinkConfigured(BRAND_LINKS.documentation) && (
+						<a
+							className="text-link hover:text-link-hover"
+							href={`${BRAND_LINKS.documentation}/features/auto-approve#auto-approve`}
+							rel="noopener"
+							style={{ fontSize: "inherit" }}
+							target="_blank">
+							Docs
+						</a>
+					)}
 				</div>
 
 				<div

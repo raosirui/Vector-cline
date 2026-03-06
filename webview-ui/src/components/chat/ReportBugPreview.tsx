@@ -1,4 +1,5 @@
 import React from "react"
+import { BRAND_NAME } from "@shared/brand"
 import MarkdownBlock from "../common/MarkdownBlock"
 
 interface ReportBugPreviewProps {
@@ -65,7 +66,7 @@ const ReportBugPreview: React.FC<ReportBugPreviewProps> = ({ data }) => {
 
 				{bugData.cline_version && (
 					<div>
-						<div className="font-semibold">Cline Version</div>
+						<div className="font-semibold">{BRAND_NAME} Version</div>
 						<MarkdownBlock markdown={bugData.cline_version} />
 					</div>
 				)}

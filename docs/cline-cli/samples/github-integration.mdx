@@ -1,27 +1,27 @@
 ---
 title: "GitHub Actions Integration"
-description: "Automatically respond to GitHub issues by mentioning @cline in comments using Cline CLI in GitHub Actions."
+description: "Automatically respond to GitHub issues by mentioning @cline in comments using Vector CLI in GitHub Actions."
 ---
 
 Automate GitHub issue analysis with AI. Mention `@cline` in any issue comment to trigger an autonomous investigation that reads files, analyzes code, and provides actionable insights - all running automatically in GitHub Actions.
 
 
 <Note>
-**New to Cline CLI?** This sample assumes you understand Cline CLI basics and have completed the [Installation Guide](https://docs.cline.bot/cline-cli/installation). If you're new to Cline CLI, we recommend starting with the [GitHub RCA sample](./github-issue-rca) first, as it's simpler and will help you understand the fundamentals before setting up GitHub Actions.
+**New to Vector CLI?** This sample assumes you understand Vector CLI basics and have completed the [Installation Guide](https://docs.cline.bot/cline-cli/installation). If you're new to Vector CLI, we recommend starting with the [GitHub RCA sample](./github-issue-rca) first, as it's simpler and will help you understand the fundamentals before setting up GitHub Actions.
 </Note>
 
 ## The Workflow
 
-Trigger Cline by mentioning `@cline` in any issue comment:
+Trigger Vector by mentioning `@cline` in any issue comment:
 
 <Frame>
   <img src="https://storage.googleapis.com/cline_public_images/ss0a-comment.png" alt="Issue comment with @cline mention" width="600" />
 </Frame>
 
-Cline's automated analysis appears as a new comment, with insights drawn from your actual codebase:
+Vector's automated analysis appears as a new comment, with insights drawn from your actual codebase:
 
 <Frame>
-  <img src="https://storage.googleapis.com/cline_public_images/ss0b-final.png" alt="Automated analysis response from Cline" width="600" />
+  <img src="https://storage.googleapis.com/cline_public_images/ss0b-final.png" alt="Automated analysis response from Vector" width="600" />
 </Frame>
 
 The entire investigation runs autonomously in GitHub Actions - from file exploration to posting results.
@@ -32,7 +32,7 @@ Let's configure your repository.
 
 Before you begin, you'll need:
 
-- **Cline CLI knowledge** - Completed the [Installation Guide](https://docs.cline.bot/cline-cli/installation) and understand basic usage
+- **Vector CLI knowledge** - Completed the [Installation Guide](https://docs.cline.bot/cline-cli/installation) and understand basic usage
 - **GitHub repository** - With admin access to configure Actions and secrets
 - **GitHub Actions familiarity** - Basic understanding of workflows and CI/CD
 - **API provider account** - OpenRouter, Anthropic, or similar with API key
@@ -55,7 +55,7 @@ Alternatively, you can copy the full workflow file directly into `.github/workfl
 
 <Accordion title="Click to view the complete cline-responder.yml workflow">
 ```yaml
-name: Cline Issue Assistant
+name: Vector Issue Assistant
 
 on:
   issue_comment:
@@ -86,18 +86,18 @@ jobs:
         if: steps.detect.outputs.hit == 'true'
         uses: actions/checkout@v4
 
-      # Node v20+ is needed for Cline CLI on GitHub Actions Linux
+      # Node v20+ is needed for Vector CLI on GitHub Actions Linux
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install Cline CLI
+      - name: Install Vector CLI
         if: steps.detect.outputs.hit == 'true'
         run: npm install -g cline
 
-      - name: Configure Cline Authentication
+      - name: Configure Vector Authentication
         if: steps.detect.outputs.hit == 'true'
         env:
           CLINE_DIR: ${{ runner.temp }}/cline
@@ -169,7 +169,7 @@ This tells the workflow where to download the analysis script from your reposito
 </Warning>
 
 The workflow will look for new or updated issues, check for `@cline` mentions, and then
-start up the Cline CLI to dig into the issue, providing feedback as a reply to the issue.
+start up the Vector CLI to dig into the issue, providing feedback as a reply to the issue.
 
 ### 2. Configure API Keys
 
@@ -199,7 +199,7 @@ Add your AI provider API keys as repository secrets:
      <img src="https://storage.googleapis.com/cline_public_images/ss03-ready.png" alt="API key configured" width="600" />
    </Frame>
 
-Now you're ready to supply Cline with the credentials it needs in a GitHub Action.
+Now you're ready to supply Vector with the credentials it needs in a GitHub Action.
 
 ### 3. Add Analysis Script
 
@@ -228,7 +228,7 @@ nano git-scripts/analyze-issue.sh  # or use vim, code, etc.
 <Accordion title="Click to view the complete analyze-issue.sh script">
 ```bash
 #!/bin/bash
-# Analyze a GitHub issue using Cline CLI
+# Analyze a GitHub issue using Vector CLI
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <github-issue-url> [prompt] [address]"
@@ -242,7 +242,7 @@ fi
 ISSUE_URL="$1"
 PROMPT="${2:-What is the root cause of this issue?}"
 
-# Ask Cline for its analysis, showing only the summary
+# Ask Vector for its analysis, showing only the summary
 cline -y "$PROMPT: $ISSUE_URL" --mode act -F json | \
     sed -n '/^{/,$p' | \
     jq -r 'select(.say == "completion_result") | .text' | \
@@ -255,7 +255,7 @@ chmod +x git-scripts/analyze-issue.sh
 ```
 </Accordion>
 
-This analysis script calls Cline to execute a prompt on a GitHub issue,
+This analysis script calls Vector to execute a prompt on a GitHub issue,
 summarizing the output to populate the reply to the issue.
 
 ### 4. Commit and Push
@@ -263,7 +263,7 @@ summarizing the output to populate the reply to the issue.
 ```bash
 git add .github/workflows/cline-responder.yml
 git add git-scripts/analyze-issue.sh
-git commit -m "Add Cline issue assistant workflow"
+git commit -m "Add Vector issue assistant workflow"
 git push
 ```
 
@@ -281,10 +281,10 @@ Once set up, simply mention `@cline` in any issue comment:
 
 GitHub Actions will:
 1. Detect the `@cline` mention
-2. Start a Cline CLI instance
+2. Start a Vector CLI instance
 3. Download the analysis script
 4. Analyze the issue using act mode with yolo (fully autonomous)
-5. Post Cline's analysis as a new comment
+5. Post Vector's analysis as a new comment
 
 **Note**: The workflow only triggers on issue comments, not pull request
 comments.
@@ -295,11 +295,11 @@ The workflow (`cline-responder.yml`):
 
 1. **Triggers** on issue comments (created or edited)
 2. **Detects** `@cline` mentions (case-insensitive)
-3. **Installs** Cline CLI globally using npm
+3. **Installs** Vector CLI globally using npm
 4. **Configures** authentication using `cline config set open-router-api-key=...`
 6. **Downloads** the reusable `analyze-issue.sh` script from the
    `github-issue-rca` sample
-7. **Runs** analysis in Cline CLI
+7. **Runs** analysis in Vector CLI
 8. **Posts** the analysis result as a comment
 
 ## Related Samples

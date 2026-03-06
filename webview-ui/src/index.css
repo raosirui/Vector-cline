@@ -1,5 +1,4 @@
-/* Import external CSS files */
-@import url("../../node_modules/@vscode/codicons/dist/codicon.css");
+/* Import external CSS files. Codicons are loaded by the webview HTML <link> from assets/codicons/ (not here) so they work in packaged vsix. */
 @import url("../node_modules/@fontsource/azeret-mono/index.css");
 
 /* Tailwind CSS */

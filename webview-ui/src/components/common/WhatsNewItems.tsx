@@ -1,6 +1,7 @@
 import type { BannerAction, BannerCardData } from "@shared/cline/banner"
 import React from "react"
 import Markdown from "react-markdown"
+import { BRAND_CLI, BRAND_NAME } from "@shared/brand"
 
 interface WhatsNewItemsProps {
 	welcomeBanners?: BannerCardData[]
@@ -79,16 +80,16 @@ export const WhatsNewItems: React.FC<WhatsNewItemsProps> = ({
 				<>
 					{/* Hardcoded fallback items shown when remote welcome banners feature flag is off */}
 					<li className="mb-2">
-						<strong>Try Codex 5.3:</strong> OpenAI's latest coding model, now available in Cline!{" "}
+						<strong>Try Codex 5.3:</strong> OpenAI's latest coding model, now available in {BRAND_NAME}!{" "}
 						<InlineModelLink label="Try now" modelId="openai/gpt-5.3-codex" pickerTab="recommended" />
 					</li>
 					<li className="mb-2">
-						<strong>Try latest SOTA coding model:</strong> Claude Sonnet 4.6 and Gemini 3.1 pro within Cline!{" "}
+						<strong>Try latest SOTA coding model:</strong> Claude Sonnet 4.6 and Gemini 3.1 pro within {BRAND_NAME}!{" "}
 						<InlineModelLink label="Try now" modelId="anthropic/claude-sonnet-4.6" pickerTab="recommended" />
 					</li>
 					<li className="mb-2">
-						<strong>Try Cline CLI 2.0:</strong> with /mcp functionality added in CLI{" "}
-						<code style={inlineCodeStyle}>npm install -g cline</code>
+						<strong>{`Try ${BRAND_CLI.displayName} 2.0:`}</strong> with /mcp functionality added in CLI{" "}
+						<code style={inlineCodeStyle}>{`npm install -g ${BRAND_CLI.packageName}`}</code>
 					</li>
 					<li className="mb-2">
 						<strong>Minimax M2.5 and Z.ai GLM 5:</strong> no longer free starting Feb 23, 2026

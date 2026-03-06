@@ -12,6 +12,7 @@ import type { TelemetrySetting } from "@shared/TelemetrySetting"
 import { Box, Text, useInput } from "ink"
 import Spinner from "ink-spinner"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { BRAND_NAME, brandText } from "@shared/brand"
 import { buildApiHandler } from "@/core/api"
 import type { Controller } from "@/core/controller"
 import { refreshOcaModels } from "@/core/controller/models/refreshOcaModels"
@@ -91,7 +92,7 @@ const FEATURE_SETTINGS = {
 		stateKey: "subagentsEnabled",
 		default: false,
 		label: "Subagents",
-		description: "Let Cline run focused subagents in parallel to explore the codebase for you",
+		description: `Let ${BRAND_NAME} run focused subagents in parallel to explore the codebase for you`,
 	},
 	autoCondense: {
 		stateKey: "useAutoCondense",
@@ -632,7 +633,7 @@ export const SettingsPanelContent: React.FC<SettingsPanelContentProps> = ({
 						label: "Enable notifications",
 						type: "checkbox",
 						value: autoApproveSettings.enableNotifications,
-						description: "System alerts when Cline needs your attention",
+						description: `System alerts when ${BRAND_NAME} needs your attention`,
 					},
 				)
 				return result
@@ -655,10 +656,10 @@ export const SettingsPanelContent: React.FC<SettingsPanelContentProps> = ({
 						label: "Error/usage reporting",
 						type: "checkbox",
 						value: telemetry !== "disabled",
-						description: "Help improve Cline by sending anonymous usage data",
+						description: `Help improve ${BRAND_NAME} by sending anonymous usage data`,
 					},
 					{ key: "separator", label: "", type: "separator", value: "" },
-					{ key: "version", label: "", type: "readonly", value: `Cline v${CLI_VERSION}` },
+					{ key: "version", label: "", type: "readonly", value: brandText.namedVersion(CLI_VERSION) },
 				]
 
 			case "account":
@@ -668,7 +669,7 @@ export const SettingsPanelContent: React.FC<SettingsPanelContentProps> = ({
 				}
 				// If not logged in, show login option
 				if (!accountEmail) {
-					return [{ key: "login", label: "Sign in with Cline", type: "action", value: "" }]
+					return [{ key: "login", label: brandText.signInWithBrand, type: "action", value: "" }]
 				}
 				// Logged in - show account info
 				const accountItems: ListItem[] = [
@@ -1598,7 +1599,7 @@ export const SettingsPanelContent: React.FC<SettingsPanelContentProps> = ({
 						<Text color={COLORS.primaryBlue}>
 							<Spinner type="dots" />
 						</Text>
-						<Text color="white"> Waiting for Cline sign-in...</Text>
+						<Text color="white"> {brandText.waitingForSignIn}</Text>
 					</Box>
 					<Box marginTop={1}>
 						<Text color="gray">Complete sign-in in your browser.</Text>
@@ -1672,7 +1673,7 @@ export const SettingsPanelContent: React.FC<SettingsPanelContentProps> = ({
 		if (currentTab === "account" && !accountEmail && !isAccountLoading) {
 			return (
 				<Box flexDirection="column">
-					<Text color="white">Sign in to access Cline features:</Text>
+					<Text color="white">Sign in to access {BRAND_NAME} features:</Text>
 					<Box flexDirection="column" marginTop={1}>
 						<Text color="gray"> - Free access to frontier AI models</Text>
 						<Text color="gray"> - Built-in web search capabilities</Text>

@@ -2,6 +2,7 @@ import type { ClineAskUseSubagents, ClineMessage, ClineSaySubagentStatus } from 
 import { Box, Text } from "ink"
 import Spinner from "ink-spinner"
 import React from "react"
+import { brandText } from "@shared/brand"
 import { COLORS } from "../constants/colors"
 import { useTerminalSize } from "../hooks/useTerminalSize"
 import { jsonParseSafe } from "../utils/parser"
@@ -185,7 +186,7 @@ export const SubagentMessage: React.FC<SubagentMessageProps> = ({ message, mode,
 			return (
 				<Box flexDirection="column" marginBottom={1} width="100%">
 					<DotRow color={toolColor}>
-						<Text color={toolColor}>Cline wants to run subagents:</Text>
+						<Text color={toolColor}>{brandText.useSubagent(2)}</Text>
 					</DotRow>
 				</Box>
 			)
@@ -195,7 +196,7 @@ export const SubagentMessage: React.FC<SubagentMessageProps> = ({ message, mode,
 		return (
 			<Box flexDirection="column" marginBottom={1} width="100%">
 				<DotRow color={toolColor} flashing={partial === true && isStreaming}>
-					<Text color={toolColor}>{singular ? "Cline wants to run a subagent:" : "Cline wants to run subagents:"}</Text>
+					<Text color={toolColor}>{brandText.useSubagent(prompts.length)}</Text>
 				</DotRow>
 				<Box flexDirection="column" marginLeft={2} width="100%">
 					{prompts.map((prompt, index) => {
@@ -251,7 +252,7 @@ export const SubagentMessage: React.FC<SubagentMessageProps> = ({ message, mode,
 			<Box flexDirection="column" marginBottom={1} width="100%">
 				<DotRow color={toolColor} flashing={partial === true && isStreaming}>
 					<Text color={toolColor}>
-						{items.length === 1 ? "Cline is running a subagent:" : "Cline is running subagents:"}
+						{brandText.runSubagent(items.length)}
 					</Text>
 				</DotRow>
 				<Box flexDirection="column" marginLeft={2} width="100%">

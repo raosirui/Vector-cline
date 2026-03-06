@@ -1,3 +1,5 @@
+import { BRAND_NAME, BRAND_CLI } from "./brand"
+
 export interface SlashCommand {
 	name: string
 	description?: string
@@ -26,13 +28,13 @@ export const BASE_SLASH_COMMANDS: SlashCommand[] = [
 	},
 	{
 		name: "newrule",
-		description: "Create a new Cline rule based on your conversation",
+		description: `Create a new ${BRAND_NAME} rule based on your conversation`,
 		section: "default",
 		cliCompatible: true,
 	},
 	{
 		name: "reportbug",
-		description: "Create a Github issue with Cline",
+		description: `Create a Github issue with ${BRAND_NAME}`,
 		section: "default",
 		cliCompatible: true,
 	},
@@ -51,7 +53,7 @@ export const VSCODE_ONLY_COMMANDS: SlashCommand[] = [
 export const CLI_ONLY_COMMANDS: SlashCommand[] = [
 	{
 		name: "help",
-		description: "Learn how to use Cline CLI",
+		description: `Learn how to use ${BRAND_CLI.displayName}`,
 		section: "default",
 		cliCompatible: true,
 	},

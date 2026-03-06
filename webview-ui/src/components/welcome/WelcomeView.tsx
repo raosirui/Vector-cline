@@ -1,6 +1,7 @@
 import { BooleanRequest, EmptyRequest } from "@shared/proto/cline/common"
 import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { memo, useEffect, useState } from "react"
+import { BRAND_COPY } from "@shared/brand"
 import ClineLogoWhite from "@/assets/ClineLogoWhite"
 import ApiOptions from "@/components/settings/ApiOptions"
 import { useExtensionState } from "@/context/ExtensionStateContext"
@@ -39,7 +40,7 @@ const WelcomeView = memo(() => {
 	return (
 		<div className="fixed inset-0 p-0 flex flex-col">
 			<div className="h-full px-5 overflow-auto flex flex-col gap-2.5">
-				<h2 className="text-lg font-semibold">Hi, I'm Cline</h2>
+				<h2 className="text-lg font-semibold">{BRAND_COPY.welcomeTitle}</h2>
 				<div className="flex justify-center my-5">
 					<ClineLogoWhite className="size-16" />
 				</div>
@@ -54,12 +55,12 @@ const WelcomeView = memo(() => {
 				</p>
 
 				<p className="text-(--vscode-descriptionForeground)">
-					Sign up for an account to get started for free, or use an API key that provides access to models like Claude
+					Sign up for an account to get started, or use an API key that provides access to models like Claude
 					Sonnet.
 				</p>
 
 				<VSCodeButton appearance="primary" className="w-full mt-1" disabled={isLoading} onClick={handleLogin}>
-					Get Started for Free
+					Get Started
 					{isLoading && (
 						<span className="ml-1 animate-spin">
 							<span className="codicon codicon-refresh" />

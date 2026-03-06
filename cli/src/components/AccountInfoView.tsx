@@ -5,6 +5,7 @@
 
 import { Box, Text } from "ink"
 import React, { useCallback, useEffect, useState } from "react"
+import { BRAND_CLI, BRAND_NAME } from "@shared/brand"
 import { Controller } from "@/core/controller"
 import { StateManager } from "@/core/storage/StateManager"
 import { ClineAccountService } from "@/services/account/ClineAccountService"
@@ -73,7 +74,7 @@ export const AccountInfoView: React.FC<AccountInfoViewProps> = React.memo(({ con
 				if (authInfo?.user?.email) {
 					setEmail(authInfo.user.email)
 				} else {
-					// User not logged in to Cline
+					// User not logged in to the account provider
 					setEmail(null)
 					setIsLoading(false)
 					return
@@ -154,9 +155,9 @@ export const AccountInfoView: React.FC<AccountInfoViewProps> = React.memo(({ con
 		return (
 			<Box>
 				<Text color="gray">Provider: </Text>
-				<Text color="cyan">Cline</Text>
+				<Text color="cyan">{BRAND_NAME}</Text>
 				<Text color="gray"> • </Text>
-				<Text color="yellow">Not logged in (run 'cline auth' to sign in)</Text>
+				<Text color="yellow">{`Not logged in (run '${BRAND_CLI.commandName} auth' to sign in)`}</Text>
 			</Box>
 		)
 	}
@@ -166,7 +167,7 @@ export const AccountInfoView: React.FC<AccountInfoViewProps> = React.memo(({ con
 		<Box flexDirection="column">
 			<Box>
 				<Text color="gray">Provider: </Text>
-				<Text color="cyan">Cline</Text>
+				<Text color="cyan">{BRAND_NAME}</Text>
 				{email && (
 					<Box>
 						<Text color="gray"> • </Text>

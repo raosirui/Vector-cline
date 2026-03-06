@@ -7,6 +7,7 @@ import { ChevronDownIcon, ChevronRightIcon } from "lucide-react"
 import React, { CSSProperties, memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSize } from "react-use"
 import styled from "styled-components"
+import { BRAND_NAME } from "@shared/brand"
 import { BrowserSettingsMenu } from "@/components/browser/BrowserSettingsMenu"
 import { ChatRowContent, ProgressIndicator } from "@/components/chat/ChatRow"
 import CodeBlock, { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
@@ -360,7 +361,7 @@ const BrowserSessionRow = memo((props: BrowserSessionRowProps) => {
 					<span className="codicon codicon-inspect" style={browserIconStyle}></span>
 				)}
 				<span style={approveTextStyle}>
-					{isAutoApproved ? "Cline is using the browser:" : "Cline wants to use the browser:"}
+					{isAutoApproved ? `${BRAND_NAME} is using the browser:` : `${BRAND_NAME} wants to use the browser:`}
 				</span>
 			</div>
 			<div

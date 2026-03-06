@@ -1,9 +1,9 @@
 ---
 title: "Configuration"
-description: "Manage Cline CLI settings with cline config, environment variables, and configuration files"
+description: "Manage Vector CLI settings with cline config, environment variables, and configuration files"
 ---
 
-Cline CLI provides multiple ways to configure settings, from the interactive `cline config` command to environment variables for automation.
+Vector CLI provides multiple ways to configure settings, from the interactive `cline config` command to environment variables for automation.
 
 ## The Config Command
 
@@ -28,13 +28,13 @@ View and edit global and workspace-specific settings:
 
 ### Rules Tab
 
-Manage Cline rules that guide AI behavior:
+Manage Vector rules that guide AI behavior:
 
 - **`.clinerules` files**: Project-specific rules in your workspace
 - **Cursor rules**: Import rules from Cursor editor format
 - **Windsurf rules**: Import rules from Windsurf editor format
 
-Rules help Cline understand your project's conventions, coding standards, and preferences.
+Rules help Vector understand your project's conventions, coding standards, and preferences.
 
 ### Workflows Tab
 
@@ -50,7 +50,7 @@ Configure [hooks](/customization/hooks) for custom logic integration:
 
 - Enable/disable hooks globally
 - View configured hook scripts
-- Hooks run at key points in Cline's workflow
+- Hooks run at key points in Vector's workflow
 
 <Note>
 Hooks must be enabled via settings. Use `cline config` to toggle `hooks-enabled`.
@@ -58,7 +58,7 @@ Hooks must be enabled via settings. Use `cline config` to toggle `hooks-enabled`
 
 ### Skills Tab
 
-Manage [skills](/customization/skills) that extend Cline's capabilities:
+Manage [skills](/customization/skills) that extend Vector's capabilities:
 
 - View available skills
 - Enable/disable specific skills
@@ -66,7 +66,7 @@ Manage [skills](/customization/skills) that extend Cline's capabilities:
 
 ## Configuration Directory
 
-Cline stores configuration in `~/.cline/data/`:
+Vector stores configuration in `~/.cline/data/`:
 
 ```text
 ~/.cline/
@@ -101,16 +101,16 @@ export CLINE_DIR=/custom/path/to/cline
 cline "your task"
 ```
 
-When set, all Cline data is stored in this directory instead of `~/.cline/data/`.
+When set, all Vector data is stored in this directory instead of `~/.cline/data/`.
 
 **Use cases:**
-- Running multiple isolated Cline configurations
+- Running multiple isolated Vector configurations
 - Team-shared configurations
 - CI/CD with custom state directories
 
 ### CLINE_COMMAND_PERMISSIONS
 
-Restrict which shell commands Cline can execute:
+Restrict which shell commands Vector can execute:
 
 ```bash
 export CLINE_COMMAND_PERMISSIONS='{"allow": ["npm *", "git *"], "deny": ["rm -rf *"]}'
@@ -153,14 +153,14 @@ When `allow` is set, all commands not matching the allow patterns are denied. Us
 
 ## Using --config Flag
 
-Run Cline with a custom configuration directory:
+Run Vector with a custom configuration directory:
 
 ```bash
 cline --config /path/to/custom/config "your task"
 ```
 
 This is useful for:
-- Running isolated Cline instances
+- Running isolated Vector instances
 - Testing different configurations
 - Separating work and personal setups
 
@@ -176,7 +176,7 @@ cline --config ~/.cline-personal "help me with this side project"
 
 ## MCP Server Configuration
 
-Cline CLI supports [MCP (Model Context Protocol)](/mcp/mcp-overview) servers, giving you access to external tools and data sources directly from the terminal. The CLI uses the same MCP configuration format as the VS Code extension.
+Vector CLI supports [MCP (Model Context Protocol)](/mcp/mcp-overview) servers, giving you access to external tools and data sources directly from the terminal. The CLI uses the same MCP configuration format as the VS Code extension.
 
 ### Setting Up MCP Servers
 
@@ -246,7 +246,7 @@ cline config
 
 ### From VS Code Extension
 
-If you use the Cline VS Code extension, the CLI automatically detects and can share some settings. However, the CLI maintains its own configuration for terminal-specific features.
+If you use the Vector VS Code extension, the CLI automatically detects and can share some settings. However, the CLI maintains its own configuration for terminal-specific features.
 
 ### From Other CLI Tools
 
@@ -281,7 +281,7 @@ Share configuration via version control:
 ```bash
 # Commit .clinerules/ to your repo
 git add .clinerules/
-git commit -m "Add Cline rules for team"
+git commit -m "Add Vector rules for team"
 ```
 
 ## Troubleshooting
@@ -311,7 +311,7 @@ cline auth  # Re-authenticate
 
 <Columns cols={2}>
   <Card title="Headless Mode" icon="robot" href="/cline-cli/three-core-flows">
-    Run Cline autonomously in scripts, CI/CD pipelines, and automated workflows.
+    Run Vector autonomously in scripts, CI/CD pipelines, and automated workflows.
   </Card>
   
   <Card title="CLI Reference" icon="terminal" href="/cline-cli/cli-reference">

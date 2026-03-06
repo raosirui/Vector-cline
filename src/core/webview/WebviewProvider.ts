@@ -6,6 +6,7 @@ import { HostProvider } from "@/hosts/host-provider"
 import { ClineExtensionContext } from "@/shared/cline"
 import { ShowMessageType } from "@/shared/proto/host/window"
 import { Logger } from "@/shared/services/Logger"
+import { BRAND_NAME } from "@/shared/brand"
 import { getNonce } from "./getNonce"
 
 export abstract class WebviewProvider {
@@ -81,11 +82,9 @@ export abstract class WebviewProvider {
 		// The CSS file from the React build output
 		const stylesUrl = this.getExtensionUrl("webview-ui", "build", "assets", "index.css")
 
-		// The codicon font from the React build output
-		// https://github.com/microsoft/vscode-extension-samples/blob/main/webview-codicons-sample/src/extension.ts
-		// we installed this package in the extension so that we can access it how its intended from the extension (the font file is likely bundled in vscode), and we just import the css fileinto our react app we don't have access to it
-		// don't forget to add font-src ${webview.cspSource};
-		const codiconsUrl = this.getExtensionUrl("node_modules", "@vscode", "codicons", "dist", "codicon.css")
+		// Codicons loaded from assets/codicons/ (populated by copy-codicons script) so they are
+		// reliably included in the vsix and work when the extension is installed from marketplace.
+		const codiconsUrl = this.getExtensionUrl("assets", "codicons", "codicon.css")
 
 		// Use a nonce to only allow a specific script to be run.
 		/*
@@ -116,13 +115,13 @@ export abstract class WebviewProvider {
 					style-src ${this.getCspSource()} 'unsafe-inline'; 
 					img-src ${this.getCspSource()} https: data:; 
 					script-src 'nonce-${nonce}' 'unsafe-eval';">
-				<title>Cline</title>
+				<title>${BRAND_NAME}</title>
 			</head>
 			<body>
 				<noscript>You need to enable JavaScript to run this app.</noscript>
 				<div id="root"></div>
 				<script type="module" nonce="${nonce}" src="${scriptUrl}"></script>
-				<script src="http://localhost:8097"></script> 
+				<!-- Do not inject React DevTools (e.g. localhost:8097) here: it registers a Service Worker and causes "Could not register service worker: InvalidStateError" in VS Code webview. -->
 			</body>
 		</html>
 		`
@@ -173,7 +172,7 @@ export abstract class WebviewProvider {
 				HostProvider.window.showMessage({
 					type: ShowMessageType.ERROR,
 					message:
-						"Cline: Local webview dev server is not running, HMR will not work. Please run 'npm run dev:webview' before launching the extension to enable HMR. Using bundled assets.",
+						`${BRAND_NAME}: Local webview dev server is not running, HMR will not work. Please run 'npm run dev:webview' before launching the extension to enable HMR. Using bundled assets.`,
 				})
 			}
 
@@ -182,7 +181,7 @@ export abstract class WebviewProvider {
 
 		const nonce = getNonce()
 		const stylesUrl = this.getExtensionUrl("webview-ui", "build", "assets", "index.css")
-		const codiconsUrl = this.getExtensionUrl("node_modules", "@vscode", "codicons", "dist", "codicon.css")
+		const codiconsUrl = this.getExtensionUrl("assets", "codicons", "codicon.css")
 
 		const scriptEntrypoint = "src/main.tsx"
 		const scriptUrl = `http://${localServerUrl}/${scriptEntrypoint}`
@@ -210,13 +209,12 @@ export abstract class WebviewProvider {
 			<!DOCTYPE html>
 			<html lang="en">
 				<head>
-					${process.env.IS_DEV ? '<script src="http://localhost:8097"></script>' : ""}
 					<meta charset="utf-8">
 					<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 					<meta http-equiv="Content-Security-Policy" content="${csp.join("; ")}">
 					<link rel="stylesheet" type="text/css" href="${stylesUrl}">
 					<link href="${codiconsUrl}" rel="stylesheet" />
-					<title>Cline</title>
+					<title>${BRAND_NAME}</title>
 				</head>
 				<body>
 					<div id="root"></div>
