@@ -1,8 +1,9 @@
-import { CLAUDE_SONNET_1M_SUFFIX, openRouterDefaultModelId } from "@shared/api"
+import { CLAUDE_SONNET_1M_SUFFIX } from "@shared/api"
 import { CLINE_RECOMMENDED_MODELS_FALLBACK } from "@shared/cline/recommended-models"
 import { EmptyRequest, StringRequest } from "@shared/proto/cline/common"
 import { type ClineRecommendedModel, ClineRecommendedModelsResponse } from "@shared/proto/cline/models"
 import type { Mode } from "@shared/storage/types"
+import { VECTOR_PROVIDER_DEFAULT_MODEL_ID, VECTOR_PROVIDER_MODELS } from "@shared/vector-provider"
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 import Fuse from "fuse.js"
 import type React from "react"
@@ -95,7 +96,7 @@ const ClineModelPicker: React.FC<ClineModelPickerProps> = ({ isPopup, currentMod
 	const { handleModeFieldsChange, handleFieldChange } = useApiConfigurationHandlers()
 	const { apiConfiguration, favoritedModelIds, clineModels, refreshClineModels } = useExtensionState()
 	const modeFields = getModeSpecificFields(apiConfiguration, currentMode)
-	const [searchTerm, setSearchTerm] = useState(modeFields.clineModelId || openRouterDefaultModelId)
+	const [searchTerm, setSearchTerm] = useState(modeFields.clineModelId || VECTOR_PROVIDER_DEFAULT_MODEL_ID)
 	const [isDropdownVisible, setIsDropdownVisible] = useState(false)
 	const [selectedIndex, setSelectedIndex] = useState(-1)
 	const [clineRecommendedModels, setClineRecommendedModels] = useState<FeaturedModelCardEntry[]>([])
@@ -187,7 +188,7 @@ const ClineModelPicker: React.FC<ClineModelPickerProps> = ({ isPopup, currentMod
 		if (initialTab) {
 			return
 		}
-		const currentModelId = modeFields.clineModelId || openRouterDefaultModelId
+		const currentModelId = modeFields.clineModelId || VECTOR_PROVIDER_DEFAULT_MODEL_ID
 		setActiveTab(freeClineModelIdSet.has(normalizeModelId(currentModelId)) ? "free" : "recommended")
 	}, [modeFields.clineModelId, freeClineModelIdSet, initialTab])
 	const dropdownRef = useRef<HTMLDivElement>(null)
@@ -204,7 +205,7 @@ const ClineModelPicker: React.FC<ClineModelPickerProps> = ({ isPopup, currentMod
 			},
 			{
 				clineModelId: newModelId,
-				clineModelInfo: clineModels?.[newModelId],
+				clineModelInfo: (clineModels ?? VECTOR_PROVIDER_MODELS)?.[newModelId],
 			},
 			currentMode,
 		)
@@ -237,7 +238,7 @@ const ClineModelPicker: React.FC<ClineModelPickerProps> = ({ isPopup, currentMod
 
 	// Sync external changes when the modelId changes
 	useEffect(() => {
-		const currentModelId = modeFields.clineModelId || openRouterDefaultModelId
+		const currentModelId = modeFields.clineModelId || VECTOR_PROVIDER_DEFAULT_MODEL_ID
 		setSearchTerm(currentModelId)
 	}, [modeFields.clineModelId])
 
@@ -255,7 +256,7 @@ const ClineModelPicker: React.FC<ClineModelPickerProps> = ({ isPopup, currentMod
 	}, [])
 
 	const modelIds = useMemo(() => {
-		const unfilteredModelIds = Object.keys(clineModels ?? {}).sort((a, b) => a.localeCompare(b))
+		const unfilteredModelIds = Object.keys(clineModels ?? VECTOR_PROVIDER_MODELS).sort((a, b) => a.localeCompare(b))
 		return filterOpenRouterModelIds(unfilteredModelIds, "cline", freeClineModelIds)
 	}, [clineModels, freeClineModelIds])
 
@@ -559,8 +560,8 @@ const ClineModelPicker: React.FC<ClineModelPickerProps> = ({ isPopup, currentMod
 						marginTop: 0,
 						color: "var(--vscode-descriptionForeground)",
 					}}>
-					The extension automatically fetches the latest Vector model list. If you're unsure which model to choose, Vector
-					works best with <strong>anthropic/claude-sonnet-4.5</strong>.
+					Vector includes a fixed free Coding Plan model list. If you're unsure which model to choose, start with{" "}
+					<strong>{VECTOR_PROVIDER_DEFAULT_MODEL_ID}</strong>.
 				</p>
 			)}
 		</div>

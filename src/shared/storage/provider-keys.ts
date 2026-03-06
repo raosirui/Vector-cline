@@ -23,6 +23,7 @@ import {
 	sapAiCoreDefaultModelId,
 	xaiDefaultModelId,
 } from "../api"
+import { VECTOR_PROVIDER_DEFAULT_MODEL_ID } from "../vector-provider"
 
 const ProviderKeyMap: Partial<Record<ApiProvider, string>> = {
 	openrouter: "OpenRouterModelId",
@@ -88,7 +89,7 @@ export const ProviderToApiKeyMap: Partial<Record<ApiProvider, keyof Secrets | (k
 const ProviderDefaultModelMap: Partial<Record<ApiProvider, string>> = {
 	anthropic: anthropicDefaultModelId,
 	openrouter: openRouterDefaultModelId,
-	cline: openRouterDefaultModelId,
+	cline: VECTOR_PROVIDER_DEFAULT_MODEL_ID,
 	openai: openAiNativeDefaultModelId,
 	ollama: "",
 	lmstudio: "",

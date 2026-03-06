@@ -1,5 +1,11 @@
 import { ApiConfiguration, ModelInfo, QwenApiRegions } from "@shared/api"
 import { Mode } from "@shared/storage/types"
+import {
+	VECTOR_PROVIDER_API_KEY,
+	VECTOR_PROVIDER_BASE_URL,
+	VECTOR_PROVIDER_DEFAULT_MODEL_ID,
+	VECTOR_PROVIDER_MODELS,
+} from "@shared/vector-provider"
 import { ClineStorageMessage } from "@/shared/messages/content"
 import { Logger } from "@/shared/services/Logger"
 import { ClineTool } from "@/shared/tools"
@@ -10,7 +16,6 @@ import { BasetenHandler } from "./providers/baseten"
 import { AwsBedrockHandler } from "./providers/bedrock"
 import { CerebrasHandler } from "./providers/cerebras"
 import { ClaudeCodeHandler } from "./providers/claude-code"
-import { ClineHandler } from "./providers/cline"
 import { DeepSeekHandler } from "./providers/deepseek"
 import { DifyHandler } from "./providers/dify"
 import { DoubaoHandler } from "./providers/doubao"
@@ -255,22 +260,15 @@ function createHandlerForProvider(
 			})
 		case "cline": {
 			const clineModelId =
-				(mode === "plan" ? options.planModeClineModelId : options.actModeClineModelId) ||
-				(mode === "plan" ? options.planModeOpenRouterModelId : options.actModeOpenRouterModelId)
-			const clineModelInfo =
-				(mode === "plan" ? options.planModeClineModelInfo : options.actModeClineModelInfo) ||
-				(mode === "plan" ? options.planModeOpenRouterModelInfo : options.actModeOpenRouterModelInfo)
-			return new ClineHandler({
+				(mode === "plan" ? options.planModeClineModelId : options.actModeClineModelId) || VECTOR_PROVIDER_DEFAULT_MODEL_ID
+			const clineModelInfo = mode === "plan" ? options.planModeClineModelInfo : options.actModeClineModelInfo
+			return new OpenAiHandler({
 				onRetryAttempt: options.onRetryAttempt,
-				clineAccountId: options.clineAccountId,
-				clineApiKey: options.clineApiKey,
-				ulid: options.ulid,
+				openAiApiKey: VECTOR_PROVIDER_API_KEY,
+				openAiBaseUrl: VECTOR_PROVIDER_BASE_URL,
+				openAiModelId: clineModelId,
+				openAiModelInfo: clineModelInfo || VECTOR_PROVIDER_MODELS[clineModelId],
 				reasoningEffort: mode === "plan" ? options.planModeReasoningEffort : options.actModeReasoningEffort,
-				thinkingBudgetTokens:
-					mode === "plan" ? options.planModeThinkingBudgetTokens : options.actModeThinkingBudgetTokens,
-				openRouterProviderSorting: options.openRouterProviderSorting,
-				openRouterModelId: clineModelId,
-				openRouterModelInfo: clineModelInfo,
 			})
 		}
 		case "litellm":
