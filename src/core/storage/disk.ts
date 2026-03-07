@@ -13,6 +13,7 @@ import { HostProvider } from "@/hosts/host-provider"
 import { ExtensionRegistryInfo } from "@/registry"
 import { telemetryService } from "@/services/telemetry"
 import { McpMarketplaceCatalog } from "@/shared/mcp"
+import { mergeBuiltInRemoteMcpServers } from "@/shared/mcp-presets"
 import { Logger } from "@/shared/services/Logger"
 import { syncWorker } from "@/shared/services/worker/sync"
 import { reconstructTaskHistory } from "../commands/reconstructTaskHistory"
@@ -228,7 +229,7 @@ export async function getMcpSettingsFilePath(settingsDirectoryPath: string): Pro
 	const mcpSettingsFilePath = path.join(settingsDirectoryPath, GlobalFileNames.mcpSettings)
 	const fileExists = await fileExistsAtPath(mcpSettingsFilePath)
 	if (!fileExists) {
-		await fs.writeFile(mcpSettingsFilePath, JSON.stringify({ mcpServers: {} }, null, 2))
+		await fs.writeFile(mcpSettingsFilePath, JSON.stringify({ mcpServers: mergeBuiltInRemoteMcpServers() }, null, 2))
 	}
 	return mcpSettingsFilePath
 }

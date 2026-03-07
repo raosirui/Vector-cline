@@ -1,18 +1,30 @@
+import { builtInRemoteMcpPresets, RemoteMcpTransportType } from "@shared/mcp-presets"
 import { EmptyRequest } from "@shared/proto/cline/common"
 import { AddRemoteMcpServerRequest, McpServers } from "@shared/proto/cline/mcp"
 import { convertProtoMcpServersToMcpServers } from "@shared/proto-conversions/mcp/mcp-server-conversion"
-import { VSCodeButton, VSCodeLink, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
+import {
+	VSCodeButton,
+	VSCodeDropdown,
+	VSCodeLink,
+	VSCodeOption,
+	VSCodeRadio,
+	VSCodeRadioGroup,
+	VSCodeTextField,
+} from "@vscode/webview-ui-toolkit/react"
 import { useState } from "react"
 import { LINKS } from "@/constants"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { McpServiceClient } from "@/services/grpc-client"
 
-type TransportType = "streamableHttp" | "sse"
+type TransportType = RemoteMcpTransportType
+const MANUAL_PRESET_ID = "manual"
+const defaultPreset = builtInRemoteMcpPresets[0]
 
 const AddRemoteServerForm = ({ onServerAdded }: { onServerAdded: () => void }) => {
-	const [serverName, setServerName] = useState("")
-	const [serverUrl, setServerUrl] = useState("")
-	const [transportType, setTransportType] = useState<TransportType>("streamableHttp")
+	const [selectedPresetId, setSelectedPresetId] = useState(defaultPreset?.id ?? MANUAL_PRESET_ID)
+	const [serverName, setServerName] = useState(defaultPreset?.serverName ?? "")
+	const [serverUrl, setServerUrl] = useState(defaultPreset?.serverUrl ?? "")
+	const [transportType, setTransportType] = useState<TransportType>(defaultPreset?.transportType ?? "streamableHttp")
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [error, setError] = useState("")
 	const { setMcpServers } = useExtensionState()
@@ -63,16 +75,83 @@ const AddRemoteServerForm = ({ onServerAdded }: { onServerAdded: () => void }) =
 		}
 	}
 
+	const applyPreset = (presetId: string) => {
+		setSelectedPresetId(presetId)
+		setError("")
+
+		if (presetId === MANUAL_PRESET_ID) {
+			setServerName("")
+			setServerUrl("")
+			setTransportType("streamableHttp")
+			return
+		}
+
+		const preset = builtInRemoteMcpPresets.find((item) => item.id === presetId)
+		if (!preset) {
+			return
+		}
+
+		setServerName(preset.serverName)
+		setServerUrl(preset.serverUrl)
+		setTransportType(preset.transportType)
+	}
+
+	const selectedPreset =
+		selectedPresetId === MANUAL_PRESET_ID
+			? undefined
+			: builtInRemoteMcpPresets.find((preset) => preset.id === selectedPresetId)
+
 	return (
 		<div className="p-4 px-5">
 			<div className="text-(--vscode-foreground) mb-2">
-				Add a remote MCP server by providing a name and its URL endpoint. Learn more{" "}
+				Choose a built-in preset or add a remote MCP server manually by providing a name and URL endpoint. Learn more{" "}
 				<VSCodeLink href={LINKS.DOCUMENTATION.REMOTE_MCP_SERVER_DOCS} style={{ display: "inline" }}>
 					here.
 				</VSCodeLink>
 			</div>
 
 			<form onSubmit={handleSubmit}>
+				{builtInRemoteMcpPresets.length > 0 && (
+					<>
+						<div className="mb-2">
+							<label className={`block text-sm font-medium mb-2 ${isSubmitting ? "opacity-50" : ""}`}>Preset</label>
+							<VSCodeDropdown
+								disabled={isSubmitting}
+								onChange={(e) => applyPreset((e.target as HTMLSelectElement).value)}
+								style={{ width: "100%" }}
+								value={selectedPresetId}>
+								<VSCodeOption value={MANUAL_PRESET_ID}>Manual configuration</VSCodeOption>
+								{builtInRemoteMcpPresets.map((preset) => (
+									<VSCodeOption key={preset.id} value={preset.id}>
+										{preset.displayName}
+									</VSCodeOption>
+								))}
+							</VSCodeDropdown>
+						</div>
+
+						{selectedPreset && (
+							<div
+								className="mb-3"
+								style={{
+									padding: "10px 12px",
+									borderRadius: 4,
+									background: "var(--vscode-textBlockQuote-background)",
+									borderLeft: "3px solid var(--vscode-textLink-foreground)",
+								}}>
+								<div style={{ fontSize: 13, marginBottom: 4 }}>{selectedPreset.description}</div>
+								<div
+									style={{
+										fontSize: 12,
+										color: "var(--vscode-descriptionForeground)",
+										wordBreak: "break-all",
+									}}>
+									{selectedPreset.serverUrl}
+								</div>
+							</div>
+						)}
+					</>
+				)}
+
 				<div className="mb-2">
 					<VSCodeTextField
 						className="w-full"

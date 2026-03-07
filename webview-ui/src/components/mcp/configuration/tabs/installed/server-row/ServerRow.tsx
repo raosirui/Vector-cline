@@ -1,4 +1,5 @@
 import { DEFAULT_MCP_TIMEOUT_SECONDS, McpServer } from "@shared/mcp"
+import { isBuiltInRemoteMcpServer } from "@shared/mcp-presets"
 import { StringRequest } from "@shared/proto/cline/common"
 import {
 	McpServers,
@@ -93,7 +94,7 @@ const ServerRow = ({
 	const handleTimeoutChange = (e: any) => {
 		const select = e.target as HTMLSelectElement
 		const value = select.value
-		const num = parseInt(value)
+		const num = Number.parseInt(value)
 		setTimeoutValue(value)
 
 		McpServiceClient.updateMcpTimeout({
@@ -203,6 +204,8 @@ const ServerRow = ({
 		return remoteServer?.alwaysEnabled === true
 	})()
 
+	const isBuiltInServer = isBuiltInRemoteMcpServer(server.name)
+
 	return (
 		<div className="mb-2.5">
 			<div
@@ -235,7 +238,7 @@ const ServerRow = ({
 						<RefreshCcwIcon />
 					</Button>
 				)}
-				{!server.error && hasTrashIcon && (
+				{!server.error && hasTrashIcon && !isBuiltInServer && (
 					<Button
 						disabled={isDeleting}
 						onClick={(e) => {
@@ -300,7 +303,7 @@ const ServerRow = ({
 						</Button>
 					)}
 
-					{!isRemoteManagedServer && (
+					{!isRemoteManagedServer && !isBuiltInServer && (
 						<Button
 							className="m-2.5 mt-0 max-w-[calc(100%-20px)]"
 							disabled={isDeleting}
@@ -397,7 +400,7 @@ const ServerRow = ({
 							{server.status === "connecting" || isRestarting ? "Restarting..." : "Restart Server"}
 						</Button>
 
-						{!isRemoteManagedServer && (
+						{!isRemoteManagedServer && !isBuiltInServer && (
 							<Button
 								className="w-[calc(100%-14px)] mt-1 mx-1.5 mb-3"
 								disabled={isDeleting}

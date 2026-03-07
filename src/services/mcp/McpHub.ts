@@ -28,6 +28,7 @@ import {
 	McpToolCallResponse,
 	MIN_MCP_TIMEOUT_SECONDS,
 } from "@shared/mcp"
+import { isBuiltInRemoteMcpServer, mergeBuiltInRemoteMcpServers } from "@shared/mcp-presets"
 import { convertMcpServersToProtoMcpServers } from "@shared/proto-conversions/mcp/mcp-server-conversion"
 import { secondsToMs } from "@utils/time"
 import chokidar, { FSWatcher } from "chokidar"
@@ -165,6 +166,27 @@ export class McpHub {
 		return this.isUpdatingFromRemoteConfig
 	}
 
+	private async ensureBuiltInRemoteServers(
+		settings: z.infer<typeof McpSettingsSchema>,
+	): Promise<z.infer<typeof McpSettingsSchema>> {
+		const mergedSettings = McpSettingsSchema.parse({
+			mcpServers: mergeBuiltInRemoteMcpServers(settings.mcpServers),
+		})
+
+		if (!deepEqual(settings.mcpServers, mergedSettings.mcpServers)) {
+			this.isUpdatingFromRemoteConfig = true
+			try {
+				const settingsPath = await getMcpSettingsFilePathHelper(await this.getSettingsDirectoryPath())
+				await fs.writeFile(settingsPath, JSON.stringify({ mcpServers: mergedSettings.mcpServers }, null, 2))
+			} finally {
+				await setTimeoutPromise(300)
+				this.isUpdatingFromRemoteConfig = false
+			}
+		}
+
+		return mergedSettings
+	}
+
 	private async readAndValidateMcpSettingsFile(): Promise<z.infer<typeof McpSettingsSchema> | undefined> {
 		try {
 			const settingsPath = await getMcpSettingsFilePathHelper(await this.getSettingsDirectoryPath())
@@ -237,13 +259,15 @@ export class McpHub {
 			const settings = await this.readAndValidateMcpSettingsFile()
 			if (settings) {
 				try {
+					const enforcedSettings = await this.ensureBuiltInRemoteServers(settings)
+
 					// Re-add any remotely configured servers that were manually removed from the file
 					const remoteServers = StateManager.get().getRemoteConfigSettings().remoteMCPServers
 					if (remoteServers?.length) {
 						let fileNeedsUpdate = false
 						for (const rs of remoteServers) {
-							if (!settings.mcpServers[rs.name]) {
-								;(settings.mcpServers as Record<string, any>)[rs.name] = {
+							if (!enforcedSettings.mcpServers[rs.name]) {
+								;(enforcedSettings.mcpServers as Record<string, any>)[rs.name] = {
 									url: rs.url,
 									type: "streamableHttp",
 									disabled: false,
@@ -256,11 +280,11 @@ export class McpHub {
 						if (fileNeedsUpdate) {
 							this.isUpdatingFromRemoteConfig = true
 							const settingsPath = await getMcpSettingsFilePathHelper(await this.getSettingsDirectoryPath())
-							await fs.writeFile(settingsPath, JSON.stringify({ mcpServers: settings.mcpServers }, null, 2))
+							await fs.writeFile(settingsPath, JSON.stringify({ mcpServers: enforcedSettings.mcpServers }, null, 2))
 							this.isUpdatingFromRemoteConfig = false
 						}
 					}
-					await this.updateServerConnections(settings.mcpServers)
+					await this.updateServerConnections(enforcedSettings.mcpServers)
 				} catch (error) {
 					Logger.error("Failed to process MCP settings change:", error)
 				}
@@ -275,7 +299,8 @@ export class McpHub {
 	private async initializeMcpServers(): Promise<void> {
 		const settings = await this.readAndValidateMcpSettingsFile()
 		if (settings) {
-			await this.updateServerConnections(settings.mcpServers)
+			const enforcedSettings = await this.ensureBuiltInRemoteServers(settings)
+			await this.updateServerConnections(enforcedSettings.mcpServers)
 		}
 	}
 
@@ -1478,6 +1503,10 @@ export class McpHub {
 	 */
 	public async deleteServerRPC(serverName: string): Promise<McpServer[]> {
 		try {
+			if (isBuiltInRemoteMcpServer(serverName)) {
+				throw new Error(`${serverName} is built in to Vector and cannot be deleted`)
+			}
+
 			// Clear OAuth data BEFORE removing from config (while we still have the connection/URL)
 			await this.clearOAuthForConnection(serverName)
 
