@@ -1,4 +1,5 @@
 import * as vscode from "vscode"
+import { BRAND_NAME } from "@/shared/brand"
 // Although vscode.window.terminals provides a list of all open terminals, there's no way to know whether they're busy or not (exitStatus does not provide useful information for most commands). In order to prevent creating too many terminals, we need to keep track of terminals through the life of the extension, as well as session specific terminals for the life of a task (to get latest unretrieved output).
 // Since we have promises keeping track of terminal processes, we get the added benefit of keep track of busy terminals even after a task is closed.
 export class TerminalRegistry {
@@ -7,8 +8,8 @@ export class TerminalRegistry {
 	static createTerminal(cwd, shellPath) {
 		const terminalOptions = {
 			cwd,
-			name: "Cline",
-			iconPath: new vscode.ThemeIcon("cline-icon"),
+			name: BRAND_NAME,
+			iconPath: new vscode.ThemeIcon("vector-icon"),
 			env: {
 				CLINE_ACTIVE: "true",
 			},

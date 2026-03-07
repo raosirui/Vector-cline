@@ -54,6 +54,7 @@ import { listFiles } from "@services/glob/list-files"
 import { McpHub } from "@services/mcp/McpHub"
 import { ApiConfiguration } from "@shared/api"
 import { findLast, findLastIndex } from "@shared/array"
+import { BRAND_NAME } from "@shared/brand"
 import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences } from "@shared/combineCommandSequences"
 import { ClineApiReqCancelReason, ClineApiReqInfo, ClineAsk, ClineMessage, ClineSay } from "@shared/ExtensionMessage"
@@ -2261,14 +2262,14 @@ export class Task {
 			if (autoApprovalSettings.enableNotifications) {
 				showSystemNotification({
 					subtitle: "Error",
-					message: "Cline is having trouble. Would you like to continue the task?",
+					message: `${BRAND_NAME} is having trouble. Would you like to continue the task?`,
 				})
 			}
 			const { response, text, images, files } = await this.ask(
 				"mistake_limit_reached",
 				this.api.getModel().id.includes("claude")
-					? `This may indicate a failure in Cline's thought process or inability to use a tool properly, which can be mitigated with some user guidance (e.g. "Try breaking down the task into smaller steps").`
-					: "Cline uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 4.5 Sonnet for its advanced agentic coding capabilities.",
+					? `This may indicate a failure in ${BRAND_NAME}'s thought process or inability to use a tool properly, which can be mitigated with some user guidance (e.g. "Try breaking down the task into smaller steps").`
+					: `${BRAND_NAME} uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 4.5 Sonnet for its advanced agentic coding capabilities.`,
 			)
 			if (response === "messageResponse") {
 				// Display the user's message in the chat UI

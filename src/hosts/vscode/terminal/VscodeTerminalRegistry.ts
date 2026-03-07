@@ -1,4 +1,5 @@
 import * as vscode from "vscode"
+import { BRAND_NAME } from "@/shared/brand"
 
 export interface TerminalInfo {
 	terminal: vscode.Terminal
@@ -23,8 +24,8 @@ export class TerminalRegistry {
 	static createTerminal(cwd?: string | vscode.Uri | undefined, shellPath?: string): TerminalInfo {
 		const terminalOptions: vscode.TerminalOptions = {
 			cwd,
-			name: "Cline",
-			iconPath: new vscode.ThemeIcon("cline-icon"),
+			name: BRAND_NAME,
+			iconPath: new vscode.ThemeIcon("vector-icon"),
 			env: {
 				CLINE_ACTIVE: "true",
 			},

@@ -1,5 +1,6 @@
 import { ExecuteCommandInTerminalResponse } from "@shared/proto/host/workspace"
 import * as vscode from "vscode"
+import { BRAND_NAME } from "@/shared/brand"
 import { Logger } from "@/shared/services/Logger"
 /**
  * Executes a command in a new terminal
@@ -10,8 +11,8 @@ export async function executeCommandInTerminal(request) {
 	try {
 		// Create terminal with fixed options
 		const terminalOptions = {
-			name: "Cline",
-			iconPath: new vscode.ThemeIcon("cline-icon"),
+			name: BRAND_NAME,
+			iconPath: new vscode.ThemeIcon("vector-icon"),
 			env: {
 				CLINE_ACTIVE: "true",
 			},

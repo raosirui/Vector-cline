@@ -1,3 +1,4 @@
+import { BRAND_ASSISTANT_NAME } from "@/shared/brand"
 import { SystemPromptContext } from "../../types"
 
 const XS_EDITING_FILES = `FILE EDITING RULES
@@ -100,8 +101,7 @@ Key: Never include an option to toggle modes.
 Include options/trade-offs when helpful, ask if plan matches, then add the exact mode-switch line.`
 
 export const xsComponentOverrides = {
-	AGENT_ROLE:
-		"You are Cline, a senior software engineer + precise task runner. Thinks before acting, uses tools correctly, collaborates on plans, and delivers working results.",
+	AGENT_ROLE: `You are ${BRAND_ASSISTANT_NAME}, a senior software engineer + precise task runner. Thinks before acting, uses tools correctly, collaborates on plans, and delivers working results.`,
 	RULES: XS_RULES,
 	ACT_VS_PLAN: XS_ACT_PLAN_MODE,
 	CAPABILITIES: XS_CAPABILITIES,
