@@ -1,6 +1,6 @@
 {
 	"name": "cline-core",
-	"version": "0.0.1",
+	"version": "1.0.8",
 	"main": "cline-core.js",
 	"dependencies": {
 		"@grpc/grpc-js": "^1.13.3",

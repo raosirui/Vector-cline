@@ -1,6 +1,6 @@
 {
 	"name": "cline-evals",
-	"version": "2.0.0",
+	"version": "1.0.8",
 	"description": "Evaluation framework for Cline: smoke tests, analysis, and benchmarks",
 	"scripts": {
 		"analysis": "cd analysis && npm start --",

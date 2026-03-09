@@ -666,3 +666,9 @@
 - MCP 工具接入
 
 这会是理解并用好 `Vector` 的最佳起点。
+
+## 22. 开源协议与来源说明
+
+`Vector` 基于开源项目 [Cline](https://github.com/cline/cline) 进行二次开发，并在原有能力基础上持续演进。
+
+本项目继续遵循与上游一致的 `Apache-2.0` 协议，相关授权与使用条款请参考仓库中的 [LICENSE](./LICENSE) 文件。

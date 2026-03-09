@@ -145,6 +145,12 @@ To contribute to the project, start with our [Contributing Guide](CONTRIBUTING.m
 
 Get the same Vector experience with enterprise-grade controls: SSO (SAML/OIDC), global policies and configuration, observability with audit trails, private networking (VPC/private link), and self-hosted or on-prem deployments, and enterprise support. Learn more at our [enterprise page](https://cline.bot/enterprise) or [talk to us](https://cline.bot/contact-sales).
 
+## Upstream Attribution
+
+Vector is a secondary development project based on the open-source [Cline](https://github.com/cline/cline) codebase.
+
+This project continues to follow the Apache-2.0 license terms used by Cline and includes modifications and enhancements maintained by `raosirui` and Vector contributors.
+
 
 ## License
 

@@ -1,6 +1,6 @@
 {
 	"name": "@cline/analysis",
-	"version": "1.0.0",
+	"version": "1.0.8",
 	"description": "Analysis framework for Cline evaluations with failure classification and metrics",
 	"type": "module",
 	"main": "dist/index.js",
