@@ -3,13 +3,14 @@ import { sendMcpServersUpdate } from "@core/controller/mcp/subscribeToMcpServers
 import { getMcpSettingsFilePath as getMcpSettingsFilePathHelper } from "@core/storage/disk"
 import { StateManager } from "@core/storage/StateManager"
 import { UnauthorizedError } from "@modelcontextprotocol/sdk/client/auth.js"
-import { Client } from "@modelcontextprotocol/sdk/client/index.js"
+import type { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js"
 import { getDefaultEnvironment, StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
 import {
 	CallToolResultSchema,
 	GetPromptResultSchema,
+	LATEST_PROTOCOL_VERSION,
 	ListPromptsResultSchema,
 	ListResourcesResultSchema,
 	ListResourceTemplatesResultSchema,
@@ -44,7 +45,8 @@ import { Logger } from "@/shared/services/Logger"
 import { expandEnvironmentVariables } from "@/utils/envExpansion"
 import { getServerAuthHash } from "@/utils/mcpAuth"
 import { TelemetryService } from "../telemetry/TelemetryService"
-import { DEFAULT_REQUEST_TIMEOUT_MS } from "./constants"
+import { ConfigurableMcpClient } from "./ConfigurableMcpClient"
+import { REMOTE_MCP_DEFAULT_PROTOCOL_VERSION } from "./constants"
 import { McpOAuthManager } from "./McpOAuthManager"
 import { StreamableHttpReconnectHandler } from "./StreamableHttpReconnectHandler"
 import { BaseConfigSchema, McpSettingsSchema, ServerConfigSchema } from "./schemas"
@@ -308,6 +310,20 @@ export class McpHub {
 		return this.connections.find((conn) => conn.server.name === name)
 	}
 
+	/** MCP SDK expects milliseconds; honors each server's `timeout` (seconds) in settings. */
+	private getMcpRequestTimeoutMsForServer(serverName: string): number {
+		const connection = this.connections.find((conn) => conn.server.name === serverName)
+		if (!connection?.server.config) {
+			return secondsToMs(DEFAULT_MCP_TIMEOUT_SECONDS)
+		}
+		try {
+			const parsed = ServerConfigSchema.parse(JSON.parse(connection.server.config))
+			return secondsToMs(parsed.timeout)
+		} catch {
+			return secondsToMs(DEFAULT_MCP_TIMEOUT_SECONDS)
+		}
+	}
+
 	private async connectToServer(
 		name: string,
 		config: z.infer<typeof ServerConfigSchema>,
@@ -385,14 +401,21 @@ export class McpHub {
 			// Expand environment variables in config before using it
 			const expandedConfig = expandEnvironmentVariables(config)
 
+			// Remote: SDK LATEST breaks many gateways (HTTP 500). Default to REMOTE_MCP_DEFAULT_PROTOCOL_VERSION; do not inject mcp-protocol-version headers (some gateways crash on pre-init headers).
+			const requestedInitializeProtocolVersion =
+				expandedConfig.type === "stdio"
+					? LATEST_PROTOCOL_VERSION
+					: (expandedConfig.protocolVersion ?? REMOTE_MCP_DEFAULT_PROTOCOL_VERSION)
+
 			// Each MCP server requires its own transport connection and has unique capabilities, configurations, and error handling. Having separate clients also allows proper scoping of resources/tools and independent server management like reconnection.
-			const client = new Client(
+			const client = new ConfigurableMcpClient(
 				{
-					name: "Cline",
+					name: "Vector",
 					version: this.clientVersion,
 				},
 				{
 					capabilities: {},
+					requestedInitializeProtocolVersion,
 				},
 			)
 
@@ -576,7 +599,8 @@ export class McpHub {
 
 			// Connect - wrap in try-catch to detect OAuth requirement
 			try {
-				await client.connect(transport)
+				const connectTimeoutMs = secondsToMs(expandedConfig.timeout)
+				await client.connect(transport, { timeout: connectTimeoutMs })
 			} catch (error) {
 				if (error instanceof UnauthorizedError) {
 					// Server requires OAuth authentication
@@ -713,7 +737,7 @@ export class McpHub {
 			}
 
 			const response = await connection.client.request({ method: "tools/list" }, ListToolsResultSchema, {
-				timeout: DEFAULT_REQUEST_TIMEOUT_MS,
+				timeout: this.getMcpRequestTimeoutMsForServer(serverName),
 			})
 
 			// Get autoApprove settings
@@ -745,7 +769,7 @@ export class McpHub {
 			}
 
 			const response = await connection.client.request({ method: "resources/list" }, ListResourcesResultSchema, {
-				timeout: DEFAULT_REQUEST_TIMEOUT_MS,
+				timeout: this.getMcpRequestTimeoutMsForServer(serverName),
 			})
 			return response?.resources || []
 		} catch (_error) {
@@ -767,7 +791,7 @@ export class McpHub {
 				{ method: "resources/templates/list" },
 				ListResourceTemplatesResultSchema,
 				{
-					timeout: DEFAULT_REQUEST_TIMEOUT_MS,
+					timeout: this.getMcpRequestTimeoutMsForServer(serverName),
 				},
 			)
 
@@ -788,7 +812,7 @@ export class McpHub {
 			}
 
 			const response = await connection.client.request({ method: "prompts/list" }, ListPromptsResultSchema, {
-				timeout: DEFAULT_REQUEST_TIMEOUT_MS,
+				timeout: this.getMcpRequestTimeoutMsForServer(serverName),
 			})
 
 			return (response?.prompts || []).map((prompt) => ({
@@ -1242,7 +1266,7 @@ export class McpHub {
 			},
 			GetPromptResultSchema,
 			{
-				timeout: DEFAULT_REQUEST_TIMEOUT_MS,
+				timeout: this.getMcpRequestTimeoutMsForServer(serverName),
 			},
 		)
 

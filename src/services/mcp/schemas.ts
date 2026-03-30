@@ -1,3 +1,4 @@
+import { SUPPORTED_PROTOCOL_VERSIONS } from "@modelcontextprotocol/sdk/types.js"
 import { DEFAULT_MCP_TIMEOUT_SECONDS, MIN_MCP_TIMEOUT_SECONDS } from "@shared/mcp"
 import { z } from "zod"
 import { TYPE_ERROR_MESSAGE } from "./constants"
@@ -8,6 +9,13 @@ export const BaseConfigSchema = z.object({
 	autoApprove: AutoApproveSchema.optional(),
 	disabled: z.boolean().optional(),
 	timeout: z.number().min(MIN_MCP_TIMEOUT_SECONDS).optional().default(DEFAULT_MCP_TIMEOUT_SECONDS),
+	/** MCP JSON-RPC protocol version for `initialize` (remote gateways often require older than SDK LATEST). */
+	protocolVersion: z
+		.string()
+		.optional()
+		.refine((v) => v === undefined || (SUPPORTED_PROTOCOL_VERSIONS as readonly string[]).includes(v), {
+			message: `protocolVersion must be one of: ${SUPPORTED_PROTOCOL_VERSIONS.join(", ")}`,
+		}),
 	// Marker for servers that were added by remote config sync.
 	// Used to identify which servers should be removed when they are no longer in the remote config.
 	remoteConfigured: z.boolean().optional(),

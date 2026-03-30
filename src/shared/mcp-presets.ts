@@ -22,7 +22,7 @@ export const builtInRemoteMcpPresets: BuiltInRemoteMcpPreset[] = [
 		displayName: "NSSine-NS800RT",
 		description: "Built-in remote MCP preset for the NS800RT endpoint.",
 		serverName: "NSSine-NS800RT",
-		serverUrl: "http://156.224.28.114/mcp/server/r2srNIgK3mM6Pb4t/mcp",
+		serverUrl: "http://156.224.28.114/mcp/server/OLvvEBGDaoKKD2kL/mcp",
 		transportType: "streamableHttp",
 	},
 ]
@@ -59,6 +59,8 @@ export function mergeBuiltInRemoteMcpServers(
 
 	for (const preset of builtInRemoteMcpPresets) {
 		const existingConfig = mergedServers[preset.serverName] ?? {}
+		const userUrl =
+			typeof existingConfig.url === "string" && existingConfig.url.trim().length > 0 ? existingConfig.url.trim() : undefined
 		mergedServers[preset.serverName] = {
 			disabled: typeof existingConfig.disabled === "boolean" ? existingConfig.disabled : false,
 			autoApprove: Array.isArray(existingConfig.autoApprove)
@@ -68,7 +70,12 @@ export function mergeBuiltInRemoteMcpServers(
 			...(existingConfig.headers && typeof existingConfig.headers === "object" && !Array.isArray(existingConfig.headers)
 				? { headers: existingConfig.headers }
 				: {}),
-			url: preset.serverUrl,
+			...(typeof existingConfig.protocolVersion === "string" ? { protocolVersion: existingConfig.protocolVersion } : {}),
+			...(typeof existingConfig.remoteConfigured === "boolean"
+				? { remoteConfigured: existingConfig.remoteConfigured }
+				: {}),
+			// User-edited URL must win — preset is only the default when url is missing (Dify rotates paths).
+			url: userUrl ?? preset.serverUrl,
 			type: preset.transportType,
 		}
 	}

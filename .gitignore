@@ -2,6 +2,7 @@ out
 dist
 dist-standalone
 node_modules
+.npm-cache
 tmp
 .vscode-test/
 *.vsix

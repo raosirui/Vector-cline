@@ -1,4 +1,5 @@
 # Default
+.npm-cache/**
 .vscode/**
 .vscode-test/**
 .worktrees/**
