@@ -133,6 +133,57 @@ export class OpenAiHandler implements ApiHandler {
 			reasoningEffort = requestedEffort === "none" ? undefined : (requestedEffort as ChatCompletionReasoningEffort)
 		}
 
+		const toolCallProcessor = new ToolCallProcessor()
+		const supportsStreaming = this.options.openAiModelInfo?.supportsStreaming ?? true
+
+		if (!supportsStreaming) {
+			const response = await client.chat.completions.create({
+				model: modelId,
+				messages: openAiMessages,
+				temperature,
+				max_tokens: maxTokens,
+				reasoning_effort: reasoningEffort,
+				stream: false,
+				...getOpenAIToolParams(tools),
+			})
+			const message = response.choices?.[0]?.message
+			if (message?.content) {
+				yield {
+					type: "text",
+					text: message.content,
+				}
+			}
+			if (message?.tool_calls?.length) {
+				const toolCallDeltas = message.tool_calls.flatMap((toolCall, index) =>
+					toolCall.type === "function"
+						? [
+								{
+									index,
+									id: toolCall.id,
+									type: toolCall.type,
+									function: {
+										name: toolCall.function.name,
+										arguments: toolCall.function.arguments,
+									},
+								},
+							]
+						: [],
+				)
+				yield* toolCallProcessor.processToolCallDeltas(toolCallDeltas)
+			}
+			if (response.usage) {
+				yield {
+					type: "usage",
+					inputTokens: response.usage.prompt_tokens || 0,
+					outputTokens: response.usage.completion_tokens || 0,
+					cacheReadTokens: response.usage.prompt_tokens_details?.cached_tokens || 0,
+					// @ts-expect-error-next-line
+					cacheWriteTokens: response.usage.prompt_cache_miss_tokens || 0,
+				}
+			}
+			return
+		}
+
 		const stream = await client.chat.completions.create({
 			model: modelId,
 			messages: openAiMessages,
@@ -143,8 +194,6 @@ export class OpenAiHandler implements ApiHandler {
 			stream_options: { include_usage: true },
 			...getOpenAIToolParams(tools),
 		})
-
-		const toolCallProcessor = new ToolCallProcessor()
 
 		for await (const chunk of stream) {
 			const delta = chunk.choices?.[0]?.delta

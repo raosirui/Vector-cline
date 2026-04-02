@@ -86,6 +86,9 @@ export class McpHub {
 	 */
 	private static mcpServerKeys = new Map<string, string>()
 
+	/** `${serverUid}\0${apiSegment}` -> real MCP `tools/list` name for OpenAI-native tool calls */
+	private mcpNativeToolApiAliases = new Map<string, string>()
+
 	// Store notifications for display in chat
 	private pendingNotifications: Array<{
 		serverName: string
@@ -124,6 +127,27 @@ export class McpHub {
 	 */
 	public static getMcpServerByKey(key: string): string {
 		return McpHub.mcpServerKeys.get(key) || key
+	}
+
+	clearMcpNativeToolApiAliases(): void {
+		this.mcpNativeToolApiAliases.clear()
+	}
+
+	registerMcpNativeToolApiAlias(serverUid: string, apiSegment: string, realToolName: string): void {
+		this.mcpNativeToolApiAliases.set(`${serverUid}\0${apiSegment}`, realToolName)
+	}
+
+	resolveMcpNativeToolRealName(serverUid: string, apiSegment: string): string {
+		return this.mcpNativeToolApiAliases.get(`${serverUid}\0${apiSegment}`) ?? apiSegment
+	}
+
+	resolveMcpToolNameForExecution(serverName: string, apiOrRealToolName: string): string {
+		const conn = this.connections.find((c) => c.server.name === serverName)
+		const uid = conn?.server.uid
+		if (!uid) {
+			return apiOrRealToolName
+		}
+		return this.resolveMcpNativeToolRealName(uid, apiOrRealToolName)
 	}
 
 	/**
@@ -1296,6 +1320,10 @@ export class McpHub {
 			throw new Error(`Server "${serverName}" is disabled and cannot be used`)
 		}
 
+		const resolvedToolName = connection.server.uid
+			? this.resolveMcpNativeToolRealName(connection.server.uid, toolName)
+			: toolName
+
 		let timeout = secondsToMs(DEFAULT_MCP_TIMEOUT_SECONDS) // sdk expects ms
 
 		try {
@@ -1309,7 +1337,7 @@ export class McpHub {
 		this.telemetryService.captureMcpToolCall(
 			ulid,
 			serverName,
-			toolName,
+			resolvedToolName,
 			"started",
 			undefined,
 			toolArguments ? Object.keys(toolArguments) : undefined,
@@ -1320,7 +1348,7 @@ export class McpHub {
 				{
 					method: "tools/call",
 					params: {
-						name: toolName,
+						name: resolvedToolName,
 						arguments: toolArguments,
 					},
 				},
@@ -1333,7 +1361,7 @@ export class McpHub {
 			this.telemetryService.captureMcpToolCall(
 				ulid,
 				serverName,
-				toolName,
+				resolvedToolName,
 				"success",
 				undefined,
 				toolArguments ? Object.keys(toolArguments) : undefined,
@@ -1347,7 +1375,7 @@ export class McpHub {
 			this.telemetryService.captureMcpToolCall(
 				ulid,
 				serverName,
-				toolName,
+				resolvedToolName,
 				"error",
 				error instanceof Error ? error.message : String(error),
 				toolArguments ? Object.keys(toolArguments) : undefined,

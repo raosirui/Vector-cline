@@ -15,7 +15,7 @@ export interface ClineRecommendedModelsData {
 const vectorFallbackModels: ClineRecommendedModel[] = VECTOR_PROVIDER_MODEL_IDS.map((id) => ({
 	id,
 	name: id,
-	description: "Vector Coding Plan model",
+	description: "Vector built-in model",
 	tags: ["FREE"],
 }))
 

@@ -2,7 +2,7 @@ import type { ToolUse } from "@core/assistant-message"
 import { JSONParser } from "@streamparser/json"
 import { nanoid } from "nanoid"
 import { McpHub } from "@/services/mcp/McpHub"
-import { CLINE_MCP_TOOL_IDENTIFIER } from "@/shared/mcp"
+import { parseMcpNativeCompositeToolName } from "@/shared/mcp"
 import {
 	ClineAssistantRedactedThinkingBlock,
 	ClineAssistantThinkingBlock,
@@ -186,8 +186,9 @@ class ToolUseHandler {
 				}
 			}
 
-			if (pending.name.includes(CLINE_MCP_TOOL_IDENTIFIER)) {
-				const [key, toolName] = pending.name.split(CLINE_MCP_TOOL_IDENTIFIER)
+			const mcpComposite = parseMcpNativeCompositeToolName(pending.name)
+			if (mcpComposite) {
+				const { serverKey: key, toolName } = mcpComposite
 				results.push({
 					type: "tool_use",
 					name: ClineDefaultTool.MCP_USE,

@@ -1,11 +1,7 @@
 import { ApiConfiguration, ModelInfo, QwenApiRegions } from "@shared/api"
+import { ApiFormat } from "@shared/proto/cline/models"
 import { Mode } from "@shared/storage/types"
-import {
-	VECTOR_PROVIDER_API_KEY,
-	VECTOR_PROVIDER_BASE_URL,
-	VECTOR_PROVIDER_DEFAULT_MODEL_ID,
-	VECTOR_PROVIDER_MODELS,
-} from "@shared/vector-provider"
+import { getVectorProviderRouteConfig, VECTOR_PROVIDER_DEFAULT_MODEL_ID, VECTOR_PROVIDER_MODELS } from "@shared/vector-provider"
 import { ClineStorageMessage } from "@/shared/messages/content"
 import { Logger } from "@/shared/services/Logger"
 import { ClineTool } from "@/shared/tools"
@@ -262,12 +258,31 @@ function createHandlerForProvider(
 			const clineModelId =
 				(mode === "plan" ? options.planModeClineModelId : options.actModeClineModelId) || VECTOR_PROVIDER_DEFAULT_MODEL_ID
 			const clineModelInfo = mode === "plan" ? options.planModeClineModelInfo : options.actModeClineModelInfo
+			const routeConfig = getVectorProviderRouteConfig(clineModelId)
+			const effectiveModelInfo = {
+				...(VECTOR_PROVIDER_MODELS[clineModelId] ?? {}),
+				...(clineModelInfo ?? {}),
+				// Some bridges (e.g., nextopenai Claude) can hang in streaming mode.
+				// Always enforce provider-derived transport capabilities over cached state.
+				apiFormat: routeConfig.apiFormat,
+				supportsStreaming: routeConfig.baseUrl !== "https://api.nextopenai.com",
+			}
+			if (routeConfig.apiFormat === ApiFormat.ANTHROPIC_CHAT) {
+				return new AnthropicHandler({
+					onRetryAttempt: options.onRetryAttempt,
+					apiKey: routeConfig.apiKey,
+					anthropicBaseUrl: routeConfig.baseUrl,
+					apiModelId: clineModelId,
+					thinkingBudgetTokens:
+						mode === "plan" ? options.planModeThinkingBudgetTokens : options.actModeThinkingBudgetTokens,
+				})
+			}
 			return new OpenAiHandler({
 				onRetryAttempt: options.onRetryAttempt,
-				openAiApiKey: VECTOR_PROVIDER_API_KEY,
-				openAiBaseUrl: VECTOR_PROVIDER_BASE_URL,
+				openAiApiKey: routeConfig.apiKey,
+				openAiBaseUrl: routeConfig.baseUrl,
 				openAiModelId: clineModelId,
-				openAiModelInfo: clineModelInfo || VECTOR_PROVIDER_MODELS[clineModelId],
+				openAiModelInfo: effectiveModelInfo,
 				reasoningEffort: mode === "plan" ? options.planModeReasoningEffort : options.actModeReasoningEffort,
 			})
 		}

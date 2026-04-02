@@ -560,7 +560,7 @@ const ClineModelPicker: React.FC<ClineModelPickerProps> = ({ isPopup, currentMod
 						marginTop: 0,
 						color: "var(--vscode-descriptionForeground)",
 					}}>
-					Vector includes a fixed free Coding Plan model list. If you're unsure which model to choose, start with{" "}
+					Vector includes built-in Coding Plan models. If you're unsure which model to choose, start with{" "}
 					<strong>{VECTOR_PROVIDER_DEFAULT_MODEL_ID}</strong>.
 				</p>
 			)}

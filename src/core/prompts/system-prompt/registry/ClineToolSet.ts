@@ -1,5 +1,11 @@
 import { AgentConfigLoader } from "@core/task/tools/subagent/AgentConfigLoader"
-import { CLINE_MCP_TOOL_IDENTIFIER, McpServer } from "@/shared/mcp"
+import type { McpHub } from "@/services/mcp/McpHub"
+import {
+	buildMcpNativeToolOpenApiSegment,
+	CLINE_MCP_TOOL_IDENTIFIER,
+	MCP_NATIVE_TOOL_SERVER_KEY_LENGTH,
+	McpServer,
+} from "@/shared/mcp"
 import { ModelFamily } from "@/shared/prompts"
 import { ClineDefaultTool } from "@/shared/tools"
 import { type ClineToolSpec, toolSpecFunctionDeclarations, toolSpecFunctionDefinition, toolSpecInputSchema } from "../spec"
@@ -181,7 +187,8 @@ export class ClineToolSet {
 
 		// MCP tools
 		const mcpServers = context.mcpHub?.getServers()?.filter((s) => s.disabled !== true) || []
-		const mcpTools = mcpServers?.flatMap((server) => mcpToolToClineToolSpec(variant.family, server))
+		context.mcpHub?.clearMcpNativeToolApiAliases()
+		const mcpTools = mcpServers?.flatMap((server) => mcpToolToClineToolSpec(variant.family, server, context.mcpHub))
 
 		const enabledTools = [...toolConfigs, ...mcpTools].filter(
 			(tool) => typeof tool.description === "string" && tool.description.trim().length > 0,
@@ -195,7 +202,7 @@ export class ClineToolSet {
 /**
  * Convert an MCP server's tools to ClineToolSpec format
  */
-export function mcpToolToClineToolSpec(family: ModelFamily, server: McpServer): ClineToolSpec[] {
+export function mcpToolToClineToolSpec(family: ModelFamily, server: McpServer, mcpHub?: McpHub): ClineToolSpec[] {
 	const tools = server.tools || []
 	return tools
 		.map((mcpTool) => {
@@ -235,7 +242,20 @@ export function mcpToolToClineToolSpec(family: ModelFamily, server: McpServer): 
 				})
 			}
 
-			const mcpToolName = server.uid + CLINE_MCP_TOOL_IDENTIFIER + mcpTool.name
+			const uid = server.uid
+			if (!uid || uid.length !== MCP_NATIVE_TOOL_SERVER_KEY_LENGTH) {
+				return undefined
+			}
+
+			const { apiSegment, realNameForAlias } = buildMcpNativeToolOpenApiSegment(mcpTool.name)
+			if (realNameForAlias !== undefined) {
+				if (!mcpHub) {
+					return undefined
+				}
+				mcpHub.registerMcpNativeToolApiAlias(uid, apiSegment, realNameForAlias)
+			}
+
+			const mcpToolName = uid + CLINE_MCP_TOOL_IDENTIFIER + apiSegment
 
 			// NOTE: When the name is too long, the provider API will reject the tool registration with the following error:
 			// `Invalid 'tools[n].name': string too long. Expected a string with maximum length 64, but got a string with length n instead.`
