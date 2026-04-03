@@ -34,6 +34,7 @@ import { BannerService } from "@/services/banner/BannerService"
 import { featureFlagsService } from "@/services/feature-flags"
 import { getDistinctId } from "@/services/logging/distinctId"
 import { telemetryService } from "@/services/telemetry"
+import { BRAND_NAME } from "@/shared/brand"
 import { ClineExtensionContext } from "@/shared/cline"
 import { getAxiosSettings } from "@/shared/net"
 import { ShowMessageType } from "@/shared/proto/host/window"
@@ -59,7 +60,6 @@ import { appendClineStealthModels } from "./models/refreshOpenRouterModels"
 import { checkCliInstallation } from "./state/checkCliInstallation"
 import { sendStateUpdate } from "./state/subscribeToState"
 import { sendChatButtonClickedEvent } from "./ui/subscribeToChatButtonClicked"
-import { BRAND_NAME } from "@/shared/brand"
 
 /*
 https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/default/weather-webview/src/providers/WeatherViewProvider.ts
@@ -510,42 +510,37 @@ export class Controller {
 		}
 	}
 
-	async handleAuthCallback(customToken: string, provider: string | null = null) {
+	async handleAuthCallback(customToken: string, provider: string | null = null, state: string | null = null) {
 		try {
-			await this.authService.handleAuthCallback(customToken, provider ? provider : "google")
+			await this.authService.handleAuthCallback(customToken, provider ? provider : "icai", state)
 
 			const clineProvider: ApiProvider = "cline"
 
-			// Get current settings to determine how to update providers
 			const planActSeparateModelsSetting = this.stateManager.getGlobalSettingsKey("planActSeparateModelsSetting")
-
 			const currentMode = this.stateManager.getGlobalSettingsKey("mode")
-
-			// Get current API configuration from cache
 			const currentApiConfiguration = this.stateManager.getApiConfiguration()
 
 			const updatedConfig = { ...currentApiConfiguration }
 
 			if (planActSeparateModelsSetting) {
-				// Only update the current mode's provider
 				if (currentMode === "plan") {
 					updatedConfig.planModeApiProvider = clineProvider
 				} else {
 					updatedConfig.actModeApiProvider = clineProvider
 				}
 			} else {
-				// Update both modes to keep them in sync
 				updatedConfig.planModeApiProvider = clineProvider
 				updatedConfig.actModeApiProvider = clineProvider
 			}
 
-			// Update the API configuration through cache service
 			this.stateManager.setApiConfiguration(updatedConfig)
-
-			// Mark welcome view as completed since user has successfully logged in
 			this.stateManager.setGlobalState("welcomeViewCompleted", true)
 
-			await fetchRemoteConfig(this)
+			try {
+				await fetchRemoteConfig(this)
+			} catch (remoteConfigError) {
+				Logger.warn("Remote config fetch failed (non-fatal):", remoteConfigError)
+			}
 
 			if (this.task) {
 				this.task.api = buildApiHandler({ ...updatedConfig, ulid: this.task.ulid }, currentMode)
@@ -553,13 +548,12 @@ export class Controller {
 
 			await this.postStateToWebview()
 		} catch (error) {
-			Logger.error("Failed to handle auth callback:", error)
+			const errorMessage = error instanceof Error ? error.message : String(error)
+			Logger.error(`Failed to handle auth callback: ${errorMessage}`, error)
 			HostProvider.window.showMessage({
 				type: ShowMessageType.ERROR,
-				message: "Failed to log in to Cline",
+				message: `Failed to log in to ${BRAND_NAME}: ${errorMessage}`,
 			})
-			// Even on login failure, we preserve any existing tokens
-			// Only clear tokens on explicit logout
 		}
 	}
 

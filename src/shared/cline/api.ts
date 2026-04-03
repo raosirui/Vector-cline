@@ -1,17 +1,17 @@
-enum CLINE_API_AUTH_ENDPOINTS {
-	AUTH = "/api/v1/auth/authorize",
-	REFRESH_TOKEN = "/api/v1/auth/refresh",
+export const ICAI_API_ENDPOINT = {
+	EXTENSION_TOKEN: "/api/extension/token",
+	USER_INFO: "/api/extension/user-info",
 }
 
-enum CLINE_API_ENDPOINT_V1 {
-	TOKEN_EXCHANGE = "/api/v1/auth/token",
-	USER_INFO = "/api/v1/users/me",
-	ACTIVE_ACCOUNT = "/api/v1/users/active-account",
-	REMOTE_CONFIG = "/api/v1/organizations/{id}/remote-config",
-	API_KEYS = "/api/v1/organizations/{id}/api-keys",
-}
-
+/**
+ * @deprecated Use ICAI_API_ENDPOINT instead. Kept for backward compatibility with code that references these.
+ */
 export const CLINE_API_ENDPOINT = {
-	...CLINE_API_AUTH_ENDPOINTS,
-	...CLINE_API_ENDPOINT_V1,
+	AUTH: ICAI_API_ENDPOINT.EXTENSION_TOKEN,
+	TOKEN_EXCHANGE: ICAI_API_ENDPOINT.EXTENSION_TOKEN,
+	REFRESH_TOKEN: ICAI_API_ENDPOINT.EXTENSION_TOKEN,
+	USER_INFO: ICAI_API_ENDPOINT.USER_INFO,
+	ACTIVE_ACCOUNT: ICAI_API_ENDPOINT.USER_INFO,
+	REMOTE_CONFIG: "/api/v1/organizations/{id}/remote-config",
+	API_KEYS: "/api/v1/organizations/{id}/api-keys",
 }

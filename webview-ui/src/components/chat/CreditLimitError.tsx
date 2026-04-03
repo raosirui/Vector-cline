@@ -14,8 +14,8 @@ interface CreditLimitErrorProps {
 }
 
 const DEFAULT_BUY_CREDITS_URL = {
-	USER: "https://app.cline.bot/dashboard/account?tab=credits&redirect=true",
-	ORG: "https://app.cline.bot/dashboard/organization?tab=credits&redirect=true",
+	USER: "https://vectoraifae.online/settings",
+	ORG: "https://vectoraifae.online/settings",
 }
 
 const CreditLimitError: React.FC<CreditLimitErrorProps> = ({
@@ -48,7 +48,7 @@ const CreditLimitError: React.FC<CreditLimitErrorProps> = ({
 		fetchCallbackUrl()
 	}, [dashboardUrl])
 
-	// We have to divide because the balance is stored in microcredits
+	// IC-AI returns credits as plain integers
 	return (
 		<div className="p-2 border-none rounded-md mb-2 bg-(--vscode-textBlockQuote-background)">
 			<div className="mb-3 font-azeret-mono">

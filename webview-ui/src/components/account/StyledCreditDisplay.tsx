@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react"
-import { formatCreditsBalance } from "@/utils/format"
 
-// Custom hook for animated credit display with styled decimals
-const useAnimatedCredits = (targetValue: number, duration: number = 660) => {
+const useAnimatedCredits = (targetValue: number, duration = 660) => {
 	const [currentValue, setCurrentValue] = useState(0)
 	const animationRef = useRef<number>()
 	const startTimeRef = useRef<number>()
@@ -16,7 +14,6 @@ const useAnimatedCredits = (targetValue: number, duration: number = 660) => {
 			const elapsed = timestamp - startTimeRef.current
 			const progress = Math.min(elapsed / duration, 1)
 
-			// Easing function (ease-out)
 			const easedProgress = 1 - (1 - progress) ** 3
 			const newValue = easedProgress * targetValue
 
@@ -27,7 +24,6 @@ const useAnimatedCredits = (targetValue: number, duration: number = 660) => {
 			}
 		}
 
-		// Reset and start animation
 		startTimeRef.current = undefined
 		animationRef.current = requestAnimationFrame(animate)
 
@@ -41,20 +37,9 @@ const useAnimatedCredits = (targetValue: number, duration: number = 660) => {
 	return currentValue
 }
 
-// Custom component to handle styled credit display
 export const StyledCreditDisplay = ({ balance }: { balance: number }) => {
-	const animatedValue = useAnimatedCredits(formatCreditsBalance(balance))
-	const formatted = animatedValue.toFixed(4)
-	const parts = formatted.split(".")
-	const wholePart = parts[0]
-	const decimalPart = parts[1] || "0000"
-	const firstTwoDecimals = decimalPart.slice(0, 2)
-	const lastTwoDecimals = decimalPart.slice(2)
+	const animatedValue = useAnimatedCredits(balance)
+	const whole = Math.floor(animatedValue)
 
-	return (
-		<span className="font-azeret-mono font-light tabular-nums text-2xl">
-			{wholePart}.{firstTwoDecimals}
-			<span className="text-description text-2xl">{lastTwoDecimals}</span>
-		</span>
-	)
+	return <span className="font-azeret-mono font-light tabular-nums text-2xl">{whole}</span>
 }

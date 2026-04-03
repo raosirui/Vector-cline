@@ -3,10 +3,10 @@ import { Controller } from "@core/controller/index"
 import axios from "axios"
 import { readFile } from "fs/promises"
 import { HostProvider } from "@/hosts/host-provider"
+import { BRAND_NAME } from "@/shared/brand"
 import { ClineExtensionContext } from "@/shared/cline"
 import { ShowMessageType } from "@/shared/proto/host/window"
 import { Logger } from "@/shared/services/Logger"
-import { BRAND_NAME } from "@/shared/brand"
 import { getNonce } from "./getNonce"
 
 export abstract class WebviewProvider {
@@ -110,7 +110,7 @@ export abstract class WebviewProvider {
 				<link rel="stylesheet" type="text/css" href="${stylesUrl}">
 				<link href="${codiconsUrl}" rel="stylesheet" />
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none';
-					connect-src https://*.posthog.com https://*.cline.bot; 
+					connect-src https://*.posthog.com https://*.cline.bot https://vectoraifae.online; 
 					font-src ${this.getCspSource()} data:; 
 					style-src ${this.getCspSource()} 'unsafe-inline'; 
 					img-src ${this.getCspSource()} https: data:; 
@@ -171,8 +171,7 @@ export abstract class WebviewProvider {
 			if (process.env.IS_DEV) {
 				HostProvider.window.showMessage({
 					type: ShowMessageType.ERROR,
-					message:
-						`${BRAND_NAME}: Local webview dev server is not running, HMR will not work. Please run 'npm run dev:webview' before launching the extension to enable HMR. Using bundled assets.`,
+					message: `${BRAND_NAME}: Local webview dev server is not running, HMR will not work. Please run 'npm run dev:webview' before launching the extension to enable HMR. Using bundled assets.`,
 				})
 			}
 

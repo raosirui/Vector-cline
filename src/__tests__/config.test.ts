@@ -21,9 +21,7 @@ describe("ClineEndpoint configuration", () => {
 
 		// Stub os.homedir to return our temp directory
 		originalHomedir = os.homedir
-		sandbox
-			.stub(os, "homedir")
-			.returns(tempDir)
+		sandbox.stub(os, "homedir").returns(tempDir)
 
 		// Reset the singleton state using internal method
 		;(ClineEndpoint as any)._instance = null
@@ -70,8 +68,8 @@ describe("ClineEndpoint configuration", () => {
 			const config = ClineEndpoint.config
 			config.environment.should.not.equal(Environment.selfHosted)
 			// Should use production defaults
-			config.appBaseUrl.should.equal("https://app.cline.bot")
-			config.apiBaseUrl.should.equal("https://api.cline.bot")
+			config.appBaseUrl.should.equal("https://vectoraifae.online")
+			config.apiBaseUrl.should.equal("https://vectoraifae.online")
 		})
 
 		it("should accept URLs with ports", async () => {
@@ -635,8 +633,8 @@ describe("ClineEndpoint configuration", () => {
 			// Should use production defaults
 			const config = ClineEndpoint.config
 			config.environment.should.not.equal(Environment.selfHosted)
-			config.appBaseUrl.should.equal("https://app.cline.bot")
-			config.apiBaseUrl.should.equal("https://api.cline.bot")
+			config.appBaseUrl.should.equal("https://vectoraifae.online")
+			config.apiBaseUrl.should.equal("https://vectoraifae.online")
 		})
 
 		it("should throw ClineConfigurationError for invalid bundled file", async () => {

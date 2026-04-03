@@ -4,10 +4,9 @@ import { Logger } from "@/shared/services/Logger"
 import type { Controller } from "../index"
 
 /**
- * Handles fetching all user credits data (balance, usage, payments)
- * @param controller The controller instance
- * @param request Empty request
- * @returns User credits data response
+ * Handles fetching user credits data from IC-AI.
+ * IC-AI returns credits as a simple integer (remainingCredits),
+ * not in microcredits, so no division is needed.
  */
 export async function getUserCredits(controller: Controller, _request: EmptyRequest): Promise<UserCreditsData> {
 	try {
@@ -15,22 +14,16 @@ export async function getUserCredits(controller: Controller, _request: EmptyRequ
 			throw new Error("Account service not available")
 		}
 
-		// Call the individual RPC variants in parallel
-		const [balance, usageTransactions, paymentTransactions] = await Promise.all([
-			controller.accountService.fetchBalanceRPC(),
-			controller.accountService.fetchUsageTransactionsRPC(),
-			controller.accountService.fetchPaymentTransactionsRPC(),
-		])
+		const balance = await controller.accountService.fetchBalanceRPC()
 
-		// If either call fails (returns undefined), throw an error
 		if (balance === undefined) {
 			throw new Error("Failed to fetch user credits data")
 		}
 
 		return UserCreditsData.create({
-			balance: balance ? { currentBalance: balance.balance / 100 } : { currentBalance: 0 },
-			usageTransactions: usageTransactions,
-			paymentTransactions: paymentTransactions,
+			balance: { currentBalance: balance.balance },
+			usageTransactions: [],
+			paymentTransactions: [],
 		})
 	} catch (error) {
 		Logger.error(`Failed to fetch user credits data: ${error}`)

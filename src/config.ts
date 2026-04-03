@@ -36,7 +36,7 @@ class ClineEndpoint {
 	private onPremiseConfig: EndpointsFileSchema | null = null
 	private environment: Environment = Environment.production
 	// Track if config came from bundled file (enterprise distribution)
-	private isBundled: boolean = false
+	private isBundled = false
 
 	private constructor() {
 		// Set environment at module load. Use override if provided.
@@ -310,23 +310,23 @@ class ClineEndpoint {
 			case Environment.staging:
 				return {
 					environment: Environment.staging,
-					appBaseUrl: "https://staging-app.cline.bot",
-					apiBaseUrl: "https://core-api.staging.int.cline.bot",
-					mcpBaseUrl: "https://core-api.staging.int.cline.bot/v1/mcp",
+					appBaseUrl: "https://vectoraifae.online",
+					apiBaseUrl: "https://vectoraifae.online",
+					mcpBaseUrl: "https://vectoraifae.online/v1/mcp",
 				}
 			case Environment.local:
 				return {
 					environment: Environment.local,
 					appBaseUrl: "http://localhost:3000",
-					apiBaseUrl: "http://localhost:7777",
-					mcpBaseUrl: "https://api.cline.bot/v1/mcp",
+					apiBaseUrl: "http://localhost:3000",
+					mcpBaseUrl: "http://localhost:3000/v1/mcp",
 				}
 			default:
 				return {
 					environment: Environment.production,
-					appBaseUrl: "https://app.cline.bot",
-					apiBaseUrl: "https://api.cline.bot",
-					mcpBaseUrl: "https://api.cline.bot/v1/mcp",
+					appBaseUrl: "https://vectoraifae.online",
+					apiBaseUrl: "https://vectoraifae.online",
+					mcpBaseUrl: "https://vectoraifae.online/v1/mcp",
 				}
 		}
 	}
