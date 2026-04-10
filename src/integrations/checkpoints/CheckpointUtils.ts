@@ -46,9 +46,8 @@ export async function validateWorkspacePath(workspacePath: string): Promise<void
 	try {
 		await access(workspacePath, constants.R_OK)
 	} catch (error) {
-		throw new Error(
-			`Cannot access workspace directory. Please ensure VS Code has permission to access your workspace. Error: ${error instanceof Error ? error.message : String(error)}`,
-		)
+		const detail = error instanceof Error ? error.message : String(error)
+		throw new Error(`The workspace folder could not be read. Check that this editor has permission to access it. (${detail})`)
 	}
 
 	const homedir = os.homedir()
@@ -58,13 +57,21 @@ export async function validateWorkspacePath(workspacePath: string): Promise<void
 
 	switch (workspacePath) {
 		case homedir:
-			throw new Error("Cannot use checkpoints in home directory")
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your user home directory. Open a project folder inside it instead.",
+			)
 		case desktopPath:
-			throw new Error("Cannot use checkpoints in Desktop directory")
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your Desktop itself. Open the folder for your project (e.g. a subfolder on Desktop) or another location.",
+			)
 		case documentsPath:
-			throw new Error("Cannot use checkpoints in Documents directory")
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your Documents library root. Open a project subfolder under Documents instead.",
+			)
 		case downloadsPath:
-			throw new Error("Cannot use checkpoints in Downloads directory")
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your Downloads folder. Open a dedicated project folder outside Downloads.",
+			)
 	}
 }
 
@@ -87,7 +94,7 @@ export async function validateWorkspacePath(workspacePath: string): Promise<void
 export async function getWorkingDirectory(): Promise<string> {
 	const cwd = await getCwd()
 	if (!cwd) {
-		throw new Error("No workspace detected. Please open Cline in a workspace to use checkpoints.")
+		throw new Error("No folder workspace is open. Open a project folder to use checkpoints.")
 	}
 
 	await validateWorkspacePath(cwd)

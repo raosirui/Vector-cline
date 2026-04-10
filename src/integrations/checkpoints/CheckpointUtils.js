@@ -1,8 +1,8 @@
-import { access, constants, mkdir } from "fs/promises";
-import os from "os";
-import * as path from "path";
-import { HostProvider } from "@/hosts/host-provider";
-import { getCwd, getDesktopDir } from "@/utils/path";
+import { access, constants, mkdir } from "fs/promises"
+import os from "os"
+import * as path from "path"
+import { HostProvider } from "@/hosts/host-provider"
+import { getCwd, getDesktopDir } from "@/utils/path"
 /**
  * Gets the path to the shadow Git repository in globalStorage.
  *
@@ -17,10 +17,10 @@ import { getCwd, getDesktopDir } from "@/utils/path";
  * @throws Error if global storage path is invalid
  */
 export async function getShadowGitPath(cwdHash) {
-    const checkpointsDir = path.join(HostProvider.get().globalStorageFsPath, "checkpoints", cwdHash);
-    await mkdir(checkpointsDir, { recursive: true });
-    const gitPath = path.join(checkpointsDir, ".git");
-    return gitPath;
+	const checkpointsDir = path.join(HostProvider.get().globalStorageFsPath, "checkpoints", cwdHash)
+	await mkdir(checkpointsDir, { recursive: true })
+	const gitPath = path.join(checkpointsDir, ".git")
+	return gitPath
 }
 /**
  * Validates that a workspace path is safe for checkpoints.
@@ -40,27 +40,35 @@ export async function getShadowGitPath(cwdHash) {
  * @throws Error if the path is in a protected directory or if no read access
  */
 export async function validateWorkspacePath(workspacePath) {
-    // Check if directory exists and we have read permissions
-    try {
-        await access(workspacePath, constants.R_OK);
-    }
-    catch (error) {
-        throw new Error(`Cannot access workspace directory. Please ensure VS Code has permission to access your workspace. Error: ${error instanceof Error ? error.message : String(error)}`);
-    }
-    const homedir = os.homedir();
-    const desktopPath = getDesktopDir();
-    const documentsPath = path.join(homedir, "Documents");
-    const downloadsPath = path.join(homedir, "Downloads");
-    switch (workspacePath) {
-        case homedir:
-            throw new Error("Cannot use checkpoints in home directory");
-        case desktopPath:
-            throw new Error("Cannot use checkpoints in Desktop directory");
-        case documentsPath:
-            throw new Error("Cannot use checkpoints in Documents directory");
-        case downloadsPath:
-            throw new Error("Cannot use checkpoints in Downloads directory");
-    }
+	// Check if directory exists and we have read permissions
+	try {
+		await access(workspacePath, constants.R_OK)
+	} catch (error) {
+		const detail = error instanceof Error ? error.message : String(error)
+		throw new Error(`The workspace folder could not be read. Check that this editor has permission to access it. (${detail})`)
+	}
+	const homedir = os.homedir()
+	const desktopPath = getDesktopDir()
+	const documentsPath = path.join(homedir, "Documents")
+	const downloadsPath = path.join(homedir, "Downloads")
+	switch (workspacePath) {
+		case homedir:
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your user home directory. Open a project folder inside it instead.",
+			)
+		case desktopPath:
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your Desktop itself. Open the folder for your project (e.g. a subfolder on Desktop) or another location.",
+			)
+		case documentsPath:
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your Documents library root. Open a project subfolder under Documents instead.",
+			)
+		case downloadsPath:
+			throw new Error(
+				"Checkpoints are not available when the opened folder is your Downloads folder. Open a dedicated project folder outside Downloads.",
+			)
+	}
 }
 /**
  * Gets the current working directory from the VS Code workspace.
@@ -79,12 +87,12 @@ export async function validateWorkspacePath(workspacePath) {
  * @throws Error if no workspace is detected, if in a protected directory, or if no read access
  */
 export async function getWorkingDirectory() {
-    const cwd = await getCwd();
-    if (!cwd) {
-        throw new Error("No workspace detected. Please open Cline in a workspace to use checkpoints.");
-    }
-    await validateWorkspacePath(cwd);
-    return cwd;
+	const cwd = await getCwd()
+	if (!cwd) {
+		throw new Error("No folder workspace is open. Open a project folder to use checkpoints.")
+	}
+	await validateWorkspacePath(cwd)
+	return cwd
 }
 /**
  * Hashes the current working directory to a 13-character numeric hash.
@@ -93,15 +101,15 @@ export async function getWorkingDirectory() {
  * @throws {Error} If the working directory path is empty or invalid
  */
 export function hashWorkingDir(workingDir) {
-    if (!workingDir) {
-        throw new Error("Working directory path cannot be empty");
-    }
-    let hash = 0;
-    for (let i = 0; i < workingDir.length; i++) {
-        hash = (hash * 31 + workingDir.charCodeAt(i)) >>> 0;
-    }
-    const bigHash = BigInt(hash);
-    const numericHash = bigHash.toString().slice(0, 13);
-    return numericHash;
+	if (!workingDir) {
+		throw new Error("Working directory path cannot be empty")
+	}
+	let hash = 0
+	for (let i = 0; i < workingDir.length; i++) {
+		hash = (hash * 31 + workingDir.charCodeAt(i)) >>> 0
+	}
+	const bigHash = BigInt(hash)
+	const numericHash = bigHash.toString().slice(0, 13)
+	return numericHash
 }
 //# sourceMappingURL=CheckpointUtils.js.map

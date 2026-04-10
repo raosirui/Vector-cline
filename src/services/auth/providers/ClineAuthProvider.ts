@@ -1,7 +1,11 @@
+import { jwtDecode } from "jwt-decode"
 import { ClineEnv } from "@/config"
 import { Controller } from "@/core/controller"
 import { Logger } from "@/shared/services/Logger"
 import { type ClineAccountUserInfo, type ClineAuthInfo } from "../AuthService"
+
+/** Audiences issued by IC-AI / Vector for VS Code extension tokens */
+const EXTENSION_JWT_AUDIENCES = new Set(["vector-vscode", "cline-vscode"])
 
 interface ICAIJwtPayload {
 	sub: string
@@ -11,7 +15,16 @@ interface ICAIJwtPayload {
 	iat: number
 	exp: number
 	iss: string
-	aud: string
+	/** Single audience or list (JWT RFC allows both) */
+	aud?: string | string[]
+}
+
+function jwtAudienceIsAllowed(aud: string | string[] | undefined): boolean {
+	if (aud == null) {
+		return false
+	}
+	const list = Array.isArray(aud) ? aud : [aud]
+	return list.some((a) => EXTENSION_JWT_AUDIENCES.has(a))
 }
 
 export class ClineAuthProvider {
@@ -32,8 +45,8 @@ export class ClineAuthProvider {
 				)
 				return null
 			}
-			const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"))
-			return payload as ICAIJwtPayload
+			// Use jwt-decode so base64url (- _) and padding are handled correctly (Buffer "base64" alone is not JWT-safe).
+			return jwtDecode<ICAIJwtPayload>(cleaned)
 		} catch (error) {
 			Logger.error("[parseJwt] Failed to parse JWT:", error)
 			return null
@@ -90,8 +103,8 @@ export class ClineAuthProvider {
 			}
 			Logger.info(`[signIn] JWT parsed: sub=${payload.sub}, aud=${payload.aud}, exp=${payload.exp}`)
 
-			if (payload.aud !== "vector-vscode") {
-				throw new Error(`Invalid JWT audience: ${payload.aud}`)
+			if (!jwtAudienceIsAllowed(payload.aud)) {
+				throw new Error(`Invalid JWT audience: ${JSON.stringify(payload.aud)}`)
 			}
 
 			if (payload.exp < Date.now() / 1000) {
