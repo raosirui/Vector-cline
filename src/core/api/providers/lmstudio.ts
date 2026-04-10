@@ -1,6 +1,7 @@
 import { type ModelInfo, openAiModelInfoSaneDefaults } from "@shared/api"
 import OpenAI from "openai"
 import type { ChatCompletionTool as OpenAITool } from "openai/resources/chat/completions"
+import { BRAND_NAME } from "@/shared/brand"
 import { ClineStorageMessage } from "@/shared/messages/content"
 import { createOpenAIClient } from "@/shared/net"
 import type { ApiHandler, CommonApiHandlerOptions } from "../"
@@ -90,7 +91,7 @@ export class LmStudioHandler implements ApiHandler {
 		} catch {
 			// LM Studio doesn't return an error code/body for now
 			throw new Error(
-				"Please check the LM Studio developer logs to debug what went wrong. You may need to load the model with a larger context length to work with Cline's prompts. Alternatively, try enabling Compact Prompt in your settings when working with a limited context window.",
+				`Please check the LM Studio developer logs to debug what went wrong. You may need to load the model with a larger context length to work with ${BRAND_NAME}'s prompts. Alternatively, try enabling Compact Prompt in your settings when working with a limited context window.`,
 			)
 		}
 	}

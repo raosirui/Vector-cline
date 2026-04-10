@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@shared/brand"
 import { ClineMessage } from "@shared/ExtensionMessage"
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { useMemo } from "react"
@@ -206,7 +207,7 @@ export const InteractiveSignIn: Story = {
 		message: createMockMessage(),
 		errorType: "error",
 		apiRequestFailedMessage: JSON.stringify({
-			message: "Please sign in to access Cline services.",
+			message: `Please sign in to access ${BRAND_NAME} services.`,
 			code: "ERR_BAD_REQUEST",
 			request_id: "req_signin_test",
 			providerId: "cline",
@@ -216,7 +217,7 @@ export const InteractiveSignIn: Story = {
 		const canvas = within(canvasElement)
 
 		// Find the sign in button
-		const signInButton = canvas.getByRole("button", { name: /sign in to cline/i })
+		const signInButton = canvas.getByRole("button", { name: new RegExp(`sign in to ${BRAND_NAME}`, "i") })
 		await expect(signInButton).toBeInTheDocument()
 
 		// Test button is clickable

@@ -5,6 +5,7 @@ import { constructNewFileContent, getLineNumberFromCharIndex } from "@core/assis
 import { formatResponse } from "@core/prompts/responses"
 import { getWorkspaceBasename, resolveWorkspacePath } from "@core/workspace"
 import { processFilesIntoText } from "@integrations/misc/extract-text"
+import { BRAND_NAME } from "@shared/brand"
 import { ClineSayTool } from "@shared/ExtensionMessage"
 import { getLastApiReqTotalTokens } from "@shared/getApiMetrics"
 import { fileExistsAtPath } from "@utils/fs"
@@ -134,9 +135,9 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 
 			await config.callbacks.say(
 				"error",
-				`Cline tried to use write_to_file for '${relPath}' without value for required parameter 'content'. ${
+				`${BRAND_NAME} tried to use write_to_file for '${relPath}' without value for required parameter 'content'. ${
 					config.taskState.consecutiveMistakeCount >= 2
-						? "This has happened multiple times — Cline will try a different approach."
+						? `This has happened multiple times — ${BRAND_NAME} will try a different approach.`
 						: "Retrying..."
 				}`,
 			)
@@ -229,7 +230,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 				await setTimeoutPromise(3_500)
 			} else {
 				// Manual approval flow with detailed feedback handling
-				const notificationMessage = `Cline wants to ${fileExists ? "edit" : "create"} ${getWorkspaceBasename(relPath, "WriteToFile.notification")}`
+				const notificationMessage = `${BRAND_NAME} wants to ${fileExists ? "edit" : "create"} ${getWorkspaceBasename(relPath, "WriteToFile.notification")}`
 
 				// Show notification
 				showNotificationForApproval(notificationMessage, config.autoApprovalSettings.enableNotifications)

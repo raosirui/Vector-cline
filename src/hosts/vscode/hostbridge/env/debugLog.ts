@@ -1,7 +1,8 @@
+import { BRAND_NAME } from "@shared/brand"
 import { Empty, StringRequest } from "@shared/proto/cline/common"
 import * as vscode from "vscode"
 
-const CLINE_OUTPUT_CHANNEL = vscode.window.createOutputChannel("Cline")
+const CLINE_OUTPUT_CHANNEL = vscode.window.createOutputChannel(BRAND_NAME)
 
 // Appends a log message to all Cline output channels.
 export async function debugLog(request: StringRequest): Promise<Empty> {

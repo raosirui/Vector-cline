@@ -2,6 +2,7 @@ import { mkdtempSync, type PathLike, type RmOptions, rmSync } from "node:fs"
 import * as os from "node:os"
 import * as path from "node:path"
 import { type ElectronApplication, expect, type Frame, type Page, test } from "@playwright/test"
+import { BRAND_NAME } from "@shared/brand"
 import { downloadAndUnzipVSCode, SilentReporter } from "@vscode/test-electron"
 import { _electron } from "playwright"
 import { ClineApiServerMock } from "../fixtures/server"
@@ -84,7 +85,7 @@ export class E2ETestHelper {
 
 				try {
 					const title = await frame.title()
-					if (title.startsWith("Cline")) {
+					if (title.startsWith(BRAND_NAME)) {
 						this.cachedFrame = frame
 						return frame
 					}
@@ -119,16 +120,19 @@ export class E2ETestHelper {
 	}
 
 	public async signin(webview: Frame): Promise<void> {
-		await webview.getByRole("button", { name: "Login to Cline" }).click({ delay: 100 })
+		await webview.getByRole("button", { name: `Login to ${BRAND_NAME}` }).click({ delay: 100 })
 
 		// Verify start up page is no longer visible
-		await expect(webview.getByRole("button", { name: "Login to Cline" })).not.toBeVisible()
+		await expect(webview.getByRole("button", { name: `Login to ${BRAND_NAME}` })).not.toBeVisible()
 
 		await webview.getByRole("button", { name: "Close" }).click({ delay: 50 })
 	}
 
 	public static async openClineSidebar(page: Page): Promise<void> {
-		await page.getByRole("tab", { name: /Cline/ }).locator("a").click()
+		await page
+			.getByRole("tab", { name: new RegExp(BRAND_NAME) })
+			.locator("a")
+			.click()
 	}
 
 	public static async runCommandPalette(page: Page, command: string): Promise<void> {

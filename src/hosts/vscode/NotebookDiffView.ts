@@ -1,6 +1,7 @@
 import * as os from "os"
 import * as path from "path"
 import * as vscode from "vscode"
+import { BRAND_NAME } from "@/shared/brand"
 import { Logger } from "@/shared/services/Logger"
 
 /**
@@ -62,7 +63,7 @@ export class NotebookDiffView {
 			"vscode.diff",
 			uri,
 			this.tempModifiedUri,
-			`${fileName}: Original ↔ Cline's Changes (Notebook)`,
+			`${fileName}: Original ↔ ${BRAND_NAME}'s Changes (Notebook)`,
 		)
 
 		// Brief delay to allow VS Code to render the notebook diff view

@@ -2,6 +2,7 @@ import type { ToolUse } from "@core/assistant-message"
 import { formatResponse } from "@core/prompts/responses"
 import { processFilesIntoText } from "@integrations/misc/extract-text"
 import { showSystemNotification } from "@integrations/notifications"
+import { BRAND_NAME } from "@/shared/brand"
 import { ClineDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
@@ -38,8 +39,8 @@ export class NewTaskHandler implements IToolHandler, IPartialBlockHandler {
 		// Show notification if enabled
 		if (config.autoApprovalSettings.enableNotifications) {
 			showSystemNotification({
-				subtitle: "Cline wants to start a new task...",
-				message: `Cline is suggesting to start a new task with: ${context}`,
+				subtitle: `${BRAND_NAME} wants to start a new task...`,
+				message: `${BRAND_NAME} is suggesting to start a new task with: ${context}`,
 			})
 		}
 
@@ -59,9 +60,8 @@ export class NewTaskHandler implements IToolHandler, IPartialBlockHandler {
 				images,
 				fileContentString,
 			)
-		} else {
-			// If no response, the user clicked the "Create New Task" button
-			return formatResponse.toolResult(`The user has created a new task with the provided context.`)
 		}
+		// If no response, the user clicked the "Create New Task" button
+		return formatResponse.toolResult(`The user has created a new task with the provided context.`)
 	}
 }

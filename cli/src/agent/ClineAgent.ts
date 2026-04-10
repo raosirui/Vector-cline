@@ -36,6 +36,7 @@ import {
 	xaiDefaultModelId,
 	xaiModels,
 } from "@shared/api"
+import { BRAND_NAME, brandText } from "@shared/brand"
 import type { ClineAsk, ClineMessage as ClineMessageType } from "@shared/ExtensionMessage"
 import { CLI_ONLY_COMMANDS, VSCODE_ONLY_COMMANDS } from "@shared/slashCommands"
 import { getProviderModelIdKey } from "@shared/storage/provider-keys"
@@ -207,8 +208,8 @@ export class ClineAgent implements acp.Agent {
 			authMethods: [
 				{
 					id: "cline-oauth",
-					name: "Sign in with Cline",
-					description: "Authenticate with your Cline account via browser OAuth",
+					name: brandText.signInWithBrand,
+					description: `Authenticate with your ${BRAND_NAME} account via browser OAuth`,
 				},
 				{
 					id: "openai-codex-oauth",

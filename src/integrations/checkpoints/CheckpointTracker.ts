@@ -5,6 +5,7 @@ import * as path from "path"
 import simpleGit from "simple-git"
 import type { FolderLockWithRetryResult } from "@/core/locks/types"
 import { telemetryService } from "@/services/telemetry"
+import { BRAND_NAME } from "@/shared/brand"
 import { Logger } from "@/shared/services/Logger"
 import { GitOperations } from "./CheckpointGitOperations"
 import { releaseCheckpointLock, tryAcquireCheckpointLockWithRetry } from "./CheckpointLockUtils"
@@ -210,7 +211,7 @@ class CheckpointTracker {
 	 * - Stage or commit files
 	 */
 	public async commit(): Promise<string | undefined> {
-		let lockAcquired: boolean = false
+		let lockAcquired = false
 
 		try {
 			await this.sendCheckpointSubscriptionEvent("CHECKPOINT_COMMIT", true)
@@ -222,7 +223,7 @@ class CheckpointTracker {
 			// Locking failed due to conflicting lock
 			if (!lockResult.acquired && !lockResult.skipped) {
 				throw new Error(
-					"Failed to acquire checkpoint folder lock - another Cline instance may be performing checkpoint operations",
+					`Failed to acquire checkpoint folder lock - another ${BRAND_NAME} instance may be performing checkpoint operations`,
 				)
 			}
 
@@ -334,7 +335,7 @@ class CheckpointTracker {
 	 * - Reset to target commit
 	 */
 	public async resetHead(commitHash: string): Promise<void> {
-		let lockAcquired: boolean = false
+		let lockAcquired = false
 
 		try {
 			Logger.info(`Resetting to checkpoint: ${commitHash}`)
@@ -345,7 +346,7 @@ class CheckpointTracker {
 			// Locking failed due to conflicting lock
 			if (!lockResult.acquired && !lockResult.skipped) {
 				throw new Error(
-					"Failed to acquire checkpoint folder lock - another Cline instance may be performing checkpoint operations",
+					`Failed to acquire checkpoint folder lock - another ${BRAND_NAME} instance may be performing checkpoint operations`,
 				)
 			}
 

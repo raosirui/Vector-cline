@@ -14,6 +14,7 @@
 
 import { ClineTempManager } from "@services/temp"
 import * as fs from "fs"
+import { BRAND_NAME } from "@/shared/brand"
 import { BACKGROUND_COMMAND_TIMEOUT_MS, DEFAULT_TERMINAL_OUTPUT_LINE_LIMIT } from "../constants"
 import type { BackgroundCommand, ITerminalManager, TerminalInfo, TerminalProcessResultPromise } from "../types"
 import { StandaloneTerminalProcess } from "./StandaloneTerminalProcess"
@@ -166,7 +167,7 @@ export class StandaloneTerminalManager implements ITerminalManager {
 		// Create new terminal
 		const newTerminalInfo = this.registry.createTerminal({
 			cwd: cwd,
-			name: `Cline Terminal ${this.registry.size + 1}`,
+			name: `${BRAND_NAME} Terminal ${this.registry.size + 1}`,
 		})
 		this.terminalIds.add(newTerminalInfo.id)
 		return newTerminalInfo

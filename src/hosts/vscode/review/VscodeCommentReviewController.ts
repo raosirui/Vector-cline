@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "@shared/brand"
 import * as vscode from "vscode"
 import { sendAddToInputEvent } from "@/core/controller/ui/subscribeToAddToInput"
 import { CommentReviewController, type OnReplyCallback, type ReviewComment } from "@/integrations/editor/CommentReviewController"
@@ -25,17 +26,17 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 
 	/** The currently streaming comment thread */
 	private streamingThread: vscode.CommentThread | null = null
-	private streamingContent: string = ""
+	private streamingContent = ""
 
 	constructor() {
 		super()
 		// Create the comment controller
-		this.commentController = vscode.comments.createCommentController("cline-ai-review", "Cline AI Review")
+		this.commentController = vscode.comments.createCommentController("cline-ai-review", `${BRAND_NAME} AI Review`)
 
 		// Configure options for the reply input
 		this.commentController.options = {
 			placeHolder: "Ask a question about this code...",
-			prompt: "Reply to Cline",
+			prompt: `Reply to ${BRAND_NAME}`,
 		}
 
 		// Configure the commenting range provider (optional - allows commenting on any line)
@@ -105,7 +106,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 			body: new vscode.MarkdownString(comment.comment),
 			mode: vscode.CommentMode.Preview,
 			author: {
-				name: "Cline",
+				name: BRAND_NAME,
 				iconPath: vscode.Uri.parse(CLINE_AVATAR_URL),
 			},
 		}
@@ -134,7 +135,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 		endLine: number,
 		relativePath?: string,
 		fileContent?: string,
-		revealComment: boolean = false,
+		revealComment = false,
 	): void {
 		// Use virtual diff URI if relativePath and fileContent are provided
 		let uri: vscode.Uri
@@ -152,7 +153,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 			body: new vscode.MarkdownString("_Thinking..._"),
 			mode: vscode.CommentMode.Preview,
 			author: {
-				name: "Cline",
+				name: BRAND_NAME,
 				iconPath: vscode.Uri.parse(CLINE_AVATAR_URL),
 			},
 		}
@@ -218,7 +219,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 			body: new vscode.MarkdownString(this.streamingContent || "_Thinking..._"),
 			mode: vscode.CommentMode.Preview,
 			author: {
-				name: "Cline",
+				name: BRAND_NAME,
 				iconPath: vscode.Uri.parse(CLINE_AVATAR_URL),
 			},
 		}
@@ -240,7 +241,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 			body: new vscode.MarkdownString(finalContent),
 			mode: vscode.CommentMode.Preview,
 			author: {
-				name: "Cline",
+				name: BRAND_NAME,
 				iconPath: vscode.Uri.parse(CLINE_AVATAR_URL),
 			},
 		}
@@ -331,7 +332,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 					body: new vscode.MarkdownString(content || "_Thinking..._"),
 					mode: vscode.CommentMode.Preview,
 					author: {
-						name: "Cline",
+						name: BRAND_NAME,
 						iconPath: vscode.Uri.parse(CLINE_AVATAR_URL),
 					},
 				}
@@ -343,7 +344,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 				body: new vscode.MarkdownString("_Thinking..._"),
 				mode: vscode.CommentMode.Preview,
 				author: {
-					name: "Cline",
+					name: BRAND_NAME,
 					iconPath: vscode.Uri.parse(CLINE_AVATAR_URL),
 				},
 			}
@@ -369,7 +370,7 @@ export class VscodeCommentReviewController extends CommentReviewController imple
 						),
 						mode: vscode.CommentMode.Preview,
 						author: {
-							name: "Cline",
+							name: BRAND_NAME,
 							iconPath: vscode.Uri.parse(CLINE_AVATAR_URL),
 						},
 					}

@@ -1,4 +1,5 @@
 import { serializeError } from "serialize-error"
+import { BRAND_NAME } from "../../shared/brand"
 import { CLINE_ACCOUNT_AUTH_ERROR_MESSAGE } from "../../shared/ClineAccount"
 
 export enum ClineErrorType {
@@ -44,7 +45,7 @@ interface ErrorDetails {
 const RATE_LIMIT_PATTERNS = [/status code 429/i, /rate limit/i, /too many requests/i, /quota exceeded/i, /resource exhausted/i]
 
 export class ClineError extends Error {
-	readonly title = "ClineError"
+	readonly title = `${BRAND_NAME}Error`
 	readonly _error: ErrorDetails
 
 	// Error details per providers:

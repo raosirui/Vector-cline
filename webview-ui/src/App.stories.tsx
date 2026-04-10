@@ -1,6 +1,7 @@
 import { HeroUIProvider } from "@heroui/react"
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
 import { type ApiConfiguration, bedrockModels } from "@shared/api"
+import { BRAND_NAME } from "@shared/brand"
 import { CLINE_ONBOARDING_MODELS } from "@shared/cline/onboarding"
 import type { ClineMessage, ClineSayTool } from "@shared/ExtensionMessage"
 import type { HistoryItem } from "@shared/HistoryItem"
@@ -321,7 +322,7 @@ export const Onboarding: Story = {
 		const canvas = within(canvasElement)
 
 		// Step 0: User type selection should be visible
-		const title = canvas.getByText("How will you use Cline?")
+		const title = canvas.getByText(`How will you use ${BRAND_NAME}?`)
 		await expect(title).toBeInTheDocument()
 		const freeUserOption = canvas.getByText("Absolutely Free")
 		const powerUserOption = canvas.getByText("Frontier Model")
@@ -368,7 +369,7 @@ export const Onboarding: Story = {
 		await userEvent.click(backButton)
 
 		// Should be back to user type selection
-		await expect(canvas.getByText("How will you use Cline?")).toBeInTheDocument()
+		await expect(canvas.getByText(`How will you use ${BRAND_NAME}?`)).toBeInTheDocument()
 
 		// Test power user flow
 		await userEvent.click(powerUserOption)
@@ -786,8 +787,8 @@ export const ReportBug = quickStory(
 	"Report Bug",
 	"report_bug",
 	JSON.stringify({
-		steps_to_reproduce: "1. Open Cline\n2. Start a new task\n3. Observe the error",
-		what_happened: "Cline crashes unexpectedly",
+		steps_to_reproduce: `1. Open ${BRAND_NAME}\n2. Start a new task\n3. Observe the error`,
+		what_happened: `${BRAND_NAME} crashes unexpectedly`,
 	}),
 	"Shows utility action to report bugs to the GitHub repository.",
 )

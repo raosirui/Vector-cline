@@ -7,6 +7,7 @@ import { processFilesIntoText } from "@integrations/misc/extract-text"
 import { showSystemNotification } from "@integrations/notifications"
 import { telemetryService } from "@services/telemetry"
 import { findLastIndex } from "@shared/array"
+import { BRAND_NAME } from "@shared/brand"
 import { COMPLETION_RESULT_CHANGES_FLAG } from "@shared/ExtensionMessage"
 import { Logger } from "@shared/services/Logger"
 import { ClineDefaultTool } from "@shared/tools"
@@ -177,7 +178,7 @@ export class AttemptCompletionHandler implements IToolHandler, IPartialBlockHand
 			} else {
 				// Manual approval flow - need to ask for approval
 				showNotificationForApproval(
-					`Cline wants to execute a command: ${command}`,
+					`${BRAND_NAME} wants to execute a command: ${command}`,
 					config.autoApprovalSettings.enableNotifications,
 				)
 

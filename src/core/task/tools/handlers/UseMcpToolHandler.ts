@@ -1,5 +1,6 @@
 import type { ToolUse } from "@core/assistant-message"
 import { formatResponse } from "@core/prompts/responses"
+import { BRAND_NAME } from "@shared/brand"
 import { ClineAsk, ClineAskUseMcpServer } from "@shared/ExtensionMessage"
 import { telemetryService } from "@/services/telemetry"
 import { truncateContent } from "@/shared/content-limits"
@@ -75,7 +76,7 @@ export class UseMcpToolHandler implements IFullyManagedTool {
 				config.taskState.consecutiveMistakeCount++
 				await config.callbacks.say(
 					"error",
-					`Cline tried to use ${resolvedToolName} with an invalid JSON argument. Retrying...`,
+					`${BRAND_NAME} tried to use ${resolvedToolName} with an invalid JSON argument. Retrying...`,
 				)
 				return formatResponse.toolError(formatResponse.invalidMcpToolArgumentError(server_name, resolvedToolName))
 			}
@@ -113,7 +114,7 @@ export class UseMcpToolHandler implements IFullyManagedTool {
 			)
 		} else {
 			// Manual approval flow
-			const notificationMessage = `Cline wants to use ${resolvedToolName || "unknown tool"} on ${server_name || "unknown server"}`
+			const notificationMessage = `${BRAND_NAME} wants to use ${resolvedToolName || "unknown tool"} on ${server_name || "unknown server"}`
 
 			// Show notification
 			showNotificationForApproval(notificationMessage, config.autoApprovalSettings.enableNotifications)
