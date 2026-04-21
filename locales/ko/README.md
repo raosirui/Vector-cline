@@ -1,9 +1,5 @@
 # Vector
 
-<p align="center">
-    <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -53,8 +49,6 @@ Vector은 OpenRouter, Anthropic, OpenAI, Google Gemini, AWS Bedrock, Azure, GCP 
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### 터미널에서 명령 실행
 
 VSCode v1.93의 새로운 [셸 통합 업데이트](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api) 덕분에, Vector은 터미널에서 명령을 직접 실행하고 출력을 받을 수 있습니다. 이를 통해 패키지 설치나 빌드 스크립트 실행부터 애플리케이션 배포, 데이터베이스 관리, 테스트 실행까지 광범위한 작업을 수행할 수 있습니다. Vector은 개발 환경과 도구 체인에 맞추어 정확하게 작업을 실행합니다.
@@ -73,8 +67,6 @@ Vector에 의한 모든 변경은 파일의 타임라인에 기록되어 필요�
 
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### 브라우저 사용
 
@@ -109,8 +101,6 @@ Vector은 [Model Context Protocol](https://github.com/modelcontextprotocol)을 �
 **`@folder`：** 폴더 내 모든 파일을 한 번에 추가하여 워크플로우를 더욱 빠르게 진행할 수 있습니다.
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### 체크포인트: 비교 및 복원
 

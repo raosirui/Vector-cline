@@ -4,10 +4,6 @@ English | <a href="https://github.com/cline/cline/blob/main/locales/es/README.md
 
 # Vector
 
-<p align="center">
-  <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -59,8 +55,6 @@ The extension also keeps track of total tokens and API usage cost for the entire
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### Run Commands in Terminal
 
 Thanks to the new [shell integration updates in VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api), Vector can execute commands directly in your terminal and receive the output. This allows him to perform a wide range of tasks, from installing packages and running build scripts to deploying applications, managing databases, and executing tests, all while adapting to your dev environment & toolchain to get the job done right.
@@ -82,8 +76,6 @@ All changes made by Vector are recorded in your file's Timeline, providing an ea
 <!-- Transparent pixel to create line break after floating image -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### Use the Browser
 
@@ -124,8 +116,6 @@ Thanks to the [Model Context Protocol](https://github.com/modelcontextprotocol),
 <!-- Transparent pixel to create line break after floating image -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### Checkpoints: Compare and Restore
 

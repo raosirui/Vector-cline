@@ -1,9 +1,5 @@
 # Vector
 
-<p align="center">
-    <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -55,8 +51,6 @@ Vector 支持 OpenRouter、Anthropic、OpenAI、Google Gemini、AWS Bedrock、Az
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### 在终端中运行命令
 
 感谢 VSCode v1.93 中的新 [终端 shell 集成更新](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api)，Vector 可以直接在你的终端中执行命令并接收输出。这使他能够执行广泛的任务，从安装包和运行构建脚本到部署应用程序、管理数据库和执行测试，同时适应你的开发环境和工具链以正确完成工作。
@@ -78,8 +72,6 @@ Vector 所做的所有更改都会记录在你的文件时间轴中，提供了�
 <!-- 透明像素以在浮动图像后创建换行 -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### 使用浏览器
 
@@ -120,8 +112,6 @@ Vector 所做的所有更改都会记录在你的文件时间轴中，提供了�
 <!-- 透明像素以在浮动图像后创建换行 -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### 检查点：比较和恢复
 

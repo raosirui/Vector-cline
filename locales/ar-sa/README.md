@@ -4,10 +4,6 @@
 
 # Vector
 
-<p align="center">
-  <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -59,8 +55,6 @@
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### تشغيل الأوامر في الطرفية
 
 بفضل [تحديثات تكامل الشل الجديدة في VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api)، يمكن لـ Vector تنفيذ الأوامر مباشرة في الطرفية الخاصة بك وتلقي الإخراج. يسمح له هذا بأداء مجموعة واسعة من المهام، من تثبيت الحزم وتشغيل سكربتات البناء إلى نشر التطبيقات، وإدارة قواعد البيانات، وتنفيذ الاختبارات، وذلك بالتكيف مع بيئة التطوير الخاصة بك وسلسلة الأدوات للقيام بالعمل على النحو الصحيح.
@@ -82,8 +76,6 @@
 <!-- Transparent pixel to create line break after floating image -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### استخدم المتصفح
 
@@ -124,8 +116,6 @@
 <!-- بكسل شفاف لإنشاء فاصل سطر بعد الصورة العائمة -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### نقاط التحقق: المقارنة والاستعادة
 

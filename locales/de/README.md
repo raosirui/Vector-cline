@@ -1,9 +1,5 @@
 # Vector
 
-<p align="center">
-        <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -55,8 +51,6 @@ Die Erweiterung verfolgt auch die gesamten Token- und API-Nutzungskosten für de
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### Befehle im Terminal ausführen
 
 Dank der neuen [Shell-Integrations-Updates in VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api) kann Vector Befehle direkt in Ihrem Terminal ausführen und die Ausgabe empfangen. Dies ermöglicht ihm eine Vielzahl von Aufgaben, von der Installation von Paketen und dem Ausführen von Build-Skripten bis hin zur Bereitstellung von Anwendungen, Verwaltung von Datenbanken und Ausführung von Tests, während er sich an Ihre Entwicklungsumgebung und Toolchain anpasst, um die Aufgabe richtig zu erledigen.
@@ -78,8 +72,6 @@ Alle von Vector vorgenommenen Änderungen werden in der Timeline Ihrer Datei auf
 <!-- Transparenter Pixel, um einen Zeilenumbruch nach dem schwebenden Bild zu erzeugen -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### Den Browser verwenden
 
@@ -120,8 +112,6 @@ Dank des [Model Context Protocol](https://github.com/modelcontextprotocol) kann 
 <!-- Transparenter Pixel, um einen Zeilenumbruch nach dem schwebenden Bild zu erzeugen -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### Checkpoints: Vergleichen und Wiederherstellen
 

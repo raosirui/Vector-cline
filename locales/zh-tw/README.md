@@ -4,10 +4,6 @@
 
 # Vector
 
-<p align="center">
-    <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -58,8 +54,6 @@ Vector 支援 OpenRouter、Anthropic、OpenAI、Google Gemini、AWS Bedrock、Az
 <!-- 透明像素用於浮動圖片後的換行 -->
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### 在終端機中執行指令
 
 感謝 [VSCode v1.93 的終端機整合更新](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api)，Vector 可以直接在您的終端機中執行指令並接收輸出。這讓他能執行各種任務，從安裝套件和執行建置腳本到部署應用程式、管理資料庫和執行測試，同時適應您的開發環境和工具鏈，以正確完成工作。
@@ -79,8 +73,6 @@ Vector 可以直接在您的編輯器中建立和編輯檔案，並顯示變更�
 
 <!-- 透明像素用於浮動圖片後的換行 -->
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### 使用瀏覽器
 
@@ -118,8 +110,6 @@ Vector 可以直接在您的編輯器中建立和編輯檔案，並顯示變更�
 
 <!-- 透明像素用於浮動圖片後的換行 -->
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### 檢查點：比較和還原
 

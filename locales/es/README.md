@@ -1,9 +1,5 @@
 # Vector
 
-<p align="center">
-        <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -55,8 +51,6 @@ La extensión también rastrea el uso total de tokens y costos de API para todo 
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### Ejecutar comandos en el terminal
 
 Gracias a las nuevas [actualizaciones de integración de Shell en VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api), Vector puede ejecutar comandos directamente en su terminal y recibir la salida. Esto le permite realizar una variedad de tareas, desde la instalación de paquetes y la ejecución de scripts de compilación hasta la implementación de aplicaciones, la gestión de bases de datos y la ejecución de pruebas, adaptándose a su entorno de desarrollo y cadena de herramientas para hacer el trabajo correctamente.
@@ -78,8 +72,6 @@ Todos los cambios realizados por Vector se registran en la línea de tiempo de s
 <!-- Pixel transparente para crear un salto de línea después de la imagen flotante -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### Usar el navegador
 
@@ -120,8 +112,6 @@ Gracias al [Model Context Protocol](https://github.com/modelcontextprotocol), Ve
 <!-- Pixel transparente para crear un salto de línea después de la imagen flotante -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### Puntos de control: Comparar y Restaurar
 

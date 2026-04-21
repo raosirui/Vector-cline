@@ -1,9 +1,5 @@
 # Vector
 
-<p align="center">
-        <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -55,8 +51,6 @@ A extensão também rastreia o uso total de tokens e os custos da API para todo 
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### Executar comandos no terminal
 
 Graças às novas [atualizações de integração do Shell no VSCode v1.93](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api), o Vector pode executar comandos diretamente no seu terminal e receber o resultado. Isso permite que você execute uma variedade de tarefas, desde instalar pacotes e executar build scripts para fazer deploy de aplicações, gerenciar bancos de dados e executar testes, adaptando-se ao seu ambiente de desenvolvimento e ferramentas para fazer o trabalho corretamente.
@@ -78,8 +72,6 @@ Todas as alterações feitas pelo Vector são registradas na Linha do tempo do a
 <!-- Pixel transparente para criar uma quebra de linha após a imagem flutuante -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### Uso do navegador
 
@@ -120,8 +112,6 @@ Graças ao [Model Context Protocol](https://github.com/modelcontextprotocol), o 
 <!-- Pixel transparente para criar uma quebra de linha após a imagem flutuante -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### Checkpoints: Comparar e Restaurar
 

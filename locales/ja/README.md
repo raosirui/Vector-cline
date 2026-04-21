@@ -1,9 +1,5 @@
 # Vector
 
-<p align="center">
-    <img src="https://media.githubusercontent.com/media/cline/cline/main/assets/docs/demo.gif" width="100%" />
-</p>
-
 <div align="center">
 <table>
 <tbody>
@@ -55,8 +51,6 @@ Vectorは、OpenRouter、Anthropic、OpenAI、Google Gemini、AWS Bedrock、Azur
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
 
-<img align="left" width="370" src="https://github.com/user-attachments/assets/81be79a8-1fdb-4028-9129-5fe055e01e76">
-
 ### ターミナルでコマンドを実行
 
 VSCode v1.93の新しい[シェル統合アップデート](https://code.visualstudio.com/updates/v1_93#_terminal-shell-integration-api)のおかげで、Vectorはターミナルでコマンドを直接実行し、出力を受け取ることができます。これにより、パッケージのインストールやビルドスクリプトの実行からアプリケーションのデプロイ、データベースの管理、テストの実行まで、幅広いタスクを実行できます。Vectorは、開発環境とツールチェーンに適応して、タスクを正確に実行します。
@@ -78,8 +72,6 @@ Vectorによるすべての変更はファイルのタイムラインに記録�
 <!-- 透明なピクセルで浮動画像の後に改行を作成 -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="left" width="370" src="https://github.com/user-attachments/assets/bc2e85ba-dfeb-4fe6-9942-7cfc4703cbe5">
 
 ### ブラウザの使用
 
@@ -120,8 +112,6 @@ Vectorに「アプリをテストして」と頼んでみてください。彼�
 <!-- 透明なピクセルで浮動画像の後に改行を作成 -->
 
 <img width="2000" height="0" src="https://github.com/user-attachments/assets/ee14e6f7-20b8-4391-9091-8e8e25561929"><br>
-
-<img align="right" width="350" src="https://github.com/user-attachments/assets/140c8606-d3bf-41b9-9a1f-4dbf0d4c90cb">
 
 ### チェックポイント：比較と復元
 
