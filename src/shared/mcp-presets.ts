@@ -22,7 +22,7 @@ export const builtInRemoteMcpPresets: BuiltInRemoteMcpPreset[] = [
 		displayName: "NSSine-NS800RT",
 		description: "Built-in remote MCP preset for the NS800RT endpoint.",
 		serverName: "NSSine-NS800RT",
-		serverUrl: "http://156.224.28.114/mcp/server/OLvvEBGDaoKKD2kL/mcp",
+		serverUrl: "http://156.224.28.114/mcp/server/wtiLRrlgId9hCivD/mcp",
 		transportType: "streamableHttp",
 	},
 ]
