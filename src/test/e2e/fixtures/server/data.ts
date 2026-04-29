@@ -144,7 +144,7 @@ export class ClineDataMock {
 
 	public getMockBalance(userId: string): BalanceResponse {
 		return {
-			balance: 100000, // Sufficient credits for testing
+			balance: 1000, // Real credits (same displayed magnitude as former centi-units 100000 ÷ 100)
 			userId,
 		}
 	}

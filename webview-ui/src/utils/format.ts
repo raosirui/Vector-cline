@@ -1,3 +1,4 @@
+import { normalizeCreditsAmount } from "@shared/credits-display"
 import prettyBytes from "pretty-bytes"
 
 export function formatLargeNumber(num: number): string {
@@ -22,16 +23,11 @@ export function formatDollars(cents?: number): string {
 	return (cents / 100).toFixed(2)
 }
 
-/** IC-AI stores balances as integers where 1 unit = 0.01 display credits (e.g. 999 → 9.99). */
-export const ICAI_CREDITS_INTEGER_SCALE = 100
-
 /**
- * Converts raw IC-AI credit balance to the human-readable amount shown in the UI.
- *
- * @param credits - Integer balance from `/extension/user-info` (sum of `remaining_credits`)
+ * Credit balance from IC-AI — same normalization as DB/API (`normalizeCreditsAmount`).
  */
 export function formatCreditsBalance(credits: number): number {
-	return credits / ICAI_CREDITS_INTEGER_SCALE
+	return normalizeCreditsAmount(credits)
 }
 
 export function formatTimestamp(timestamp: string): string {

@@ -2,6 +2,7 @@ import type { BalanceResponse, PaymentTransaction, UsageTransaction } from "@sha
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import { ClineEnv } from "@/config"
 import { ICAI_API_ENDPOINT } from "@/shared/cline/api"
+import { normalizeCreditsAmount } from "@/shared/credits-display"
 import { getAxiosSettings } from "@/shared/net"
 import { Logger } from "@/shared/services/Logger"
 import { AuthService } from "../auth/AuthService"
@@ -20,6 +21,64 @@ interface ICAIUserInfoResponse {
 		credits: {
 			remainingCredits: number
 		}
+	}
+}
+
+/** Normalize credits object from IC-AI (camelCase or snake_case; NUMERIC may arrive as string). */
+function normalizeRemainingCreditsFromPayload(creditsRaw: unknown): number {
+	if (creditsRaw == null || typeof creditsRaw !== "object") {
+		return 0
+	}
+	const c = creditsRaw as Record<string, unknown>
+	const raw = c.remainingCredits ?? c.remaining_credits
+	if (raw == null) {
+		return 0
+	}
+	const n = typeof raw === "number" ? raw : Number(raw)
+	return Number.isFinite(n) ? normalizeCreditsAmount(n) : 0
+}
+
+/**
+ * IC-AI `/api/extension/user-info` normally returns `{ code, data: { user, credits } }`.
+ * Some deployments or proxies may return a flat `{ user, credits }` body. Accept both.
+ */
+function parseExtensionUserInfoPayload(raw: unknown): ICAIUserInfoResponse["data"] | undefined {
+	if (raw == null || typeof raw !== "object") {
+		return undefined
+	}
+	const root = raw as Record<string, unknown>
+
+	if (root.error != null) {
+		Logger.warn("IC-AI user-info payload contains error:", root.error)
+		return undefined
+	}
+
+	if (typeof root.code === "number" && root.code !== 0) {
+		Logger.warn(`IC-AI user-info non-success code: ${root.code}`)
+		return undefined
+	}
+
+	let payload: Record<string, unknown> | undefined
+
+	if ("data" in root && root.data != null && typeof root.data === "object") {
+		payload = root.data as Record<string, unknown>
+		// Rare: double-wrapped `{ code, data: { data: { user, credits } } }`
+		if (!("user" in payload) && "data" in payload && payload.data != null && typeof payload.data === "object") {
+			payload = payload.data as Record<string, unknown>
+		}
+	} else if ("user" in root && typeof root.user === "object" && root.user != null) {
+		payload = root
+	}
+
+	if (!payload || typeof payload.user !== "object" || payload.user == null) {
+		return undefined
+	}
+
+	const remainingCredits = normalizeRemainingCreditsFromPayload(payload.credits)
+
+	return {
+		user: payload.user as ICAIUserInfoResponse["data"]["user"],
+		credits: { remainingCredits },
 	}
 }
 
@@ -77,8 +136,8 @@ export class ClineAccountService {
 	 */
 	async fetchUserInfo(): Promise<ICAIUserInfoResponse["data"] | undefined> {
 		try {
-			const response = await this.authenticatedRequest<ICAIUserInfoResponse>(ICAI_API_ENDPOINT.USER_INFO)
-			return response.data
+			const raw = await this.authenticatedRequest<unknown>(ICAI_API_ENDPOINT.USER_INFO)
+			return parseExtensionUserInfoPayload(raw)
 		} catch (error) {
 			Logger.error("Failed to fetch IC-AI user info:", error)
 			return undefined
@@ -88,7 +147,7 @@ export class ClineAccountService {
 	/**
 	 * Fetches the user's credit balance from IC-AI.
 	 * Returns a BalanceResponse compatible with the existing webview interface.
-	 * Balance is the raw integer sum from IC-AI; the webview converts it for display (÷100).
+	 * Balance is remainingCredits in real credits (no scaling in the extension).
 	 */
 	async fetchBalanceRPC(): Promise<BalanceResponse | undefined> {
 		try {
@@ -97,7 +156,7 @@ export class ClineAccountService {
 				return undefined
 			}
 			return {
-				balance: userInfo.credits.remainingCredits,
+				balance: normalizeRemainingCreditsFromPayload(userInfo.credits),
 				userId: userInfo.user.id,
 			}
 		} catch (error) {

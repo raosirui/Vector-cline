@@ -1,3 +1,4 @@
+import { formatCreditsDisplay } from "@shared/credits-display"
 import { useEffect, useRef, useState } from "react"
 import { formatCreditsBalance } from "@/utils/format"
 
@@ -42,5 +43,5 @@ export const StyledCreditDisplay = ({ balance }: { balance: number }) => {
 	const displayBalance = formatCreditsBalance(balance)
 	const animatedValue = useAnimatedCredits(displayBalance)
 
-	return <span className="font-azeret-mono font-light tabular-nums text-2xl">{animatedValue.toFixed(2)}</span>
+	return <span className="font-azeret-mono font-light tabular-nums text-2xl">{formatCreditsDisplay(animatedValue)}</span>
 }

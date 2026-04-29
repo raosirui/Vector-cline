@@ -57,8 +57,15 @@ const ICAIAccountView = ({ clineUser, clineEnv }: { clineUser: ClineUser; clineE
 		try {
 			setIsLoading(true)
 			const response = await AccountServiceClient.getUserCredits(EmptyRequest.create())
-			const newBalance = response?.balance?.currentBalance
-			setBalance(newBalance ?? null)
+			const raw = response?.balance?.currentBalance
+			if (typeof raw === "number" && Number.isFinite(raw)) {
+				setBalance(raw)
+			} else if (raw !== undefined && raw !== null) {
+				const n = Number(raw)
+				setBalance(Number.isFinite(n) ? n : null)
+			} else {
+				setBalance(null)
+			}
 		} catch (error) {
 			console.error("Failed to fetch credits:", error)
 		} finally {
@@ -67,12 +74,48 @@ const ICAIAccountView = ({ clineUser, clineEnv }: { clineUser: ClineUser; clineE
 		}
 	}, [])
 
+	/** Initial fetch races extension JWT restore — retry + subscribe when auth state updates (same pattern as ClineAuthProvider). */
 	useEffect(() => {
-		fetchCredits()
-	}, [])
+		if (!clineUser?.uid) {
+			return
+		}
+
+		let cancelled = false
+
+		const scheduleFetch = () => {
+			if (!cancelled) {
+				void fetchCredits()
+			}
+		}
+
+		scheduleFetch()
+		const retryTimeouts = [
+			window.setTimeout(scheduleFetch, 400),
+			window.setTimeout(scheduleFetch, 1400),
+			window.setTimeout(scheduleFetch, 3800),
+		]
+
+		const unsubscribeAuth = AccountServiceClient.subscribeToAuthStatusUpdate(EmptyRequest.create(), {
+			onResponse: (authState) => {
+				if (authState?.user?.uid) {
+					scheduleFetch()
+				}
+			},
+			onError: (err: Error) => console.error("AccountView auth subscription:", err),
+			onComplete: () => {},
+		})
+
+		return () => {
+			cancelled = true
+			retryTimeouts.forEach((id) => window.clearTimeout(id))
+			unsubscribeAuth()
+		}
+	}, [clineUser?.uid, fetchCredits])
 
 	useInterval(() => {
-		fetchCredits()
+		if (clineUser?.uid) {
+			void fetchCredits()
+		}
 	}, 60000)
 
 	const creditsUrl = new URL("/settings", baseUrl)

@@ -1,3 +1,4 @@
+import { formatCreditsDisplay } from "@shared/credits-display"
 import { AskResponseRequest } from "@shared/proto/cline/task"
 import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import React, { useEffect, useMemo, useState } from "react"
@@ -56,7 +57,7 @@ const CreditLimitError: React.FC<CreditLimitErrorProps> = ({
 				<div className="mb-3">
 					{currentBalance ? (
 						<div className="text-foreground">
-							Current Balance: <span className="font-bold">{currentBalance.toFixed(2)}</span>
+							Current Balance: <span className="font-bold">{formatCreditsDisplay(currentBalance)}</span>
 						</div>
 					) : null}
 					{totalSpent ? <div className="text-foreground">Total Spent: {totalSpent.toFixed(2)}</div> : null}

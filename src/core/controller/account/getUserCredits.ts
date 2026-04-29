@@ -5,7 +5,7 @@ import type { Controller } from "../index"
 
 /**
  * Handles fetching user credits data from IC-AI.
- * IC-AI returns remainingCredits as an integer with smallest unit = 0.01 credit (see formatCreditsBalance).
+ * IC-AI returns remainingCredits as real credits (same numeric values as PostgreSQL NUMERIC).
  */
 export async function getUserCredits(controller: Controller, _request: EmptyRequest): Promise<UserCreditsData> {
 	try {

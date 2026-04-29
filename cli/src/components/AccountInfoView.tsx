@@ -3,9 +3,10 @@
  * Shows current provider, and for Cline provider: credit balance and organization name
  */
 
+import { BRAND_CLI, BRAND_NAME } from "@shared/brand"
+import { formatCreditsDisplay } from "@shared/credits-display"
 import { Box, Text } from "ink"
 import React, { useCallback, useEffect, useState } from "react"
-import { BRAND_CLI, BRAND_NAME } from "@shared/brand"
 import { Controller } from "@/core/controller"
 import { StateManager } from "@/core/storage/StateManager"
 import { ClineAccountService } from "@/services/account/ClineAccountService"
@@ -26,14 +27,12 @@ function capitalize(str: string): string {
 		.join(" ")
 }
 
-/**
- * Format balance as currency (balance is in microcredits, divide by 10000)
- */
+/** Format credit balance — must match webview `formatCreditsDisplay`. */
 function formatBalance(balance: number | null): string {
 	if (balance === null || balance === undefined) {
 		return "..."
 	}
-	return `$${(balance / 1000000).toFixed(2)}`
+	return formatCreditsDisplay(Number(balance))
 }
 
 export const AccountInfoView: React.FC<AccountInfoViewProps> = React.memo(({ controller }) => {

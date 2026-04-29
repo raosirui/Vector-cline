@@ -6,13 +6,14 @@
 import type { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
 import type { ApiProvider, ModelInfo } from "@shared/api"
+import { BRAND_NAME, brandText } from "@shared/brand"
+import { formatCreditsDisplay } from "@shared/credits-display"
 import { getProviderModelIdKey, isSettingsKey, ProviderToApiKeyMap } from "@shared/storage"
 import { isOpenaiReasoningEffort, OPENAI_REASONING_EFFORT_OPTIONS, type OpenaiReasoningEffort } from "@shared/storage/types"
 import type { TelemetrySetting } from "@shared/TelemetrySetting"
 import { Box, Text, useInput } from "ink"
 import Spinner from "ink-spinner"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { BRAND_NAME, brandText } from "@shared/brand"
 import { buildApiHandler } from "@/core/api"
 import type { Controller } from "@/core/controller"
 import { refreshOcaModels } from "@/core/controller/models/refreshOcaModels"
@@ -134,14 +135,12 @@ const FEATURE_SETTINGS = {
 
 type FeatureKey = keyof typeof FEATURE_SETTINGS
 
-/**
- * Format balance as currency (balance is in microcredits, divide by 1000000)
- */
+/** Format credit balance — must match webview `formatCreditsDisplay`. */
 function formatBalance(balance: number | null): string {
 	if (balance === null || balance === undefined) {
 		return "..."
 	}
-	return `$${(balance / 1000000).toFixed(2)}`
+	return formatCreditsDisplay(Number(balance))
 }
 
 export const SettingsPanelContent: React.FC<SettingsPanelContentProps> = ({
