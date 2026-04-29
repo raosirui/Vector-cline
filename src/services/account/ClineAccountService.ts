@@ -8,6 +8,10 @@ import { Logger } from "@/shared/services/Logger"
 import { AuthService } from "../auth/AuthService"
 import { buildBasicClineHeaders } from "../EnvUtils"
 
+export type VectorTokenUsageReportResult =
+	| { ok: true; creditsCharged: number; remainingCredits: number; idempotent: boolean }
+	| { ok: false; error: string; status?: number }
+
 interface ICAIUserInfoResponse {
 	code: number
 	data: {
@@ -104,13 +108,12 @@ export class ClineAccountService {
 	/**
 	 * Makes an authenticated GET request to IC-AI's extension API.
 	 */
-	private async authenticatedRequest<T>(endpoint: string, config: AxiosRequestConfig = {}): Promise<T> {
-		const url = new URL(endpoint, this.baseUrl).toString()
+	private async buildAuthedAxiosConfig(config: AxiosRequestConfig = {}): Promise<AxiosRequestConfig> {
 		const token = await this._authService.getAuthToken()
 		if (!token) {
 			throw new Error("No IC-AI auth token found")
 		}
-		const requestConfig: AxiosRequestConfig = {
+		return {
 			...config,
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -120,6 +123,11 @@ export class ClineAccountService {
 			},
 			...getAxiosSettings(),
 		}
+	}
+
+	private async authenticatedRequest<T>(endpoint: string, config: AxiosRequestConfig = {}): Promise<T> {
+		const url = new URL(endpoint, this.baseUrl).toString()
+		const requestConfig = await this.buildAuthedAxiosConfig(config)
 		const response: AxiosResponse = await axios.request({
 			url,
 			method: "GET",
@@ -129,6 +137,68 @@ export class ClineAccountService {
 			throw new Error(`Request to ${endpoint} failed with status ${response.status}`)
 		}
 		return response.data as T
+	}
+
+	private async authenticatedPostJson<T>(endpoint: string, body: unknown): Promise<AxiosResponse<T>> {
+		const url = new URL(endpoint, this.baseUrl).toString()
+		const requestConfig = await this.buildAuthedAxiosConfig()
+		return axios.request<T>({
+			url,
+			method: "POST",
+			data: body,
+			validateStatus: () => true,
+			...requestConfig,
+		})
+	}
+
+	/**
+	 * Reports token usage for Vector `cline` models; server computes credits (idempotent per settlementId).
+	 */
+	async reportVectorTokenUsage(payload: {
+		settlementId: string
+		modelId: string
+		inputTokens: number
+		outputTokens: number
+		taskUlid?: string
+	}): Promise<VectorTokenUsageReportResult> {
+		try {
+			const response = await this.authenticatedPostJson<unknown>(ICAI_API_ENDPOINT.VECTOR_TOKEN_USAGE, payload)
+			if (response.status === 402) {
+				const err = (response.data as Record<string, unknown>)?.error
+				return { ok: false, error: String(err ?? "insufficient_credits"), status: 402 }
+			}
+			if (response.status < 200 || response.status >= 300) {
+				const err = (response.data as Record<string, unknown>)?.error
+				return {
+					ok: false,
+					error: String(err ?? `http_${response.status}`),
+					status: response.status,
+				}
+			}
+			const root = response.data as Record<string, unknown>
+			if (root?.code !== 0) {
+				const err = root.error ?? root.message
+				Logger.warn("IC-AI vector-token-usage business error:", root)
+				return { ok: false, error: String(err ?? "request_failed"), status: response.status }
+			}
+			if (root.data == null || typeof root.data !== "object") {
+				Logger.warn("IC-AI vector-token-usage unexpected body:", root)
+				return { ok: false, error: "invalid_response" }
+			}
+			const data = root.data as Record<string, unknown>
+			const creditsCharged = Number(data.creditsCharged)
+			const remainingCredits = normalizeRemainingCreditsFromPayload({
+				remainingCredits: data.remainingCredits,
+			})
+			const idempotent = Boolean(data.idempotent)
+			if (!Number.isFinite(creditsCharged) || !Number.isFinite(remainingCredits)) {
+				return { ok: false, error: "invalid_response" }
+			}
+			return { ok: true, creditsCharged, remainingCredits, idempotent }
+		} catch (error) {
+			Logger.error("IC-AI vector-token-usage request failed:", error)
+			return { ok: false, error: error instanceof Error ? error.message : "request_failed" }
+		}
 	}
 
 	/**

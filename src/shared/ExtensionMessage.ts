@@ -111,6 +111,8 @@ export interface ExtensionState {
 	banners?: BannerCardData[]
 	welcomeBanners?: BannerCardData[]
 	openAiCodexIsAuthenticated?: boolean
+	/** Synced from IC-AI after billing settlement (optional). */
+	icAiCreditsBalance?: number
 }
 
 export interface ClineMessage {

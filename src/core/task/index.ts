@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto"
 import { setTimeout as setTimeoutPromise } from "node:timers/promises"
 import { ApiHandler, ApiProviderInfo, buildApiHandler } from "@core/api"
 import { ApiStream } from "@core/api/transform/stream"
@@ -90,8 +91,12 @@ import {
 	FullCommandExecutorConfig,
 	StandaloneTerminalManager,
 } from "@/integrations/terminal"
+import { ClineAccountService } from "@/services/account/ClineAccountService"
+import { AuthService } from "@/services/auth/AuthService"
 import { ClineError, ClineErrorType, ErrorService } from "@/services/error"
 import { telemetryService } from "@/services/telemetry"
+import { estimateVectorVscodeCredits } from "@/shared/billing/vector-vscode-credits-estimate"
+import { normalizeVectorVscodeModelIdForBilling } from "@/shared/billing/vector-vscode-model-id"
 import { ClineClient } from "@/shared/cline"
 import {
 	ClineAssistantContent,
@@ -2515,6 +2520,19 @@ export class Task {
 		})
 		await this.postStateToWebview()
 
+		if (providerId === "cline") {
+			const authToken = await AuthService.getInstance().getAuthToken()
+			if (!authToken) {
+				await this.say(
+					"error",
+					`Please sign in to your ${BRAND_NAME} account to use Vector models (billing uses your IC-AI credits).`,
+				)
+				await this.messageStateHandler.saveClineMessagesAndUpdateHistory()
+				await this.postStateToWebview()
+				return true
+			}
+		}
+
 		try {
 			const taskMetrics: {
 				cacheWriteTokens: number
@@ -2911,6 +2929,42 @@ export class Task {
 					taskMetrics.cacheReadTokens += apiStreamUsage.cacheReadTokens ?? 0
 					taskMetrics.totalCost = apiStreamUsage.totalCost ?? taskMetrics.totalCost
 					queueUsageChunkSideEffects(apiStreamUsage.inputTokens, apiStreamUsage.outputTokens)
+				}
+			}
+
+			if (providerId === "cline") {
+				const settlementId = randomUUID()
+				const usageReport = await ClineAccountService.getInstance().reportVectorTokenUsage({
+					settlementId,
+					modelId: normalizeVectorVscodeModelIdForBilling(model.id),
+					inputTokens: taskMetrics.inputTokens,
+					outputTokens: taskMetrics.outputTokens,
+					taskUlid: this.ulid,
+				})
+				if (!usageReport.ok) {
+					Logger.warn(
+						`[Task ${this.taskId}] IC-AI vector-token-usage failed: ${usageReport.error} (status ${usageReport.status ?? "?"})`,
+					)
+					const fallbackCredits = estimateVectorVscodeCredits(
+						model.id,
+						taskMetrics.inputTokens,
+						taskMetrics.outputTokens,
+					)
+					if (fallbackCredits != null && fallbackCredits > 0) {
+						taskMetrics.totalCost = fallbackCredits
+					}
+					const msg =
+						usageReport.status === 402
+							? "Insufficient IC-AI credits for this request. Please top up and try again."
+							: `Could not record IC-AI credit usage: ${usageReport.error}`
+					HostProvider.window.showMessage({
+						type: usageReport.status === 402 ? ShowMessageType.WARNING : ShowMessageType.ERROR,
+						message: msg,
+					})
+				} else {
+					taskMetrics.totalCost = usageReport.creditsCharged
+					this.controller.stateManager.setGlobalState("icAiCreditsBalance", usageReport.remainingCredits)
+					await this.controller.refreshIcAiCreditsBalanceFromServer()
 				}
 			}
 

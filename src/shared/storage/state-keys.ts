@@ -91,6 +91,8 @@ const GLOBAL_STATE_FIELDS = {
 	dismissedBanners: { default: [] as Array<{ bannerId: string; dismissedAt: number }> },
 	// Path to worktree that should auto-open Cline sidebar when launched
 	worktreeAutoOpenPath: { default: undefined as string | undefined },
+	/** Latest IC-AI remaining credits after vector-token-usage settlement (extensions pushes this so Account UI updates without polling). */
+	icAiCreditsBalance: { default: undefined as number | undefined },
 } satisfies FieldDefinitions
 
 // Fields that map directly to ApiHandlerOptions in @shared/api.ts

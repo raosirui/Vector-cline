@@ -112,6 +112,11 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 
 	const environmentBorderColor = getEnvironmentColor(environment, "border")
 
+	const costBadge =
+		modeFields.apiProvider === "cline"
+			? `${totalCost != null && Number.isFinite(totalCost) ? totalCost.toFixed(4) : "—"} credits`
+			: `$${totalCost?.toFixed(4)}`
+
 	return (
 		<div className="py-2 px-4 flex flex-col gap-2">
 			{/* Display Checkpoint Error */}
@@ -173,7 +178,7 @@ const TaskHeader: React.FC<TaskHeaderProps> = ({
 							<div
 								className="mx-1 px-1 py-0.25 rounded-full inline-flex shrink-0 text-badge-background bg-badge-foreground/80 items-center"
 								id="price-tag">
-								<span className="text-xs sm:text-sm">${totalCost?.toFixed(4)}</span>
+								<span className="text-xs sm:text-sm">{costBadge}</span>
 							</div>
 						)}
 						<NewTaskButton className={BUTTON_CLASS} onClick={onClose} />

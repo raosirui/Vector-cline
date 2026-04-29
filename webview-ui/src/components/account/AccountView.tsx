@@ -44,11 +44,29 @@ const AccountView = ({ onDone, clineUser }: AccountViewProps) => {
 
 const ICAIAccountView = ({ clineUser, clineEnv }: { clineUser: ClineUser; clineEnv: "Production" | "Staging" | "Local" }) => {
 	const { email, displayName, appBaseUrl, uid } = clineUser
-	const { environment } = useExtensionState()
+	const { environment, icAiCreditsBalance } = useExtensionState()
 
-	const [balance, setBalance] = useState<number | null>(null)
+	const [serverFetchedBalance, setServerFetchedBalance] = useState<number | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 	const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now())
+
+	/** Never show more credits than post-settlement truth from the extension (avoids stale polling overwriting deductions). */
+	const displayBalance = useMemo(() => {
+		const server = serverFetchedBalance
+		const ext = icAiCreditsBalance
+		const serverOk = typeof server === "number" && Number.isFinite(server)
+		const extOk = typeof ext === "number" && Number.isFinite(ext)
+		if (serverOk && extOk) {
+			return Math.min(server, ext)
+		}
+		if (extOk) {
+			return ext
+		}
+		if (serverOk) {
+			return server
+		}
+		return null
+	}, [serverFetchedBalance, icAiCreditsBalance])
 
 	const isClineTester = useMemo(() => (email ? isClineInternalTester(email) : false), [email])
 	const baseUrl = appBaseUrl || "https://vectoraifae.online"
@@ -59,12 +77,12 @@ const ICAIAccountView = ({ clineUser, clineEnv }: { clineUser: ClineUser; clineE
 			const response = await AccountServiceClient.getUserCredits(EmptyRequest.create())
 			const raw = response?.balance?.currentBalance
 			if (typeof raw === "number" && Number.isFinite(raw)) {
-				setBalance(raw)
+				setServerFetchedBalance(raw)
 			} else if (raw !== undefined && raw !== null) {
 				const n = Number(raw)
-				setBalance(Number.isFinite(n) ? n : null)
+				setServerFetchedBalance(Number.isFinite(n) ? n : null)
 			} else {
-				setBalance(null)
+				setServerFetchedBalance(null)
 			}
 		} catch (error) {
 			console.error("Failed to fetch credits:", error)
@@ -145,7 +163,7 @@ const ICAIAccountView = ({ clineUser, clineEnv }: { clineUser: ClineUser; clineE
 				<VSCodeDivider className="w-full my-6" />
 
 				<CreditBalance
-					balance={balance}
+					balance={displayBalance}
 					creditUrl={creditsUrl}
 					fetchCreditBalance={fetchCredits}
 					isLoading={isLoading}

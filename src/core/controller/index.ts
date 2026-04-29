@@ -183,6 +183,7 @@ export class Controller {
 		try {
 			// AuthService now handles its own storage cleanup in handleDeauth()
 			this.stateManager.setGlobalState("userInfo", undefined)
+			this.stateManager.setGlobalState("icAiCreditsBalance", undefined)
 			clearRemoteConfig()
 
 			// Update API providers through cache service
@@ -995,6 +996,19 @@ export class Controller {
 			banners,
 			welcomeBanners,
 			openAiCodexIsAuthenticated,
+			icAiCreditsBalance: this.stateManager.getGlobalStateKey("icAiCreditsBalance"),
+		}
+	}
+
+	/**
+	 * Re-reads remaining credits from IC-AI (same source as Account balance RPC) and updates global state.
+	 * Call after successful vector-token-usage settlement so extension state matches the DB immediately.
+	 */
+	async refreshIcAiCreditsBalanceFromServer(): Promise<void> {
+		const rpc = await this.accountService.fetchBalanceRPC()
+		const b = rpc?.balance
+		if (typeof b === "number" && Number.isFinite(b)) {
+			this.stateManager.setGlobalState("icAiCreditsBalance", b)
 		}
 	}
 
