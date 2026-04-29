@@ -48,7 +48,7 @@ const CreditLimitError: React.FC<CreditLimitErrorProps> = ({
 		fetchCallbackUrl()
 	}, [dashboardUrl])
 
-	// IC-AI returns credits as plain integers
+	// Account balance errors may use provider-native units; insufficient-credits UI shows API values as-is.
 	return (
 		<div className="p-2 border-none rounded-md mb-2 bg-(--vscode-textBlockQuote-background)">
 			<div className="mb-3 font-azeret-mono">

@@ -88,6 +88,7 @@ export class ClineAccountService {
 	/**
 	 * Fetches the user's credit balance from IC-AI.
 	 * Returns a BalanceResponse compatible with the existing webview interface.
+	 * Balance is the raw integer sum from IC-AI; the webview converts it for display (÷100).
 	 */
 	async fetchBalanceRPC(): Promise<BalanceResponse | undefined> {
 		try {

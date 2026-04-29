@@ -22,20 +22,16 @@ export function formatDollars(cents?: number): string {
 	return (cents / 100).toFixed(2)
 }
 
+/** IC-AI stores balances as integers where 1 unit = 0.01 display credits (e.g. 999 → 9.99). */
+export const ICAI_CREDITS_INTEGER_SCALE = 100
+
 /**
- * Returns credits for display purposes.
+ * Converts raw IC-AI credit balance to the human-readable amount shown in the UI.
  *
- * IC-AI returns credits as plain integers, so no conversion is needed.
- *
- * @param credits - The credit balance from the backend
- * @returns The balance for display (typically displayed with 4 decimal places)
- *
- * @example
- * formatCreditsBalance(999)  // returns 999
- * formatCreditsBalance(50)   // returns 50
+ * @param credits - Integer balance from `/extension/user-info` (sum of `remaining_credits`)
  */
 export function formatCreditsBalance(credits: number): number {
-	return credits
+	return credits / ICAI_CREDITS_INTEGER_SCALE
 }
 
 export function formatTimestamp(timestamp: string): string {

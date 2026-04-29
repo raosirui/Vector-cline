@@ -5,8 +5,7 @@ import type { Controller } from "../index"
 
 /**
  * Handles fetching user credits data from IC-AI.
- * IC-AI returns credits as a simple integer (remainingCredits),
- * not in microcredits, so no division is needed.
+ * IC-AI returns remainingCredits as an integer with smallest unit = 0.01 credit (see formatCreditsBalance).
  */
 export async function getUserCredits(controller: Controller, _request: EmptyRequest): Promise<UserCreditsData> {
 	try {
