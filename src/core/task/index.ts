@@ -178,50 +178,6 @@ export class Task {
 		return await this.stateMutex.withLock(fn)
 	}
 
-	private async reportIcaiVectorSettlementAfterApiReq(params: {
-		settlementId: string
-		modelId: string
-		taskMetrics: {
-			inputTokens: number
-			outputTokens: number
-			cacheWriteTokens: number
-			cacheReadTokens: number
-		}
-	}): Promise<void> {
-		if (!isBillableVectorVscodeModel(params.modelId)) {
-			return
-		}
-		const { inputTokens, outputTokens } = billingTokensForIcaiSettlement(params.taskMetrics)
-		if (inputTokens <= 0 && outputTokens <= 0) {
-			return
-		}
-
-		const result = await this.controller.accountService.submitVectorTokenUsageSettlement({
-			settlementId: params.settlementId,
-			modelId: params.modelId,
-			inputTokens,
-			outputTokens,
-			taskUlid: this.ulid,
-		})
-
-		if (!result.ok) {
-			if (result.error === "no_token") {
-				return
-			}
-			if (result.error === "insufficient_credits") {
-				await this.say(
-					"error",
-					JSON.stringify({
-						message: `Insufficient credits on your IC-AI account after this request. Open ${BRAND_NAME} account settings to purchase credits or review your balance.`,
-						code: "insufficient_credits",
-					}),
-				)
-				return
-			}
-			Logger.warn(`[Task ${this.taskId}] IC-AI vector settlement failed: ${result.error}`)
-		}
-	}
-
 	/**
 	 * Atomically set active hook execution with mutex protection
 	 * Prevents TOCTOU races when setting hook execution state
@@ -2611,7 +2567,8 @@ export class Task {
 					cacheWriteTokens: taskMetrics.cacheWriteTokens,
 					cacheReadTokens: taskMetrics.cacheReadTokens,
 					api: this.api,
-					totalCost: taskMetrics.totalCost,
+					totalCost:
+						taskMetrics.totalCost ?? (providerId === "cline" ? 0 : undefined),
 					cancelReason,
 					streamingFailedMessage,
 				})
@@ -2637,12 +2594,59 @@ export class Task {
 			const finalizeApiReqMsg = async (cancelReason?: ClineApiReqCancelReason, streamingFailedMessage?: string) => {
 				didFinalizeApiReqMsg = true
 				await usageChunkSideEffectsQueue
+
+				if (providerId === "cline") {
+					const billing = billingTokensForIcaiSettlement(taskMetrics)
+					if (
+						isBillableVectorVscodeModel(model.id) &&
+						(billing.inputTokens > 0 || billing.outputTokens > 0)
+					) {
+						const usageReport = await ClineAccountService.getInstance().reportVectorTokenUsage({
+							settlementId: icaiSettlementId,
+							modelId: normalizeVectorVscodeModelIdForBilling(model.id),
+							inputTokens: billing.inputTokens,
+							outputTokens: billing.outputTokens,
+							taskUlid: this.ulid,
+						})
+						if (!usageReport.ok) {
+							Logger.warn(
+								`[Task ${this.taskId}] IC-AI vector-token-usage failed: ${usageReport.error} (status ${usageReport.status ?? "?"})`,
+							)
+							const fallbackCredits = estimateVectorVscodeCredits(
+								model.id,
+								billing.inputTokens,
+								billing.outputTokens,
+							)
+							if (fallbackCredits != null && fallbackCredits > 0) {
+								taskMetrics.totalCost = fallbackCredits
+							}
+							const hint = describeIcAiVectorTokenUsageFailure(usageReport.error)
+							const msg =
+								usageReport.status === 402
+									? "Insufficient IC-AI credits for this request. Please top up and try again."
+									: hint || `Could not record IC-AI credit usage: ${usageReport.error}`
+							if (usageReport.status === 402 || usageReport.error === "insufficient_credits") {
+								await this.say(
+									"error",
+									JSON.stringify({
+										message: `Insufficient credits on your IC-AI account after this request. Open ${BRAND_NAME} account settings to purchase credits or review your balance.`,
+										code: "insufficient_credits",
+									}),
+								)
+							}
+							HostProvider.window.showMessage({
+								type: usageReport.status === 402 ? ShowMessageType.WARNING : ShowMessageType.ERROR,
+								message: msg,
+							})
+						} else {
+							taskMetrics.totalCost = usageReport.creditsCharged
+							this.controller.stateManager.setGlobalState("icAiCreditsBalance", usageReport.remainingCredits)
+							await this.controller.refreshIcAiCreditsBalanceFromServer()
+						}
+					}
+				}
+
 				await updateApiReqMsgFromMetrics(cancelReason, streamingFailedMessage)
-				await this.reportIcaiVectorSettlementAfterApiReq({
-					settlementId: icaiSettlementId,
-					modelId: model.id,
-					taskMetrics,
-				})
 			}
 
 			const abortStream = async (cancelReason: ClineApiReqCancelReason, streamingFailedMessage?: string) => {
@@ -2767,7 +2771,9 @@ export class Task {
 						taskMetrics.outputTokens += chunk.outputTokens
 						taskMetrics.cacheWriteTokens += chunk.cacheWriteTokens ?? 0
 						taskMetrics.cacheReadTokens += chunk.cacheReadTokens ?? 0
-						taskMetrics.totalCost = chunk.totalCost ?? taskMetrics.totalCost
+						if (providerId !== "cline") {
+							taskMetrics.totalCost = chunk.totalCost ?? taskMetrics.totalCost
+						}
 						queueUsageChunkSideEffects(chunk.inputTokens, chunk.outputTokens)
 					},
 				})
@@ -2981,45 +2987,10 @@ export class Task {
 					taskMetrics.outputTokens += apiStreamUsage.outputTokens
 					taskMetrics.cacheWriteTokens += apiStreamUsage.cacheWriteTokens ?? 0
 					taskMetrics.cacheReadTokens += apiStreamUsage.cacheReadTokens ?? 0
-					taskMetrics.totalCost = apiStreamUsage.totalCost ?? taskMetrics.totalCost
-					queueUsageChunkSideEffects(apiStreamUsage.inputTokens, apiStreamUsage.outputTokens)
-				}
-			}
-
-			if (providerId === "cline") {
-				const settlementId = randomUUID()
-				const usageReport = await ClineAccountService.getInstance().reportVectorTokenUsage({
-					settlementId,
-					modelId: normalizeVectorVscodeModelIdForBilling(model.id),
-					inputTokens: taskMetrics.inputTokens,
-					outputTokens: taskMetrics.outputTokens,
-					taskUlid: this.ulid,
-				})
-				if (!usageReport.ok) {
-					Logger.warn(
-						`[Task ${this.taskId}] IC-AI vector-token-usage failed: ${usageReport.error} (status ${usageReport.status ?? "?"})`,
-					)
-					const fallbackCredits = estimateVectorVscodeCredits(
-						model.id,
-						taskMetrics.inputTokens,
-						taskMetrics.outputTokens,
-					)
-					if (fallbackCredits != null && fallbackCredits > 0) {
-						taskMetrics.totalCost = fallbackCredits
+					if (providerId !== "cline") {
+						taskMetrics.totalCost = apiStreamUsage.totalCost ?? taskMetrics.totalCost
 					}
-					const hint = describeIcAiVectorTokenUsageFailure(usageReport.error)
-					const msg =
-						usageReport.status === 402
-							? "Insufficient IC-AI credits for this request. Please top up and try again."
-							: hint || `Could not record IC-AI credit usage: ${usageReport.error}`
-					HostProvider.window.showMessage({
-						type: usageReport.status === 402 ? ShowMessageType.WARNING : ShowMessageType.ERROR,
-						message: msg,
-					})
-				} else {
-					taskMetrics.totalCost = usageReport.creditsCharged
-					this.controller.stateManager.setGlobalState("icAiCreditsBalance", usageReport.remainingCredits)
-					await this.controller.refreshIcAiCreditsBalanceFromServer()
+					queueUsageChunkSideEffects(apiStreamUsage.inputTokens, apiStreamUsage.outputTokens)
 				}
 			}
 

@@ -29,6 +29,9 @@ export function combineApiRequests(messages) {
                         ...startedRequest,
                         ...finishedRequest,
                     };
+                    if (typeof startedRequest.cost === "number" && Number.isFinite(startedRequest.cost)) {
+                        combinedRequest.cost = startedRequest.cost;
+                    }
                     combinedApiRequests.push({
                         ...messages[i],
                         text: JSON.stringify(combinedRequest),

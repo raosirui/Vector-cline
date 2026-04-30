@@ -29,9 +29,17 @@ export function combineApiRequests(messages: ClineMessage[]): ClineMessage[] {
 			while (j < messages.length) {
 				if (messages[j].type === "say" && messages[j].say === "api_req_finished") {
 					const finishedRequest = JSON.parse(messages[j].text || "{}")
+					// Authoritative usage cost is updated on `api_req_started` during/after streaming (IC-AI credits).
+					// Legacy `api_req_finished` often carries OpenRouter USD; spreading it last would wipe real credits.
 					const combinedRequest = {
 						...startedRequest,
 						...finishedRequest,
+					}
+					if (
+						typeof startedRequest.cost === "number" &&
+						Number.isFinite(startedRequest.cost)
+					) {
+						combinedRequest.cost = startedRequest.cost
 					}
 
 					combinedApiRequests.push({
