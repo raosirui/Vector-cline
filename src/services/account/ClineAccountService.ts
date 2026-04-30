@@ -111,6 +111,26 @@ function parseExtensionUserInfoPayload(raw: unknown): ICAIUserInfoResponse["data
 	}
 }
 
+/**
+ * User-facing text for IC-AI `vector-token-usage` error codes (opaque codes still logged separately).
+ */
+export function describeIcAiVectorTokenUsageFailure(errorCode: string): string {
+	switch (errorCode) {
+		case "db_missing_table":
+			return "IC-AI is missing Vector billing tables. Ask the administrator to apply database migrations (e.g. drizzle migration 0002 / pnpm db:migrate)."
+		case "fk_violation":
+			return "Your session does not match the IC-AI database. Sign out of the Vector extension and sign in again."
+		case "deadlock":
+			return "Temporary database conflict; please retry."
+		case "user_not_found":
+			return "IC-AI could not find your user for this token. Sign out and sign in again."
+		case "internal_error":
+			return "IC-AI failed to record usage (internal_error). If this persists, contact support with the request time."
+		default:
+			return ""
+	}
+}
+
 function mapIcaiSettlementToUsageTransaction(row: ICAIVectorUsageHistoryItem, userId: string): UsageTransaction {
 	const createdAt =
 		typeof row.createdAt === "string"

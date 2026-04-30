@@ -92,7 +92,10 @@ import {
 	FullCommandExecutorConfig,
 	StandaloneTerminalManager,
 } from "@/integrations/terminal"
-import { ClineAccountService } from "@/services/account/ClineAccountService"
+import {
+	ClineAccountService,
+	describeIcAiVectorTokenUsageFailure,
+} from "@/services/account/ClineAccountService"
 import { AuthService } from "@/services/auth/AuthService"
 import { ClineError, ClineErrorType, ErrorService } from "@/services/error"
 import { telemetryService } from "@/services/telemetry"
@@ -3004,10 +3007,11 @@ export class Task {
 					if (fallbackCredits != null && fallbackCredits > 0) {
 						taskMetrics.totalCost = fallbackCredits
 					}
+					const hint = describeIcAiVectorTokenUsageFailure(usageReport.error)
 					const msg =
 						usageReport.status === 402
 							? "Insufficient IC-AI credits for this request. Please top up and try again."
-							: `Could not record IC-AI credit usage: ${usageReport.error}`
+							: hint || `Could not record IC-AI credit usage: ${usageReport.error}`
 					HostProvider.window.showMessage({
 						type: usageReport.status === 402 ? ShowMessageType.WARNING : ShowMessageType.ERROR,
 						message: msg,
