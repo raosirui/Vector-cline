@@ -1,4 +1,4 @@
-import { UserCreditsData } from "@shared/proto/cline/account"
+import { UsageTransaction as PbUsageTransaction, UserCreditsData } from "@shared/proto/cline/account"
 import type { EmptyRequest } from "@shared/proto/cline/common"
 import { Logger } from "@/shared/services/Logger"
 import type { Controller } from "../index"
@@ -13,15 +13,36 @@ export async function getUserCredits(controller: Controller, _request: EmptyRequ
 			throw new Error("Account service not available")
 		}
 
-		const balance = await controller.accountService.fetchBalanceRPC()
+		const [balance, usageTransactions] = await Promise.all([
+			controller.accountService.fetchBalanceRPC(),
+			controller.accountService.fetchUsageTransactionsRPC(),
+		])
 
 		if (balance === undefined) {
 			throw new Error("Failed to fetch user credits data")
 		}
 
+		const protoUsage = (usageTransactions ?? []).map((t) =>
+			PbUsageTransaction.create({
+				aiInferenceProviderName: t.aiInferenceProviderName,
+				aiModelName: t.aiModelName,
+				aiModelTypeName: t.aiModelTypeName,
+				completionTokens: Math.min(Math.max(0, t.completionTokens), 2_147_483_647),
+				costUsd: t.costUsd,
+				createdAt: t.createdAt,
+				creditsUsed: t.creditsUsed,
+				generationId: t.generationId,
+				organizationId: t.organizationId,
+				promptTokens: Math.min(Math.max(0, t.promptTokens), 2_147_483_647),
+				totalTokens: Math.min(Math.max(0, t.totalTokens), 2_147_483_647),
+				userId: t.userId,
+				operation: t.operation ?? "",
+			}),
+		)
+
 		return UserCreditsData.create({
 			balance: { currentBalance: balance.balance },
-			usageTransactions: [],
+			usageTransactions: protoUsage,
 			paymentTransactions: [],
 		})
 	} catch (error) {

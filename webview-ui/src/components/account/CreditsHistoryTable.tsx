@@ -1,4 +1,5 @@
 import type { PaymentTransaction, UsageTransaction } from "@shared/ClineAccount"
+import { formatCreditsDisplay } from "@shared/credits-display"
 import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from "@vscode/webview-ui-toolkit/react"
 import { memo, useState } from "react"
 import { formatDollars, formatTimestamp } from "@/utils/format"
@@ -70,7 +71,11 @@ const CreditsHistoryTable = memo(({ isLoading, usageData, paymentsData, showPaym
 															: row.aiModelName}
 											</VSCodeDataGridCell>
 											{/* <VSCodeDataGridCell grid-column="3">{`${row.promptTokens} → ${row.completionTokens}`}</VSCodeDataGridCell> */}
-											<VSCodeDataGridCell grid-column="3">{`$${Number(row.creditsUsed / 1000000).toFixed(4)}`}</VSCodeDataGridCell>
+											<VSCodeDataGridCell grid-column="3">
+												{row.operation === "vector_token_usage"
+													? formatCreditsDisplay(row.creditsUsed)
+													: `$${Number(row.creditsUsed / 1000000).toFixed(4)}`}
+											</VSCodeDataGridCell>
 										</VSCodeDataGridRow>
 									))}
 								</VSCodeDataGrid>

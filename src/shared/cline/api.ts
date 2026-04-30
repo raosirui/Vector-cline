@@ -2,6 +2,7 @@ export const ICAI_API_ENDPOINT = {
 	EXTENSION_TOKEN: "/api/extension/token",
 	USER_INFO: "/api/extension/user-info",
 	VECTOR_TOKEN_USAGE: "/api/extension/vector-token-usage",
+	VECTOR_USAGE_HISTORY: "/api/extension/vector-usage-history",
 }
 
 /**

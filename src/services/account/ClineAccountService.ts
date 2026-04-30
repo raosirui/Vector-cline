@@ -12,6 +12,31 @@ export type VectorTokenUsageReportResult =
 	| { ok: true; creditsCharged: number; remainingCredits: number; idempotent: boolean }
 	| { ok: false; error: string; status?: number }
 
+export type VectorTokenSettlementSuccess = {
+	ok: true
+	creditsCharged: number
+	remainingCredits: number
+	idempotent: boolean
+}
+
+export type VectorTokenSettlementFailure = {
+	ok: false
+	error: "insufficient_credits" | "no_token" | "bad_response" | "network" | string
+	httpStatus?: number
+}
+
+export type VectorTokenSettlementResult = VectorTokenSettlementSuccess | VectorTokenSettlementFailure
+
+interface ICAIVectorUsageHistoryItem {
+	id: string
+	settlementId: string
+	modelId: string
+	inputTokens: number
+	outputTokens: number
+	creditsCharged: number
+	createdAt: string
+}
+
 interface ICAIUserInfoResponse {
 	code: number
 	data: {
@@ -86,6 +111,36 @@ function parseExtensionUserInfoPayload(raw: unknown): ICAIUserInfoResponse["data
 	}
 }
 
+function mapIcaiSettlementToUsageTransaction(row: ICAIVectorUsageHistoryItem, userId: string): UsageTransaction {
+	const createdAt =
+		typeof row.createdAt === "string"
+			? row.createdAt
+			: new Date(row.createdAt as unknown as Date).toISOString()
+	const pt = row.inputTokens ?? 0
+	const ct = row.outputTokens ?? 0
+	return {
+		aiInferenceProviderName: "IC-AI Vector",
+		aiModelName: row.modelId,
+		aiModelTypeName: "chat",
+		completionTokens: ct,
+		costUsd: 0,
+		createdAt,
+		creditsUsed: row.creditsCharged,
+		generationId: row.settlementId,
+		id: row.id,
+		metadata: {
+			additionalProp1: "",
+			additionalProp2: "",
+			additionalProp3: "",
+		},
+		operation: "vector_token_usage",
+		organizationId: "",
+		promptTokens: pt,
+		totalTokens: pt + ct,
+		userId,
+	}
+}
+
 export class ClineAccountService {
 	private static instance: ClineAccountService
 	private _authService: AuthService
@@ -137,6 +192,21 @@ export class ClineAccountService {
 			throw new Error(`Request to ${endpoint} failed with status ${response.status}`)
 		}
 		return response.data as T
+	}
+
+	private async authenticatedGetAllowAnyStatus<T>(
+		endpoint: string,
+		config: AxiosRequestConfig = {},
+	): Promise<{ status: number; data: T }> {
+		const url = new URL(endpoint, this.baseUrl).toString()
+		const requestConfig = await this.buildAuthedAxiosConfig(config)
+		const response: AxiosResponse<T> = await axios.request({
+			url,
+			method: "GET",
+			...requestConfig,
+			validateStatus: () => true,
+		})
+		return { status: response.status, data: response.data as T }
 	}
 
 	private async authenticatedPostJson<T>(endpoint: string, body: unknown): Promise<AxiosResponse<T>> {
@@ -202,6 +272,65 @@ export class ClineAccountService {
 	}
 
 	/**
+	 * Same settlement as {@link reportVectorTokenUsage} with stable error codes for task/subagent callers (`no_token`, `insufficient_credits`, etc.).
+	 */
+	async submitVectorTokenUsageSettlement(params: {
+		settlementId: string
+		modelId: string
+		inputTokens: number
+		outputTokens: number
+		taskUlid?: string
+	}): Promise<VectorTokenSettlementResult> {
+		const token = await this._authService.getAuthToken()
+		if (!token) {
+			return { ok: false, error: "no_token" }
+		}
+		const r = await this.reportVectorTokenUsage(params)
+		if (r.ok) {
+			return r
+		}
+		if (r.status === 402 || r.error === "insufficient_credits") {
+			return { ok: false, error: "insufficient_credits", httpStatus: r.status ?? 402 }
+		}
+		return { ok: false, error: r.error, httpStatus: r.status }
+	}
+
+	async fetchVectorUsageHistoryPage(params: {
+		page?: number
+		limit?: number
+	}): Promise<{ items: ICAIVectorUsageHistoryItem[]; total: number } | undefined> {
+		try {
+			const page = params.page ?? 1
+			const limit = Math.min(params.limit ?? 30, 100)
+			const qs = new URLSearchParams({
+				page: String(page),
+				limit: String(limit),
+			})
+			const path = `${ICAI_API_ENDPOINT.VECTOR_USAGE_HISTORY}?${qs.toString()}`
+			const { status, data } = await this.authenticatedGetAllowAnyStatus<{
+				code?: number
+				data?: { items?: ICAIVectorUsageHistoryItem[]; total?: number }
+			}>(path)
+
+			if (status < 200 || status >= 300) {
+				return undefined
+			}
+			const root = data as Record<string, unknown>
+			if (typeof root?.code === "number" && root.code !== 0) {
+				return undefined
+			}
+			const inner = root?.data as { items?: ICAIVectorUsageHistoryItem[]; total?: number } | undefined
+			return {
+				items: inner?.items ?? [],
+				total: typeof inner?.total === "number" ? inner.total : 0,
+			}
+		} catch (e) {
+			Logger.error("IC-AI vector-usage-history request failed:", e)
+			return undefined
+		}
+	}
+
+	/**
 	 * Fetches user info and credits from IC-AI in a single request.
 	 */
 	async fetchUserInfo(): Promise<ICAIUserInfoResponse["data"] | undefined> {
@@ -236,11 +365,21 @@ export class ClineAccountService {
 	}
 
 	/**
-	 * IC-AI doesn't have per-usage transaction tracking matching Cline's format.
-	 * Returns an empty array for interface compatibility.
+	 * Vector VS Code settlements recorded on IC-AI (`extension_vector_usage_settlement`).
 	 */
 	async fetchUsageTransactionsRPC(): Promise<UsageTransaction[] | undefined> {
-		return []
+		try {
+			const page = await this.fetchVectorUsageHistoryPage({ page: 1, limit: 100 })
+			if (!page?.items.length) {
+				return []
+			}
+			const userInfo = await this.fetchUserInfo()
+			const userId = userInfo?.user?.id ?? ""
+			return page.items.map((row) => mapIcaiSettlementToUsageTransaction(row, userId))
+		} catch (error) {
+			Logger.error("Failed to fetch IC-AI usage history:", error)
+			return []
+		}
 	}
 
 	/**

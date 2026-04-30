@@ -55,6 +55,7 @@ import { listFiles } from "@services/glob/list-files"
 import { McpHub } from "@services/mcp/McpHub"
 import { ApiConfiguration } from "@shared/api"
 import { findLast, findLastIndex } from "@shared/array"
+import { billingTokensForIcaiSettlement, isBillableVectorVscodeModel } from "@shared/icai-vector-billing"
 import { BRAND_NAME } from "@shared/brand"
 import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences } from "@shared/combineCommandSequences"
@@ -172,6 +173,50 @@ export class Task {
 	 */
 	private async withStateLock<T>(fn: () => T | Promise<T>): Promise<T> {
 		return await this.stateMutex.withLock(fn)
+	}
+
+	private async reportIcaiVectorSettlementAfterApiReq(params: {
+		settlementId: string
+		modelId: string
+		taskMetrics: {
+			inputTokens: number
+			outputTokens: number
+			cacheWriteTokens: number
+			cacheReadTokens: number
+		}
+	}): Promise<void> {
+		if (!isBillableVectorVscodeModel(params.modelId)) {
+			return
+		}
+		const { inputTokens, outputTokens } = billingTokensForIcaiSettlement(params.taskMetrics)
+		if (inputTokens <= 0 && outputTokens <= 0) {
+			return
+		}
+
+		const result = await this.controller.accountService.submitVectorTokenUsageSettlement({
+			settlementId: params.settlementId,
+			modelId: params.modelId,
+			inputTokens,
+			outputTokens,
+			taskUlid: this.ulid,
+		})
+
+		if (!result.ok) {
+			if (result.error === "no_token") {
+				return
+			}
+			if (result.error === "insufficient_credits") {
+				await this.say(
+					"error",
+					JSON.stringify({
+						message: `Insufficient credits on your IC-AI account after this request. Open ${BRAND_NAME} account settings to purchase credits or review your balance.`,
+						code: "insufficient_credits",
+					}),
+				)
+				return
+			}
+			Logger.warn(`[Task ${this.taskId}] IC-AI vector settlement failed: ${result.error}`)
+		}
 	}
 
 	/**
@@ -2541,6 +2586,7 @@ export class Task {
 				outputTokens: number
 				totalCost: number | undefined
 			} = { cacheWriteTokens: 0, cacheReadTokens: 0, inputTokens: 0, outputTokens: 0, totalCost: undefined }
+			const icaiSettlementId = randomUUID()
 			let didFinalizeApiReqMsg = false
 			let usageChunkSideEffectsQueue = Promise.resolve()
 			/*
@@ -2589,6 +2635,11 @@ export class Task {
 				didFinalizeApiReqMsg = true
 				await usageChunkSideEffectsQueue
 				await updateApiReqMsgFromMetrics(cancelReason, streamingFailedMessage)
+				await this.reportIcaiVectorSettlementAfterApiReq({
+					settlementId: icaiSettlementId,
+					modelId: model.id,
+					taskMetrics,
+				})
 			}
 
 			const abortStream = async (cancelReason: ClineApiReqCancelReason, streamingFailedMessage?: string) => {
