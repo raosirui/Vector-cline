@@ -23,6 +23,8 @@ type UpdateApiReqMsgParams = {
 	cacheReadTokens: number
 	totalCost?: number
 	api: ApiHandler
+	/** When `cline`, omitted `totalCost` does not fall back to Anthropic USD (IC-AI credits only). */
+	providerId?: string
 	cancelReason?: ClineApiReqCancelReason
 	streamingFailedMessage?: string
 }
@@ -43,14 +45,19 @@ export const updateApiReqMsg = async (params: UpdateApiReqMsgParams) => {
 			cacheWrites: params.cacheWriteTokens,
 			cacheReads: params.cacheReadTokens,
 			cost:
-				params.totalCost ??
-				calculateApiCostAnthropic(
-					params.api.getModel().info,
-					params.inputTokens,
-					params.outputTokens,
-					params.cacheWriteTokens,
-					params.cacheReadTokens,
-				),
+				params.providerId === "cline"
+					? (params.totalCost ??
+						(typeof currentApiReqInfo.cost === "number" && Number.isFinite(currentApiReqInfo.cost)
+							? currentApiReqInfo.cost
+							: 0))
+					: (params.totalCost ??
+						calculateApiCostAnthropic(
+							params.api.getModel().info,
+							params.inputTokens,
+							params.outputTokens,
+							params.cacheWriteTokens,
+							params.cacheReadTokens,
+						)),
 			cancelReason: params.cancelReason,
 			streamingFailedMessage: params.streamingFailedMessage,
 		} satisfies ClineApiReqInfo),

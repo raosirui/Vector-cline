@@ -6,6 +6,7 @@ import type { TaskConfig } from "@core/task/tools/types/TaskConfig"
 import { afterEach, describe, it } from "mocha"
 import sinon from "sinon"
 import { HostProvider } from "@/hosts/host-provider"
+import { ClineAccountService } from "@/services/account/ClineAccountService"
 import { ApiFormat } from "@/shared/proto/cline/models"
 import { Logger } from "@/shared/services/Logger"
 import { ClineDefaultTool } from "@/shared/tools"
@@ -207,6 +208,103 @@ describe("SubagentRunner", () => {
 		assert.equal(result.status, "completed")
 		assert.equal(result.result, "done")
 		assert.equal(createMessage.callCount, 2)
+	})
+
+	it("uses IC-AI creditsCharged for cline subagent rounds instead of Anthropic USD estimate", async () => {
+		const submitSettlement = sinon.stub().resolves({
+			ok: true as const,
+			creditsCharged: 0.4242,
+			remainingCredits: 99,
+			idempotent: false,
+		})
+		sinon.stub(ClineAccountService, "getInstance").returns({
+			submitVectorTokenUsageSettlement: submitSettlement,
+		} as unknown as ClineAccountService)
+
+		const createMessage = sinon.stub()
+		createMessage.onFirstCall().callsFake(async function* () {
+			yield {
+				type: "usage",
+				inputTokens: 100_000,
+				outputTokens: 10_000,
+				cacheWriteTokens: 0,
+				cacheReadTokens: 0,
+			}
+			yield {
+				type: "tool_calls",
+				tool_call: {
+					function: {
+						id: "toolu_cline_cost_1",
+						name: ClineDefaultTool.LIST_FILES,
+						arguments: JSON.stringify({ path: ".", recursive: false }),
+					},
+				},
+			}
+		})
+		createMessage.onSecondCall().callsFake(async function* () {
+			yield {
+				type: "tool_calls",
+				tool_call: {
+					function: {
+						id: "toolu_cline_cost_done",
+						name: ClineDefaultTool.ATTEMPT,
+						arguments: JSON.stringify({ result: "done" }),
+					},
+				},
+			}
+		})
+
+		const promptRegistry = PromptRegistry.getInstance()
+		sinon.stub(promptRegistry, "get").callsFake(async () => {
+			promptRegistry.nativeTools = [{ name: "list_files" } as any]
+			return "system prompt"
+		})
+		sinon.stub(SubagentBuilder.prototype, "buildNativeTools").returns([{ name: "list_files" }] as any)
+		sinon.stub(skills, "discoverSkills").resolves([])
+		sinon.stub(skills, "getAvailableSkills").returns([])
+		sinon.stub(coreApi, "buildApiHandler").returns({
+			abort: sinon.stub(),
+			getModel: () => ({
+				id: "anthropic/claude-sonnet-4.5",
+				info: {
+					contextWindow: 200_000,
+					apiFormat: ApiFormat.ANTHROPIC_CHAT,
+					supportsPromptCache: true,
+					inputPrice: 3,
+					outputPrice: 15,
+				},
+			}),
+			createMessage,
+		} as never)
+		initializeHostProvider()
+
+		const cfg = createTaskConfig(true) as Record<string, unknown>
+		cfg.services = {
+			...(cfg.services as object),
+			stateManager: {
+				getGlobalSettingsKey: (key: string) => {
+					if (key === "mode") {
+						return "act"
+					}
+					if (key === "customPrompt") {
+						return undefined
+					}
+					return undefined
+				},
+				getGlobalStateKey: (key: string) => (key === "nativeToolCallEnabled" ? true : undefined),
+				getApiConfiguration: () => ({
+					actModeApiProvider: "cline",
+					planModeApiProvider: "cline",
+				}),
+			},
+		}
+
+		const runner = new SubagentRunner(cfg as unknown as TaskConfig)
+		const result = await runner.run("List files", () => {})
+
+		assert.equal(submitSettlement.callCount >= 1, true)
+		assert.equal(result.status, "completed")
+		assert.equal(result.stats.totalCost, 0.4242)
 	})
 
 	it("passes prior request token totals into the next-turn compaction check", async () => {

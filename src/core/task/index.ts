@@ -55,12 +55,12 @@ import { listFiles } from "@services/glob/list-files"
 import { McpHub } from "@services/mcp/McpHub"
 import { ApiConfiguration } from "@shared/api"
 import { findLast, findLastIndex } from "@shared/array"
-import { billingTokensForIcaiSettlement, isBillableVectorVscodeModel } from "@shared/icai-vector-billing"
 import { BRAND_NAME } from "@shared/brand"
 import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences } from "@shared/combineCommandSequences"
 import { ClineApiReqCancelReason, ClineApiReqInfo, ClineAsk, ClineMessage, ClineSay } from "@shared/ExtensionMessage"
 import { HistoryItem } from "@shared/HistoryItem"
+import { billingTokensForIcaiSettlement, isBillableVectorVscodeModel } from "@shared/icai-vector-billing"
 import { DEFAULT_LANGUAGE_SETTINGS, getLanguageKey, LanguageDisplay } from "@shared/Languages"
 import { USER_CONTENT_TAGS } from "@shared/messages/constants"
 import { convertClineMessageToProto } from "@shared/proto-conversions/cline-message"
@@ -92,10 +92,7 @@ import {
 	FullCommandExecutorConfig,
 	StandaloneTerminalManager,
 } from "@/integrations/terminal"
-import {
-	ClineAccountService,
-	describeIcAiVectorTokenUsageFailure,
-} from "@/services/account/ClineAccountService"
+import { ClineAccountService, describeIcAiVectorTokenUsageFailure } from "@/services/account/ClineAccountService"
 import { AuthService } from "@/services/auth/AuthService"
 import { ClineError, ClineErrorType, ErrorService } from "@/services/error"
 import { telemetryService } from "@/services/telemetry"
@@ -1992,18 +1989,21 @@ export class Task {
 					// Calculate delay: 2s, 4s, 8s
 					const delay = 2000 * 2 ** (this.taskState.autoRetryAttempts - 1)
 
-					await updateApiReqMsg({
-						messageStateHandler: this.messageStateHandler,
-						lastApiReqIndex: lastApiReqStartedIndex,
-						inputTokens: 0,
-						outputTokens: 0,
-						cacheWriteTokens: 0,
-						cacheReadTokens: 0,
-						totalCost: undefined,
-						api: this.api,
-						cancelReason: "streaming_failed",
-						streamingFailedMessage,
-					})
+					if (lastApiReqStartedIndex !== -1) {
+						await updateApiReqMsg({
+							messageStateHandler: this.messageStateHandler,
+							lastApiReqIndex: lastApiReqStartedIndex,
+							inputTokens: 0,
+							outputTokens: 0,
+							cacheWriteTokens: 0,
+							cacheReadTokens: 0,
+							totalCost: undefined,
+							api: this.api,
+							providerId,
+							cancelReason: "streaming_failed",
+							streamingFailedMessage,
+						})
+					}
 					await this.messageStateHandler.saveClineMessagesAndUpdateHistory()
 					await this.postStateToWebview()
 
@@ -2567,8 +2567,8 @@ export class Task {
 					cacheWriteTokens: taskMetrics.cacheWriteTokens,
 					cacheReadTokens: taskMetrics.cacheReadTokens,
 					api: this.api,
-					totalCost:
-						taskMetrics.totalCost ?? (providerId === "cline" ? 0 : undefined),
+					providerId,
+					totalCost: taskMetrics.totalCost ?? (providerId === "cline" ? 0 : undefined),
 					cancelReason,
 					streamingFailedMessage,
 				})
@@ -2597,10 +2597,7 @@ export class Task {
 
 				if (providerId === "cline") {
 					const billing = billingTokensForIcaiSettlement(taskMetrics)
-					if (
-						isBillableVectorVscodeModel(model.id) &&
-						(billing.inputTokens > 0 || billing.outputTokens > 0)
-					) {
+					if (isBillableVectorVscodeModel(model.id) && (billing.inputTokens > 0 || billing.outputTokens > 0)) {
 						const usageReport = await ClineAccountService.getInstance().reportVectorTokenUsage({
 							settlementId: icaiSettlementId,
 							modelId: normalizeVectorVscodeModelIdForBilling(model.id),

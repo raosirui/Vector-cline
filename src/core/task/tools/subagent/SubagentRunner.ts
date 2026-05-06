@@ -1,5 +1,5 @@
-import * as path from "node:path"
 import { randomUUID } from "node:crypto"
+import * as path from "node:path"
 import { setTimeout as delay } from "node:timers/promises"
 import type { ApiHandler, buildApiHandler } from "@core/api"
 import { parseAssistantMessageV2, ToolUse } from "@core/assistant-message"
@@ -8,16 +8,17 @@ import { formatResponse } from "@core/prompts/responses"
 import { PromptRegistry } from "@core/prompts/system-prompt"
 import type { SystemPromptContext } from "@core/prompts/system-prompt/types"
 import { StreamResponseHandler } from "@core/task/StreamResponseHandler"
+import { billingTokensForIcaiSettlement, isBillableVectorVscodeModel } from "@shared/icai-vector-billing"
 import { ClineAssistantToolUseBlock, ClineStorageMessage, ClineTextContentBlock, ClineUserContent } from "@shared/messages"
 import { Logger } from "@shared/services/Logger"
 import { ClineDefaultTool, ClineTool } from "@shared/tools"
-import { billingTokensForIcaiSettlement, isBillableVectorVscodeModel } from "@shared/icai-vector-billing"
 import { ContextManager } from "@/core/context/context-management/ContextManager"
 import { checkContextWindowExceededError } from "@/core/context/context-management/context-error-handling"
 import { getContextWindowInfo } from "@/core/context/context-management/context-window-utils"
 import { HostRegistryInfo } from "@/registry"
 import { ClineAccountService } from "@/services/account/ClineAccountService"
 import { ClineError, ClineErrorType } from "@/services/error"
+import { estimateVectorVscodeCredits } from "@/shared/billing/vector-vscode-credits-estimate"
 import { ApiFormat } from "@/shared/proto/cline/models"
 import { calculateApiCostAnthropic } from "@/utils/cost"
 import { isNextGenModelFamily } from "@/utils/model-utils"
@@ -247,19 +248,19 @@ export class SubagentRunner {
 		this.allowedTools = this.agent.getAllowedTools()
 	}
 
+	/**
+	 * Calls IC-AI vector-token-usage for this subagent round. Returns `creditsCharged` when billing succeeded.
+	 */
 	private async reportIcaiVectorSettlementForSubagentApiRound(
 		modelId: string,
-		usage: Pick<
-			SubagentRequestUsageState,
-			"inputTokens" | "outputTokens" | "cacheWriteTokens" | "cacheReadTokens"
-		>,
-	): Promise<void> {
+		usage: Pick<SubagentRequestUsageState, "inputTokens" | "outputTokens" | "cacheWriteTokens" | "cacheReadTokens">,
+	): Promise<number | undefined> {
 		if (!isBillableVectorVscodeModel(modelId)) {
-			return
+			return undefined
 		}
 		const { inputTokens, outputTokens } = billingTokensForIcaiSettlement(usage)
 		if (inputTokens <= 0 && outputTokens <= 0) {
-			return
+			return undefined
 		}
 
 		const result = await ClineAccountService.getInstance().submitVectorTokenUsageSettlement({
@@ -272,7 +273,7 @@ export class SubagentRunner {
 
 		if (!result.ok) {
 			if (result.error === "no_token") {
-				return
+				return undefined
 			}
 			if (result.error === "insufficient_credits") {
 				await this.baseConfig.callbacks.say(
@@ -283,10 +284,13 @@ export class SubagentRunner {
 						code: "insufficient_credits",
 					}),
 				)
-				return
+				return undefined
 			}
 			Logger.warn("[SubagentRunner] IC-AI vector settlement failed:", result.error)
+			return undefined
 		}
+
+		return result.creditsCharged
 	}
 
 	async abort(): Promise<void> {
@@ -544,24 +548,42 @@ export class SubagentRunner {
 					}
 				}
 
-				const calculatedRequestCost =
-					requestUsage.totalCost ??
-					calculateApiCostAnthropic(
-						providerInfo.model.info,
-						requestUsage.inputTokens,
-						requestUsage.outputTokens,
-						requestUsage.cacheWriteTokens,
-						requestUsage.cacheReadTokens,
-					)
+				const billing = billingTokensForIcaiSettlement(requestUsage)
+				const icaiCreditsCharged = await this.reportIcaiVectorSettlementForSubagentApiRound(
+					providerInfo.model.id,
+					requestUsage,
+				)
+
+				let calculatedRequestCost: number
+				if (providerInfo.providerId === "cline") {
+					if (!isBillableVectorVscodeModel(providerInfo.model.id)) {
+						calculatedRequestCost = requestUsage.totalCost ?? 0
+					} else if (icaiCreditsCharged !== undefined && Number.isFinite(icaiCreditsCharged)) {
+						calculatedRequestCost = icaiCreditsCharged
+					} else {
+						const est = estimateVectorVscodeCredits(providerInfo.model.id, billing.inputTokens, billing.outputTokens)
+						calculatedRequestCost = est != null && est > 0 ? est : (requestUsage.totalCost ?? 0)
+					}
+				} else {
+					calculatedRequestCost =
+						requestUsage.totalCost ??
+						calculateApiCostAnthropic(
+							providerInfo.model.info,
+							requestUsage.inputTokens,
+							requestUsage.outputTokens,
+							requestUsage.cacheWriteTokens,
+							requestUsage.cacheReadTokens,
+						)
+				}
+
 				requestUsage.totalTokens =
 					requestUsage.inputTokens +
 					requestUsage.outputTokens +
 					requestUsage.cacheWriteTokens +
 					requestUsage.cacheReadTokens
+				requestUsage.totalCost = calculatedRequestCost
 				stats.totalCost += calculatedRequestCost || 0
 				usageState.lastRequest = { ...requestUsage }
-
-				await this.reportIcaiVectorSettlementForSubagentApiRound(providerInfo.model.id, requestUsage)
 
 				const nativeFinalizedToolCalls = toolUseHandler.getAllFinalizedToolUses().map((toolCall, index) => ({
 					toolUseId: resolveToolUseId(toolCall, index),
