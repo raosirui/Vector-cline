@@ -1,11 +1,11 @@
-import type { ModelInfo } from "./api"
+import type { OpenAiCompatibleModelInfo } from "./api"
 import { ApiFormat } from "./proto/cline/models"
 
 export const VECTOR_PROVIDER_DEFAULT_MODEL_ID = "kimi-k2.5"
 
-export const VECTOR_PROVIDER_MODEL_IDS = ["kimi-k2.5", "glm-5", "glm-4.7"] as const
+export const VECTOR_PROVIDER_MODEL_IDS = ["kimi-k2.5", "glm-5", "glm-4.7", "gpt-5.4", "gpt-5.5"] as const
 
-export type VectorProviderRouteId = "kimi-anthropic" | "glm-openai"
+export type VectorProviderRouteId = "kimi-anthropic" | "glm-openai" | "harveycodeai-openai"
 
 export interface VectorProviderRouteConfig {
 	baseUrl: string
@@ -24,15 +24,22 @@ const VECTOR_PROVIDER_ROUTES: Record<VectorProviderRouteId, VectorProviderRouteC
 		apiKey: "3c5e83619ac84c8194bf2b86d89a3c98.B9cVGLK4nv9aHaAU",
 		apiFormat: ApiFormat.OPENAI_CHAT,
 	},
+	"harveycodeai-openai": {
+		baseUrl: "https://harveycodeai.com/v1",
+		apiKey: "sk-CbKOpC1L5Xfypt2ikScQF9UyfiFMQCG7xZjnGdEtEwIqSaBn",
+		apiFormat: ApiFormat.OPENAI_CHAT,
+	},
 }
 
 const VECTOR_PROVIDER_MODEL_ROUTE_MAP: Partial<Record<string, VectorProviderRouteId>> = {
 	"kimi-k2.5": "kimi-anthropic",
 	"glm-5": "glm-openai",
 	"glm-4.7": "glm-openai",
+	"gpt-5.4": "harveycodeai-openai",
+	"gpt-5.5": "harveycodeai-openai",
 }
 
-const vectorModelInfoDefaults: ModelInfo = {
+const vectorModelInfoDefaults: OpenAiCompatibleModelInfo = {
 	maxTokens: -1,
 	contextWindow: 256_000,
 	supportsImages: true,
@@ -44,7 +51,7 @@ const vectorModelInfoDefaults: ModelInfo = {
 	supportsStreaming: true,
 }
 
-export const VECTOR_PROVIDER_MODELS: Record<string, ModelInfo> = Object.fromEntries(
+export const VECTOR_PROVIDER_MODELS: Record<string, OpenAiCompatibleModelInfo> = Object.fromEntries(
 	VECTOR_PROVIDER_MODEL_IDS.map((modelId) => [
 		modelId,
 		{
@@ -54,7 +61,7 @@ export const VECTOR_PROVIDER_MODELS: Record<string, ModelInfo> = Object.fromEntr
 			supportsStreaming: true,
 		},
 	]),
-) as Record<string, ModelInfo>
+) as Record<string, OpenAiCompatibleModelInfo>
 
 const VECTOR_PROVIDER_MODEL_ID_SET = new Set<string>(VECTOR_PROVIDER_MODEL_IDS)
 
@@ -84,6 +91,9 @@ function getRouteIdFromModelId(modelId: string): VectorProviderRouteId {
 	}
 	if (normalizedModelId.startsWith("glm-")) {
 		return "glm-openai"
+	}
+	if (normalizedModelId.startsWith("gpt-")) {
+		return "harveycodeai-openai"
 	}
 	return "kimi-anthropic"
 }
