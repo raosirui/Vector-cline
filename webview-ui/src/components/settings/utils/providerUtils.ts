@@ -70,7 +70,7 @@ import {
 } from "@shared/api"
 import { Mode } from "@shared/storage/types"
 import * as reasoningSupport from "@shared/utils/reasoning-support"
-import { VECTOR_PROVIDER_DEFAULT_MODEL_ID, VECTOR_PROVIDER_MODELS } from "@shared/vector-provider"
+import { resolveVectorProviderModelId, VECTOR_PROVIDER_DEFAULT_MODEL_ID, VECTOR_PROVIDER_MODELS } from "@shared/vector-provider"
 
 export function supportsReasoningEffortForModelId(modelId?: string, _allowShortOpenAiIds = false): boolean {
 	return reasoningSupport.supportsReasoningEffortForModel(modelId)
@@ -271,9 +271,9 @@ export function normalizeApiConfiguration(
 				selectedModelInfo: requestyModelInfo || requestyDefaultModelInfo,
 			}
 		case "cline":
-			const clineModelId =
-				(currentMode === "plan" ? apiConfiguration?.planModeClineModelId : apiConfiguration?.actModeClineModelId) ||
-				VECTOR_PROVIDER_DEFAULT_MODEL_ID
+			const clineModelId = resolveVectorProviderModelId(
+				currentMode === "plan" ? apiConfiguration?.planModeClineModelId : apiConfiguration?.actModeClineModelId,
+			)
 			const clineModelInfo =
 				(currentMode === "plan" ? apiConfiguration?.planModeClineModelInfo : apiConfiguration?.actModeClineModelInfo) ||
 				VECTOR_PROVIDER_MODELS[clineModelId] ||
@@ -560,10 +560,9 @@ export function getModeSpecificFields(apiConfiguration: ApiConfiguration | undef
 		mode === "plan" ? apiConfiguration.planModeOpenRouterModelInfo : apiConfiguration.actModeOpenRouterModelInfo
 
 	// Backward compatibility: Cline previously stored model selection in OpenRouter keys.
-	const clineModelId =
-		(mode === "plan" ? apiConfiguration.planModeClineModelId : apiConfiguration.actModeClineModelId) ||
-		openRouterModelId ||
-		VECTOR_PROVIDER_DEFAULT_MODEL_ID
+	const clineModelId = resolveVectorProviderModelId(
+		(mode === "plan" ? apiConfiguration.planModeClineModelId : apiConfiguration.actModeClineModelId) || openRouterModelId,
+	)
 	const clineModelInfo =
 		(mode === "plan" ? apiConfiguration.planModeClineModelInfo : apiConfiguration.actModeClineModelInfo) ||
 		openRouterModelInfo ||

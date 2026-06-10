@@ -1,7 +1,7 @@
 import { ApiConfiguration, ModelInfo, QwenApiRegions } from "@shared/api"
 import { ApiFormat } from "@shared/proto/cline/models"
 import { Mode } from "@shared/storage/types"
-import { getVectorProviderRouteConfig, VECTOR_PROVIDER_DEFAULT_MODEL_ID, VECTOR_PROVIDER_MODELS } from "@shared/vector-provider"
+import { getVectorProviderRouteConfig, resolveVectorProviderModelId, VECTOR_PROVIDER_MODELS } from "@shared/vector-provider"
 import { ClineStorageMessage } from "@/shared/messages/content"
 import { Logger } from "@/shared/services/Logger"
 import { ClineTool } from "@/shared/tools"
@@ -255,17 +255,16 @@ function createHandlerForProvider(
 					mode === "plan" ? options.planModeVsCodeLmModelSelector : options.actModeVsCodeLmModelSelector,
 			})
 		case "cline": {
-			const clineModelId =
-				(mode === "plan" ? options.planModeClineModelId : options.actModeClineModelId) || VECTOR_PROVIDER_DEFAULT_MODEL_ID
+			const clineModelId = resolveVectorProviderModelId(
+				mode === "plan" ? options.planModeClineModelId : options.actModeClineModelId,
+			)
 			const clineModelInfo = mode === "plan" ? options.planModeClineModelInfo : options.actModeClineModelInfo
 			const routeConfig = getVectorProviderRouteConfig(clineModelId)
 			const effectiveModelInfo = {
 				...(VECTOR_PROVIDER_MODELS[clineModelId] ?? {}),
 				...(clineModelInfo ?? {}),
-				// Some bridges (e.g., nextopenai Claude) can hang in streaming mode.
-				// Always enforce provider-derived transport capabilities over cached state.
 				apiFormat: routeConfig.apiFormat,
-				supportsStreaming: routeConfig.baseUrl !== "https://api.nextopenai.com",
+				supportsStreaming: true,
 			}
 			if (routeConfig.apiFormat === ApiFormat.ANTHROPIC_CHAT) {
 				return new AnthropicHandler({

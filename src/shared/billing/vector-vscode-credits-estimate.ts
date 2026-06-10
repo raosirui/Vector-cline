@@ -7,19 +7,13 @@ import { normalizeVectorVscodeModelIdForBilling } from "./vector-vscode-model-id
 
 type Rates = { inputCreditsPerMillion: number; outputCreditsPerMillion: number }
 
-const SONNET_46: Rates = { inputCreditsPerMillion: 21, outputCreditsPerMillion: 105 }
-
 /** Canonical id → rates (same keys as IC-AI after normalization). */
 const VECTOR_VSCODE_MODEL_RATES: Record<string, Rates> = {
-	"claude-sonnet-4-6": SONNET_46,
-	"claude-sonnet-4-5": SONNET_46,
-	"claude-sonnet-4-5-20250929": SONNET_46,
-	"claude-haiku-4-5": SONNET_46,
-	"claude-haiku-4-5-20251001": SONNET_46,
-	"claude-opus-4-5": SONNET_46,
 	"kimi-k2.5": { inputCreditsPerMillion: 4, outputCreditsPerMillion: 21 },
-	"glm-4.7": { inputCreditsPerMillion: 4, outputCreditsPerMillion: 16 },
-	"glm-5": { inputCreditsPerMillion: 6, outputCreditsPerMillion: 22 },
+	"glm-4.7": { inputCreditsPerMillion: 4.3, outputCreditsPerMillion: 15.8 },
+	"glm-5": { inputCreditsPerMillion: 7.2, outputCreditsPerMillion: 23 },
+	"gpt-5.4": { inputCreditsPerMillion: 18, outputCreditsPerMillion: 108 },
+	"gpt-5.5": { inputCreditsPerMillion: 36, outputCreditsPerMillion: 216 },
 }
 
 /**

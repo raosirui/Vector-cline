@@ -9,17 +9,7 @@ const VECTOR_VSCODE_MODEL_EXPLICIT_ALIASES: Record<string, string> = {
 }
 
 /** Canonical rate-card keys (must match IC-AI VECTOR_VSCODE_MODEL_RATES). */
-const BILLABLE_MODEL_KEYS = new Set([
-	"claude-sonnet-4-6",
-	"claude-sonnet-4-5",
-	"claude-sonnet-4-5-20250929",
-	"claude-haiku-4-5",
-	"claude-haiku-4-5-20251001",
-	"claude-opus-4-5",
-	"kimi-k2.5",
-	"glm-4.7",
-	"glm-5",
-])
+const BILLABLE_MODEL_KEYS = new Set(["kimi-k2.5", "glm-4.7", "glm-5", "gpt-5.4", "gpt-5.5"])
 
 export function normalizeVectorVscodeModelId(modelId: string): string {
 	let s = modelId.trim().toLowerCase()
@@ -39,8 +29,7 @@ export function normalizeVectorVscodeModelId(modelId: string): string {
 
 	const claudeDotToHyphen = s.replace(
 		/^claude-(sonnet|haiku|opus)-(\d+)\.(\d+)(-[0-9]{8})?$/,
-		(_, role: string, major: string, minor: string, dated?: string) =>
-			`claude-${role}-${major}-${minor}${dated ?? ""}`,
+		(_, role: string, major: string, minor: string, dated?: string) => `claude-${role}-${major}-${minor}${dated ?? ""}`,
 	)
 	if (claudeDotToHyphen !== s) {
 		return claudeDotToHyphen

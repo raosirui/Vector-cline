@@ -1,21 +1,11 @@
 import type { ModelInfo } from "./api"
 import { ApiFormat } from "./proto/cline/models"
 
-export const VECTOR_PROVIDER_DEFAULT_MODEL_ID = "claude-sonnet-4-6"
+export const VECTOR_PROVIDER_DEFAULT_MODEL_ID = "kimi-k2.5"
 
-export const VECTOR_PROVIDER_MODEL_IDS = [
-	"claude-sonnet-4-6",
-	"claude-sonnet-4-5",
-	"claude-sonnet-4-5-20250929",
-	"claude-haiku-4-5",
-	"claude-haiku-4-5-20251001",
-	"claude-opus-4-5",
-	"kimi-k2.5",
-	"glm-5",
-	"glm-4.7",
-] as const
+export const VECTOR_PROVIDER_MODEL_IDS = ["kimi-k2.5", "glm-5", "glm-4.7"] as const
 
-export type VectorProviderRouteId = "nextopenai-anthropic" | "kimi-anthropic" | "glm-openai"
+export type VectorProviderRouteId = "kimi-anthropic" | "glm-openai"
 
 export interface VectorProviderRouteConfig {
 	baseUrl: string
@@ -24,11 +14,6 @@ export interface VectorProviderRouteConfig {
 }
 
 const VECTOR_PROVIDER_ROUTES: Record<VectorProviderRouteId, VectorProviderRouteConfig> = {
-	"nextopenai-anthropic": {
-		baseUrl: "https://api.nextopenai.com",
-		apiKey: "sk-6vMnJZxuhjkSWGiJPwZMq9QGmh0oa0SW7S0E0X4aDnt4CNWk",
-		apiFormat: ApiFormat.OPENAI_CHAT,
-	},
 	"kimi-anthropic": {
 		baseUrl: "https://api.kimi.com/coding",
 		apiKey: "sk-kimi-dxA0dvZr8bbXT6Eecd5V5fJBJ2SsFDa56pXtKGeRjF7xy1l1I2xINjEuU6Qdiguf",
@@ -42,12 +27,6 @@ const VECTOR_PROVIDER_ROUTES: Record<VectorProviderRouteId, VectorProviderRouteC
 }
 
 const VECTOR_PROVIDER_MODEL_ROUTE_MAP: Partial<Record<string, VectorProviderRouteId>> = {
-	"claude-sonnet-4-6": "nextopenai-anthropic",
-	"claude-sonnet-4-5": "nextopenai-anthropic",
-	"claude-sonnet-4-5-20250929": "nextopenai-anthropic",
-	"claude-haiku-4-5": "nextopenai-anthropic",
-	"claude-haiku-4-5-20251001": "nextopenai-anthropic",
-	"claude-opus-4-5": "nextopenai-anthropic",
 	"kimi-k2.5": "kimi-anthropic",
 	"glm-5": "glm-openai",
 	"glm-4.7": "glm-openai",
@@ -62,6 +41,7 @@ const vectorModelInfoDefaults: ModelInfo = {
 	outputPrice: 0,
 	description: "Vector Coding Plan model",
 	apiFormat: ApiFormat.ANTHROPIC_CHAT,
+	supportsStreaming: true,
 }
 
 export const VECTOR_PROVIDER_MODELS: Record<string, ModelInfo> = Object.fromEntries(
@@ -71,10 +51,27 @@ export const VECTOR_PROVIDER_MODELS: Record<string, ModelInfo> = Object.fromEntr
 			...vectorModelInfoDefaults,
 			name: modelId,
 			apiFormat: getVectorProviderRouteConfig(modelId).apiFormat,
-			supportsStreaming: getVectorProviderRouteConfig(modelId).baseUrl !== "https://api.nextopenai.com",
+			supportsStreaming: true,
 		},
 	]),
 ) as Record<string, ModelInfo>
+
+const VECTOR_PROVIDER_MODEL_ID_SET = new Set<string>(VECTOR_PROVIDER_MODEL_IDS)
+
+export function isVectorProviderModelId(modelId: string | undefined): boolean {
+	if (!modelId) {
+		return false
+	}
+	return VECTOR_PROVIDER_MODEL_ID_SET.has(modelId.trim().toLowerCase())
+}
+
+export function resolveVectorProviderModelId(modelId?: string): string {
+	const normalized = modelId?.trim().toLowerCase()
+	if (normalized && VECTOR_PROVIDER_MODEL_ID_SET.has(normalized)) {
+		return normalized
+	}
+	return VECTOR_PROVIDER_DEFAULT_MODEL_ID
+}
 
 function getRouteIdFromModelId(modelId: string): VectorProviderRouteId {
 	const normalizedModelId = modelId.trim().toLowerCase()
@@ -88,10 +85,10 @@ function getRouteIdFromModelId(modelId: string): VectorProviderRouteId {
 	if (normalizedModelId.startsWith("glm-")) {
 		return "glm-openai"
 	}
-	return "nextopenai-anthropic"
+	return "kimi-anthropic"
 }
 
 export function getVectorProviderRouteConfig(modelId?: string): VectorProviderRouteConfig {
-	const fallbackModelId = VECTOR_PROVIDER_DEFAULT_MODEL_ID
-	return VECTOR_PROVIDER_ROUTES[getRouteIdFromModelId(modelId || fallbackModelId)]
+	const resolvedModelId = resolveVectorProviderModelId(modelId)
+	return VECTOR_PROVIDER_ROUTES[getRouteIdFromModelId(resolvedModelId)]
 }
