@@ -22,6 +22,15 @@ export async function getUserCredits(controller: Controller, _request: EmptyRequ
 			throw new Error("Failed to fetch user credits data")
 		}
 
+		const fetchedBalance = balance.balance
+		if (typeof fetchedBalance === "number" && Number.isFinite(fetchedBalance)) {
+			const current = controller.stateManager.getGlobalStateKey("icAiCreditsBalance")
+			// Sync extension state after recharge; never overwrite a lower post-settlement balance with stale server data.
+			if (typeof current !== "number" || !Number.isFinite(current) || fetchedBalance > current) {
+				controller.stateManager.setGlobalState("icAiCreditsBalance", fetchedBalance)
+			}
+		}
+
 		const protoUsage = (usageTransactions ?? []).map((t) =>
 			PbUsageTransaction.create({
 				aiInferenceProviderName: t.aiInferenceProviderName,

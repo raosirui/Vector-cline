@@ -8,6 +8,7 @@ import { formatResponse } from "@core/prompts/responses"
 import { PromptRegistry } from "@core/prompts/system-prompt"
 import type { SystemPromptContext } from "@core/prompts/system-prompt/types"
 import { StreamResponseHandler } from "@core/task/StreamResponseHandler"
+import { normalizeVectorVscodeModelIdForBilling } from "@shared/billing/vector-vscode-model-id"
 import { billingTokensForIcaiSettlement, isBillableVectorVscodeModel } from "@shared/icai-vector-billing"
 import { ClineAssistantToolUseBlock, ClineStorageMessage, ClineTextContentBlock, ClineUserContent } from "@shared/messages"
 import { Logger } from "@shared/services/Logger"
@@ -265,7 +266,7 @@ export class SubagentRunner {
 
 		const result = await ClineAccountService.getInstance().submitVectorTokenUsageSettlement({
 			settlementId: randomUUID(),
-			modelId,
+			modelId: normalizeVectorVscodeModelIdForBilling(modelId),
 			inputTokens,
 			outputTokens,
 			taskUlid: this.baseConfig.ulid,

@@ -97,9 +97,8 @@ export class AnthropicHandler implements ApiHandler {
 								"anthropic-beta": "context-1m-2025-08-07",
 							},
 						}
-					} else {
-						return undefined
 					}
+					return undefined
 				})(),
 			)
 		} else {
@@ -239,11 +238,19 @@ export class AnthropicHandler implements ApiHandler {
 		}
 	}
 
-	getModel(): { id: AnthropicModelId; info: ModelInfo } {
+	getModel(): { id: string; info: ModelInfo } {
 		const modelId = this.options.apiModelId
 		if (modelId && modelId in anthropicModels) {
 			const id = modelId as AnthropicModelId
 			return { id, info: anthropicModels[id] }
+		}
+		// Vector Coding / other Anthropic-compatible gateways (e.g. kimi-k2.5) use a custom apiModelId
+		// that is not in anthropicModels; preserve it for API calls and IC-AI billing.
+		if (modelId) {
+			return {
+				id: modelId,
+				info: anthropicModels[anthropicDefaultModelId],
+			}
 		}
 		return {
 			id: anthropicDefaultModelId,

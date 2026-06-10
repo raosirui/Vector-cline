@@ -126,16 +126,15 @@ export function describeIcAiVectorTokenUsageFailure(errorCode: string): string {
 			return "IC-AI could not find your user for this token. Sign out and sign in again."
 		case "internal_error":
 			return "IC-AI failed to record usage (internal_error). If this persists, contact support with the request time."
+		case "unknown_model":
+			return "This model is not configured for IC-AI billing yet. Update the Vector extension and IC-AI server, or switch to a supported model (kimi-k2.5, glm-4.7, glm-5, gpt-5.4, gpt-5.5)."
 		default:
 			return ""
 	}
 }
 
 function mapIcaiSettlementToUsageTransaction(row: ICAIVectorUsageHistoryItem, userId: string): UsageTransaction {
-	const createdAt =
-		typeof row.createdAt === "string"
-			? row.createdAt
-			: new Date(row.createdAt as unknown as Date).toISOString()
+	const createdAt = typeof row.createdAt === "string" ? row.createdAt : new Date(row.createdAt as unknown as Date).toISOString()
 	const pt = row.inputTokens ?? 0
 	const ct = row.outputTokens ?? 0
 	return {

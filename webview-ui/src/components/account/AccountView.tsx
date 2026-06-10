@@ -50,20 +50,17 @@ const ICAIAccountView = ({ clineUser, clineEnv }: { clineUser: ClineUser; clineE
 	const [isLoading, setIsLoading] = useState(false)
 	const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now())
 
-	/** Never show more credits than post-settlement truth from the extension (avoids stale polling overwriting deductions). */
+	/** Prefer freshly fetched server balance on the Account page; fall back to extension state while loading. */
 	const displayBalance = useMemo(() => {
 		const server = serverFetchedBalance
 		const ext = icAiCreditsBalance
 		const serverOk = typeof server === "number" && Number.isFinite(server)
 		const extOk = typeof ext === "number" && Number.isFinite(ext)
-		if (serverOk && extOk) {
-			return Math.min(server, ext)
+		if (serverOk) {
+			return server
 		}
 		if (extOk) {
 			return ext
-		}
-		if (serverOk) {
-			return server
 		}
 		return null
 	}, [serverFetchedBalance, icAiCreditsBalance])

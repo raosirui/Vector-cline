@@ -43,5 +43,9 @@ export const StyledCreditDisplay = ({ balance }: { balance: number }) => {
 	const displayBalance = formatCreditsBalance(balance)
 	const animatedValue = useAnimatedCredits(displayBalance)
 
-	return <span className="font-azeret-mono font-light tabular-nums text-2xl">{formatCreditsDisplay(animatedValue)}</span>
+	return (
+		<span className="font-azeret-mono font-light tabular-nums text-2xl shrink-0 whitespace-nowrap">
+			{formatCreditsDisplay(animatedValue)}
+		</span>
+	)
 }
